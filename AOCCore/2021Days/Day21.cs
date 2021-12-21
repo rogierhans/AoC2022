@@ -16,8 +16,7 @@ class Day21 : Day
         SL.printParse = false;
         GetInput(RootFolder + @"2021_21\");
     }
-
-    private readonly (ulong, ulong)[,,,,] State = new (ulong, ulong)[10, 10, 21, 21, 2];
+    private readonly (ulong, ulong)[,,,,] StateMem = new (ulong, ulong)[10, 10, 21, 21, 2];
     public override void Main(List<string> Lines)
     {
         Lines.Print("\n");
@@ -31,35 +30,37 @@ class Day21 : Day
 
     public (ulong, ulong) CalcWhoWins(int pos1, int pos2, int turnPlayer1, int score1, int score2)
     {
-        if (score1 >= 21) return (1, (ulong)0);
-        if (score2 >= 21) return (0, (ulong)1);
-        if (State[pos1, pos2, score1, score2, turnPlayer1].Item1 != 0 || State[pos1, pos2, score1, score2, turnPlayer1].Item2 != 0)
+        if (score1 >= 21) return (1, 0);
+        if (score2 >= 21) return (0, 1);
+
+        (ulong wins1, ulong wins2) memState = StateMem[pos1, pos2, score1, score2, turnPlayer1];
+        if (memState.wins1 != 0 || memState.wins2 != 0)
         {
-            return State[pos1, pos2, score1, score2, turnPlayer1];
+            return memState;
         }
-        ulong wins1 = 0;
-        ulong wins2 = 0;
-        for (int d1 = 1; d1 <= 3; d1++) for (int d2 = 1; d2 <= 3; d2++) for (int d3 = 1; d3 <= 3; d3++)
-                {
+        ulong wins1Total = 0;
+        ulong wins2Total = 0;
+        for (int d1 = 1; d1 <= 3; d1++)
+            for (int d2 = 1; d2 <= 3; d2++)
+                for (int d3 = 1; d3 <= 3; d3++)
                     if (turnPlayer1 == 1)
                     {
                         var Qpos1 = (pos1 + d1 + d3 + d2) % 10;
                         var Qscore1 = score1 + Qpos1 + 1;
                         var (Qwins1, Qwins2) = CalcWhoWins(Qpos1, pos2, 1 - turnPlayer1, Qscore1, score2);
-                        wins1 += Qwins1;
-                        wins2 += Qwins2;
+                        wins1Total += Qwins1;
+                        wins2Total += Qwins2;
                     }
                     else
                     {
                         var Qpos2 = (pos2 + d1 + d3 + d2) % 10;
                         var Qscore2 = score2 + Qpos2 + 1;
                         var (Qwins1, Qwins2) = CalcWhoWins(pos1, Qpos2, 1 - turnPlayer1, score1, Qscore2);
-                        wins1 += Qwins1;
-                        wins2 += Qwins2;
+                        wins1Total += Qwins1;
+                        wins2Total += Qwins2;
                     }
-                }
-        State[pos1, pos2, score1, score2, turnPlayer1] = (wins1, wins2);
-        return State[pos1, pos2, score1, score2, turnPlayer1];
+        StateMem[pos1, pos2, score1, score2, turnPlayer1] = (wins1Total, wins2Total);
+        return StateMem[pos1, pos2, score1, score2, turnPlayer1];
     }
 
 }
