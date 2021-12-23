@@ -13,7 +13,7 @@ namespace AOC2
 
         public Day5()
         {
-            SL.printParse = false;
+    
 
             string folder = @"C:\Users\Rogier\Desktop\AOC\";
             string name = "input.txt";
@@ -22,20 +22,14 @@ namespace AOC2
             var testLines = File.ReadAllLines(filenameTest).ToList();
             var inputLines = File.ReadAllLines(filename).ToList();
             Console.WriteLine("test:");
-            ModeSelector(testLines, 10);
+            IndexForLoop(testLines, 10);
             Console.WriteLine("input:");
-            ModeSelector(inputLines, 1000);
+            IndexForLoop(inputLines, 1000);
         }
 
 
-        private void ModeSelector(List<string> Lines, int gridsize)
-        {
-            IndexForLoop(Lines, gridsize);
-            //ParseLines(Lines);
-        }
 
-
-        private void IndexForLoop(List<string> Lines, int gridsize)
+        private static void IndexForLoop(List<string> Lines, int gridsize)
         {
             int[,] array = new int[gridsize, gridsize];
             for (int t = 0; t < Lines.Count; t++)
@@ -137,57 +131,5 @@ namespace AOC2
 
             }
         }
-
-
-
-        private void ParseLines(List<string> lines)
-        {
-            var clusterLine = lines.ClusterLines();
-            var parsed = clusterLine;
-            //var numbers = parsed.First().First().Split(',').Select(x => long.Parse(x)).ToList();
-            var element = parsed.Select(line => new Element(line)).ToList();
-            for (int i = 0; i < element.Count; i++)
-            {
-
-
-            }
-        }
-
-        class Element
-        {
-            // string key = "";
-            //long ID;
-
-
-            public Element(List<string> lines)
-            {
-                ///ParseSingle(lines.First());
-                ParseMulti(lines);
-            }
-            private void ParseSingle(string line)
-            {
-                var sperator = ' ';
-                var input = line.Split(sperator);
-            }
-
-
-            private void ParseMulti(List<string> lines)
-            {
-                SL.Line();
-                for (int i = 1; i < lines.Count; i++)
-                {
-                    var line = lines[i];
-                    SL.Log(line);
-
-                    var sperator = ' ';
-
-                    var input = line.Split(sperator).Select(x => long.Parse(x)).ToList();
-
-                }
-            }
-
-
-        }
-
     }
 }

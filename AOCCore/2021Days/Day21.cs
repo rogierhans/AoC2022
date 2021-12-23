@@ -13,7 +13,6 @@ class Day21 : Day
 
     public Day21()
     {
-        SL.printParse = false;
         GetInput(RootFolder + @"2021_21\");
     }
     private readonly (ulong, ulong)[,,,,] StateMem = new (ulong, ulong)[10, 10, 21, 21, 2];
@@ -28,7 +27,6 @@ class Day21 : Day
         Console.WriteLine(x.Item2);
         Console.ReadLine();
     }
-
     public (ulong, ulong) CalcWhoWins(int pos1, int pos2, int turnPlayer1, int score1, int score2)
     {
         if (score1 >= 21) return (1, 0);

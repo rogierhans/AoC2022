@@ -14,7 +14,6 @@ namespace AOC2
 
         public Day8()
         {
-            SL.printParse = false;
 
             string folder = @"C:\Users\Rogier\Desktop\AOC\";
             string name = "input.txt";
@@ -28,7 +27,7 @@ namespace AOC2
             ParseLines(inputLines);
         }
 
-        private void ParseLines(List<string> lines)
+        private static void ParseLines(List<string> lines)
         {
             var parsed = lines;
             //var numbers = parsed.First().First().Split(',').Select(x => long.Parse(x)).ToList();
@@ -39,7 +38,7 @@ namespace AOC2
         class Number
         {
             public string Line = "";
-            public List<string> Letters = new List<string>();
+            public List<string> Letters = new();
             public Number(string line)
             {
                 Line = line;
@@ -52,8 +51,8 @@ namespace AOC2
         {
             // string key = "";
             //long ID;
-            public List<Number> Input = new List<Number>();
-            public List<Number> Output = new List<Number>();
+            public List<Number> Input = new();
+            public List<Number> Output = new();
             public int count = 0;
 
             class Pattern
@@ -73,7 +72,7 @@ namespace AOC2
                 {
                     if (number.Letters.Count != To.Count) return false;
 
-                    HashSet<string> set = new HashSet<string>();
+                    HashSet<string> set = new();
                     foreach (var letters in To.Select(letter => Rules[letter]))
                     {
 
@@ -96,7 +95,7 @@ namespace AOC2
                 AllNumbers.AddRange(Input);
                 AllNumbers.AddRange(Output);
 
-                Dictionary<string, List<string>> RTN = new Dictionary<string, List<string>>
+                Dictionary<string, List<string>> RTN = new()
                 {
                     ["a"] = listOfLetters,
                     ["b"] = listOfLetters,
@@ -107,7 +106,7 @@ namespace AOC2
                     ["g"] = listOfLetters
                 };
                 var numberOne = AllNumbers.First(x => x.Letters.Count == 2);
-                Dictionary<string, int> string2Number = new Dictionary<string, int>() { ["abcefg"] = 0, ["cf"] = 1, ["acdeg"] = 2, ["acdfg"] = 3, ["bcdf"] = 4, ["abdfg"] = 5, ["abdefg"] = 6, ["acf"] = 7, ["abcdefg"] = 8, ["abcdfg"] = 9, };
+                Dictionary<string, int> string2Number =  new(){ ["abcefg"] = 0, ["cf"] = 1, ["acdeg"] = 2, ["acdfg"] = 3, ["bcdf"] = 4, ["abdfg"] = 5, ["abdefg"] = 6, ["acf"] = 7, ["abcdefg"] = 8, ["abcdfg"] = 9, };
 
                 string2Number.ToList().ForEach(kvp => Console.WriteLine(kvp.Key.ToCharArray().Sum(x => x)));
                 Console.ReadLine();
@@ -149,8 +148,8 @@ namespace AOC2
                 string line = string.Join("", Output.Select(number => string2Number[string.Join("", number.Letters.Select(x => RTN[x].First()).OrderBy(x => x).ToList())]).ToList());
                 count = int.Parse(line);
             }
-            List<Number> AllNumbers = new List<Number>();
-            List<string> listOfLetters = "abcdefg".List();
+            private readonly List<Number> AllNumbers = new();
+            private readonly List<string> listOfLetters = "abcdefg".List();
 
 
             private Dictionary<string, List<string>> AddPatern(Dictionary<string, List<string>> dictLettersRandomToNormal, Number x, string word)

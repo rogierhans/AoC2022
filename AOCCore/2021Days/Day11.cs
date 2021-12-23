@@ -13,7 +13,7 @@ namespace AOC2
 
         public Day11()
         {
-            SL.printParse = false;
+
 
             string folder = @"C:\Users\Rogier\Desktop\AOC\";
             string name = "input.txt";
@@ -28,7 +28,7 @@ namespace AOC2
         }
 
 
-        private void ModeSelector(List<string> Lines)
+        private static void ModeSelector(List<string> Lines)
         {
             var grid = Lines.Parse2D(x => int.Parse(x));
             long count = 0;
@@ -75,61 +75,19 @@ namespace AOC2
             Console.ReadLine();
         }
 
-        private void SingleLine(string line)
-        {
-            //var numbers = line.Split(' ').Select(x => long.Parse(x)).ToList();
 
 
-        }
-        private void IndexForLoop(List<string> Lines)
-        {
-            for (int t = 0; t < Lines.Count; t++)
-            {
-                var line = Lines[t];
-                var input = line.Split(' ');
-                var key = input[0];
-                //var value = long.Parse(input[1]);
-                //var numbers = input.Skip(0).Select(x => long.Parse(x)).ToList();
-            }
-
-        }
-
-
-
-        private void ParseLines(List<string> lines)
-        {
-            var clusterLine = lines.ClusterLines();
-            var parsed = clusterLine;
-            //var numbers = parsed.First().First().Split(',').Select(x => long.Parse(x)).ToList();
-            var element = parsed.Select(line => new Element(line)).ToList();
-            for (int i = 0; i < element.Count; i++)
-            {
-
-
-
-
-            }
-        }
 
         class Element
         {
-            // string key = "";
-            //long ID;
-
 
             public Element(List<string> lines)
             {
                 ///ParseSingle(lines.First());
                 ParseMulti(lines);
             }
-            private void ParseSingle(string line)
-            {
-                var sperator = ' ';
-                var input = line.Split(sperator);
-            }
-
-
-            private void ParseMulti(List<string> lines)
+ 
+            private static void ParseMulti(List<string> lines)
             {
                 SL.Line();
                 for (int i = 0; i < lines.Count; i++)

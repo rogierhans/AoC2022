@@ -9,7 +9,7 @@ using System.Diagnostics;
 class Program
 {
     [STAThreadAttribute]
-    static void Main(string[] args)
+    static void Main()
     {
         //var line = File.ReadAllText(@"C:\Users\Rogier\Desktop\JSON.txt");
         //var xD = line.Pattern("{\"event\":\"2021\",\"owner_id\":\"189709\",\"members\":{{0}}" + "}{\"event\":\"2021\"{1}", x =>x ,x=>x);
@@ -23,10 +23,11 @@ class Program
         while (true)
         {
 
-
+          //  new Day15();
             var sw = new Stopwatch();
             sw.Start();
-            new Day21();
+            var test = new Day23();
+           // var test  =new Day15Gurobi();
             Console.WriteLine(sw.Elapsed.TotalMilliseconds);
             Console.ReadLine();
         }

@@ -43,7 +43,7 @@ static class Printer
             lines.Add(line);
         }
         File.WriteAllLines(@"C:\Users\Rogier\Desktop\Print.txt", lines);
-        Process myProcess = new Process();
-        Process.Start("notepad++.exe", @"C:\Users\Rogier\Desktop\Print.txt");
+        //  Process myProcess = new Process();
+        //ProcessStartInfo info= new ProcessStartInfo("notepad++.exe", @"C:\Users\Rogier\Desktop\Print.txt");
     }
 }

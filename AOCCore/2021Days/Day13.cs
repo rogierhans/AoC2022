@@ -11,7 +11,6 @@ namespace AOC2
 
         public Day13()
         {
-            SL.printParse = false;
             GetInput(RootFolder + @"2021_13\");
         }
         public const string BLOCK = "\U00002588";

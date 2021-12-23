@@ -13,7 +13,7 @@ namespace AOC2
 
         public Day9()
         {
-            SL.printParse = false;
+
 
             string folder = @"C:\Users\Rogier\Desktop\AOC\";
             string name = "input.txt";
@@ -30,7 +30,7 @@ namespace AOC2
 
         public override void Main(List<string> Lines)
         {
-            List<int> sizeBasins = new List<int>();
+            List<int> sizeBasins = new();
             var grid = Lines.Select(x => x.List().Select(y => int.Parse(y)).ToList()).ToList();
             for (int i = 0; i < grid.Count; i++)
             {
@@ -61,11 +61,11 @@ namespace AOC2
         }
 
         
-        private int BasinSize(int startx, int stary, List<List<int>> grid)
+        private static int BasinSize(int startx, int stary, List<List<int>> grid)
         {
             int count = 0;
 
-            Queue<(int, int)> q = new Queue<(int, int)>();
+            Queue<(int, int)> q = new();
             var visited = grid.GridSelect(x => false);
             q.Enqueue((startx, stary));
             while (q.Count > 0)

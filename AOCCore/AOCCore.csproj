@@ -7,4 +7,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OptimizedPriorityQueue" Version="5.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Gurobi80.NET">
+      <HintPath>..\..\..\..\..\..\gurobi801\win64\bin\Gurobi80.NET.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

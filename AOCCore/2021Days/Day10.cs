@@ -13,7 +13,6 @@ namespace AOC2
 
         public Day10()
         {
-            SL.printParse = false;
             string folder = @"C:\Users\Rogier\Desktop\AOC\";
             string name = "input.txt";
             string filename = folder + name;
@@ -27,17 +26,17 @@ namespace AOC2
         }
 
 
-        private void IndexForLoop(List<string> Lines)
+        private static void IndexForLoop(List<string> Lines)
         {
-            List<long> scores = new List<long>();
+            List<long> scores = new();
             var score = new Dictionary<string, long> { ["("] = 1, ["["] = 2, ["{"] = 3, ["<"] = 4 };
-            List<long> numbers = new List<long>();
+            List<long> numbers = new();
             var validCombinations = new List<(string, string)> { ("(", ")"), ("{", "}"), ("[", "]"), ("<", ">") };
 
             for (int t = 0; t < Lines.Count; t++)
             {
                 var input = Lines[t].List();
-                Stack<string> stack = new Stack<string>();
+                Stack<string> stack = new();
                 bool skip = false;
                 for (int i = 0; i < input.Count; i++)
                 {

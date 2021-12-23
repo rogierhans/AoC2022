@@ -11,7 +11,7 @@ namespace AOC2
 
         public Day14()
         {
-            SL.printParse = false;
+
             GetInput(RootFolder + @"2021_14\");
         }
         public const string BLOCK = "\U00002588";
@@ -33,7 +33,7 @@ namespace AOC2
             }
 
             long[] bucket = new long[rules.Count];
-            for (int i = 0; i < begin.Count() - 1; i++)
+            for (int i = 0; i < begin.Count - 1; i++)
             {
                 string key = begin[i] + begin[i + 1];
                 bucket[stringToIndex[key]]++;

@@ -12,13 +12,12 @@ class Day20 : Day
 
     public Day20()
     {
-        SL.printParse = false;
         GetInput(RootFolder + @"2021_20\");
     }
     public const string BLOCK = "\U00002588";
 
-    int height = 250;
-    int width = 250;
+    private readonly int height = 250;
+    private readonly int width = 250;
     public override void Main(List<string> Lines)
     {
         //Main2(Lines);
@@ -52,50 +51,44 @@ class Day20 : Day
 
     private void SetRow(List<int> map, int[,] array, int[,] newArrray, int i)
     {
-        int number = 0;
         for (int j = 0; j < width; j++)
         {
-            number = 0;
+            int number = 0;
             byte k = 8;
-            // for (int x = -1; x <= 1; x++)
-            {
-                //  for (int y = -1; y <= 1; y++)
-                {
-                    var a = array[Math.Max(0, Math.Min(i + -1, height - 1)), Math.Max(0, Math.Min(width - 1, -1 + j))];
-                    var b = array[Math.Max(0, Math.Min(i + -1, height - 1)), Math.Max(0, Math.Min(width - 1, j))];
-                    var c = array[Math.Max(0, Math.Min(i + -1, height - 1)), Math.Max(0, Math.Min(width - 1, 1 + j))];
-                    var d = array[Math.Max(0, Math.Min(i, height - 1)), Math.Max(0, Math.Min(width - 1, -1 + j))];
-                    var e = array[Math.Max(0, Math.Min(i, height - 1)), Math.Max(0, Math.Min(width - 1, j))];
-                    var f = array[Math.Max(0, Math.Min(i, height - 1)), Math.Max(0, Math.Min(width - 1, 1 + j))];
-                    var g = array[Math.Max(0, Math.Min(i + 1, height - 1)), Math.Max(0, Math.Min(width - 1, -1 + j))];
-                    var h = array[Math.Max(0, Math.Min(i + 1, height - 1)), Math.Max(0, Math.Min(width - 1, j))];
-                    var z = array[Math.Max(0, Math.Min(i + 1, height - 1)), Math.Max(0, Math.Min(width - 1, 1 + j))];
+
+            var a = array[Math.Max(0, Math.Min(i + -1, height - 1)), Math.Max(0, Math.Min(width - 1, -1 + j))];
+            var b = array[Math.Max(0, Math.Min(i + -1, height - 1)), Math.Max(0, Math.Min(width - 1, j))];
+            var c = array[Math.Max(0, Math.Min(i + -1, height - 1)), Math.Max(0, Math.Min(width - 1, 1 + j))];
+            var d = array[Math.Max(0, Math.Min(i, height - 1)), Math.Max(0, Math.Min(width - 1, -1 + j))];
+            var e = array[Math.Max(0, Math.Min(i, height - 1)), Math.Max(0, Math.Min(width - 1, j))];
+            var f = array[Math.Max(0, Math.Min(i, height - 1)), Math.Max(0, Math.Min(width - 1, 1 + j))];
+            var g = array[Math.Max(0, Math.Min(i + 1, height - 1)), Math.Max(0, Math.Min(width - 1, -1 + j))];
+            var h = array[Math.Max(0, Math.Min(i + 1, height - 1)), Math.Max(0, Math.Min(width - 1, j))];
+            var z = array[Math.Max(0, Math.Min(i + 1, height - 1)), Math.Max(0, Math.Min(width - 1, 1 + j))];
 
 
-                    number |= a << k--;
-                    number |= b << k--;
-                    number |= c << k--;
+            number |= a << k--;
+            number |= b << k--;
+            number |= c << k--;
 
-                    number |= d << k--;
-                    number |= e << k--;
-                    number |= f << k--;
+            number |= d << k--;
+            number |= e << k--;
+            number |= f << k--;
 
-                    number |= g << k--;
-                    number |= h << k--;
-                    number |= z << k--;
-                    //Console.WriteLine(number);
-                    //Console.ReadLine();
-                    // newArrray[i, j] = map[number];
-                    //   number |= array[Math.Max(0, Math.Min(i + x, height - 1)), Math.Max(0, Math.Min(y + j, width - 1))] << k;
-                    //number |= array[55, 33] << k;
-                    k--;
-                }
-            }
+            number |= g << k--;
+            number |= h << k--;
+            number |= z << k--;
+            //Console.WriteLine(number);
+            //Console.ReadLine();
+            // newArrray[i, j] = map[number];
+            //   number |= array[Math.Max(0, Math.Min(i + x, height - 1)), Math.Max(0, Math.Min(y + j, width - 1))] << k;
+            //number |= array[55, 33] << k;
+
             newArrray[i, j] = map[number];
         }
     }
 
-    public void Main2(List<string> Lines)
+    public static void Main2(List<string> Lines)
     {
         //Lines.Print("\n");
         var split = Lines.ClusterLines();
@@ -145,9 +138,9 @@ class Day20 : Day
         Console.WriteLine(outputGrid.GetElements().Where(x => x.Item1 == 1).Count());
     }
 
-    private int GetNext(List<int> map, int i, int j, int[,] array, int xOffset, int yOffset)
+    private static int GetNext(List<int> map, int i, int j, int[,] array, int xOffset, int yOffset)
     {
-        List<int> bitString = new List<int>();
+
         int number = 0;
         byte k = 8;
 
@@ -179,7 +172,7 @@ class Day20 : Day
     }
 
 
-    private void PrintGrid(DictList2D<int> grid)
+    private static void PrintGrid(DictList2D<int> grid)
     {
         var elements = grid.GetElements();
         var minX = elements.Min(x => x.Item2) - 10;
@@ -204,7 +197,7 @@ class Day20 : Day
 
     class DictList2D<T>
     {
-        Dictionary<int, Dictionary<int, T>> dict = new Dictionary<int, Dictionary<int, T>>();
+        private readonly Dictionary<int, Dictionary<int, T>>  dict = new Dictionary<int, Dictionary<int, T>>();
         private readonly T DefaultValue;
 
         public DictList2D(T defaultValue)

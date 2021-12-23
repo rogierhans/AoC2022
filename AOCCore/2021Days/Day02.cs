@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace AOC2
-{
+
     class Day2 : Day
     {
 
@@ -30,7 +29,7 @@ namespace AOC2
 
 
 
-        private void ComputeLines(List<string> Lines)
+        private static void ComputeLines(List<string> Lines)
         {
             long aim = 0;
             long dept = 0;
@@ -57,41 +56,12 @@ namespace AOC2
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     class Row
     {
         //  public List<int> Numbers = new List<int>();
-        public List<double> Numbers = new List<double>();
+        public List<double> Numbers = new();
         public Row(string line)
         {
             Numbers = line.Split(' ').Select(x => double.Parse(x)).ToList();
         }
     }
-}

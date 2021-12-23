@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 class Mem<Argument, Result> where Argument : notnull
 {
 
-    private Dictionary<Argument, Dictionary<Argument, Result>> memory2 = new Dictionary<Argument, Dictionary<Argument, Result>>();
-    private Dictionary<Argument, Dictionary<Argument, Dictionary<Argument, Result>>> memory3 = new Dictionary<Argument, Dictionary<Argument, Dictionary<Argument, Result>>>();
+    private readonly Dictionary<Argument, Dictionary<Argument, Result>> memory2 = new Dictionary<Argument, Dictionary<Argument, Result>>();
+    private readonly Dictionary<Argument, Dictionary<Argument, Dictionary<Argument, Result>>> memory3 = new Dictionary<Argument, Dictionary<Argument, Dictionary<Argument, Result>>>();
 
 
-    private Dictionary<Argument, Result> memory1 = new Dictionary<Argument, Result>();
+    private readonly Dictionary<Argument, Result> memory1 = new Dictionary<Argument, Result>();
     public Result F(Func<Argument, Result> func, Argument first)
     {
         if (!memory1.ContainsKey(first))

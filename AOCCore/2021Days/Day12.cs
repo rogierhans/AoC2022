@@ -9,23 +9,22 @@ class Day12DFS : Day
 
     public Day12DFS()
     {
-        SL.printParse = false;
         GetInput(RootFolder + @"2021_12\");
     }
     int startIndex;
     int endIndex;
-    Dictionary<long, int> Memory = new Dictionary<long, int>();
-    List<string> Caves = new List<string>();
-    List<string> SmallCaves = new List<string>();
-    List<string> BigCaves = new List<string>();
-    Dictionary<string, List<string>> Edges = new Dictionary<string, List<string>>();
+    Dictionary<long, int> Memory = new();
+    List<string> Caves = new();
+    List<string> SmallCaves = new();
+    List<string> BigCaves = new();
+    Dictionary<string, List<string>> Edges = new();
     public override void Main(List<string> Lines)
     {
         GetCaves(Lines);
         startIndex = SmallCaves.IndexOf("start");
         endIndex = SmallCaves.IndexOf("end");
         Memory = new Dictionary<long, int>();
-        List<List<int>> NumberOfPaths = new List<List<int>>();
+        List<List<int>> NumberOfPaths = new();
         for (int i = 0; i < SmallCaves.Count; i++)
         {
             var list = new List<int>();
@@ -39,10 +38,9 @@ class Day12DFS : Day
         Console.WriteLine("Answer:" + DFSWithMem(NumberOfPaths, new int[Caves.Count], startIndex, false));
     }
 
-    int counter = 0;
 
 
-    public long Convert(int[] Visited, int caveFrom, bool twice)
+    public static long Convert(int[] Visited, int caveFrom, bool twice)
     {
         long acc = caveFrom;
         int i = 0;
@@ -56,7 +54,6 @@ class Day12DFS : Day
 
     private int DFS(List<List<int>> NumberOfPaths, int[] Visited, int caveFrom, bool twice)
     {
-        counter++;
         int count = 0;
         for (int caveTo = 0; caveTo < NumberOfPaths.Count; caveTo++)
         {
@@ -85,7 +82,6 @@ class Day12DFS : Day
 
         long key = Convert(Visited, caveFrom, twice);
         if (Memory.ContainsKey(key)) return Memory[key];
-        counter++;
         int count = 0;
         for (int caveTo = 0; caveTo < NumberOfPaths.Count; caveTo++)
         {
@@ -112,9 +108,9 @@ class Day12DFS : Day
 
     private void GetCaves(List<string> Lines)
     {
-        HashSet<string> CavesSet = new HashSet<string>();
-        HashSet<string> SmallCavesSet = new HashSet<string>();
-        HashSet<string> BigCavesSet = new HashSet<string>();
+        HashSet<string> CavesSet = new();
+        HashSet<string> SmallCavesSet = new();
+        HashSet<string> BigCavesSet = new();
         Edges = new Dictionary<string, List<string>>();
         foreach (var trans in Lines.Select(x => x.Split('-')))
         {
@@ -148,13 +144,13 @@ class Day12DFS : Day
     private int CountPaths(string start, string end)
     {
 
-        Queue<string> q = new Queue<string>();
-        HashSet<string> visted = new HashSet<string>();
+        Queue<string> q = new();
+        HashSet<string> visted = new();
         q.Enqueue(start);
         int count = 0;
         while (q.Count > 0)
         {
-            counter++;
+
             var current = q.Dequeue();
             foreach (var next in Caves.Where(next => Edges.ContainsKey(current) && Edges[current].Contains(next) && !visted.Contains(next)))
             {

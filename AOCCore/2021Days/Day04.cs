@@ -13,7 +13,6 @@ namespace AOC2
 
         public Day4()
         {
-            SL.printParse = false;
 
             string folder = @"C:\Users\Rogier\Desktop\AOC\";
             string name = "input.txt";
@@ -22,70 +21,12 @@ namespace AOC2
             var testLines = File.ReadAllLines(filenameTest).ToList();
             var inputLines = File.ReadAllLines(filename).ToList();
             Console.WriteLine("test:");
-            ModeSelector(testLines);
+            ParseLines(testLines);
             Console.WriteLine("input:");
-            ModeSelector(inputLines);
+            ParseLines(inputLines);
         }
 
-
-        private void ModeSelector(List<string> Lines)
-        {
-            // IndexForLoop(Lines);
-            ParseLines(Lines);
-        }
-
-
-        private void IndexForLoop(List<string> Lines)
-        {
-
-            for (int i = 0; i < Lines.Count; i++)
-            {
-                var line = Lines[i];
-                var input = line.Split(' ');
-                //var key = input[0];
-                //var value = input[1];
-
-
-            }
-
-        }
-
-        private List<bool> GetBits(List<List<bool>> allBits, bool mode)
-        {
-            List<bool> first;
-            for (int j = 0; j < allBits[0].Count; j++)
-            {
-                int countOne = 0;
-                for (int i = 0; i < allBits.Count; i++)
-                {
-                    if (allBits[i][j])
-                    {
-                        countOne++;
-                    }
-                }
-                var mostCommon = countOne >= (double)allBits.Count / 2;
-                allBits = allBits.Where(bit => bit[j] == mode).ToList();
-                if (allBits.Count == 1) break;
-            }
-            first = allBits.First();
-            return first;
-        }
-
-        private long GetNumber(List<bool> list)
-        {
-            long number = 0;
-            for (int i = 0; i < list.Count; i++)
-            {
-                number += list[list.Count - i - 1] ? 1 << i : 0;
-            }
-            return number;
-        }
-
-
-
-
-
-        private void ParseLines(List<string> lines)
+        private static void ParseLines(List<string> lines)
         {
             var clusterLine = lines.ClusterLines();
             var parsed = clusterLine;
@@ -114,21 +55,13 @@ namespace AOC2
 
         class Element
         {
-            // string key = "";
-            //long ID;
-
-            public List<List<long>> numbers = new List<List<long>>();
-            public List<List<long>> numbers2 = new List<List<long>>();
+            public List<List<long>> numbers = new();
+            public List<List<long>> numbers2 = new();
             public Element(List<string> lines)
             {
-                ///ParseSingle(lines.First());
                 ParseMulti(lines);
             }
-            private void ParseSingle(string line)
-            {
-                var sperator = ' ';
-                var input = line.Split(sperator);
-            }
+   
 
             public bool Bingo(List<long> done)
             {

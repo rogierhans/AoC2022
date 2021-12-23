@@ -57,7 +57,6 @@ public static class SL
     public static List<R> Product<T1, T2, R>(this IEnumerable<T1> list1, IEnumerable<T2> list2, Func<T1, T2, R> f)
     {
         List<R> newList = new List<R>();
-        int length = Math.Min(list1.Count(), list2.Count());
         foreach (var element1 in list1)
         {
             foreach (var element2 in list2)
@@ -69,7 +68,6 @@ public static class SL
     }
 
 
-    public static bool printParse = true;
 
 
     public static int Mod(int number, int max)
@@ -85,16 +83,16 @@ public static class SL
 
     public static void Line()
     {
-        if (printParse) Console.WriteLine("#############################################");
+        Console.WriteLine("#############################################");
     }
 
     public static void Log(string txt)
     {
-        if (printParse) Console.WriteLine(txt);
+        Console.WriteLine(txt);
     }
     public static void Log(object o)
     {
-        if (printParse) Console.WriteLine(o);
+        Console.WriteLine(o);
     }
     public static List<List<T>> Transpose<T>(this List<List<T>> oldList)
     {

@@ -10,7 +10,6 @@ namespace AOC2
 
         public Day17()
         {
-            SL.printParse = false;
             GetInput(RootFolder + @"2021_17\");
         }
         public const string BLOCK = "\U00002588";
@@ -44,7 +43,7 @@ namespace AOC2
                 posY += veloY;
                 maxYPos = Math.Max(maxYPos, posY);
                 veloX = Math.Max(0, veloX - 1);
-                veloY = veloY - 1;
+                veloY--;
                 histpoints.Add((posX, posY));
                 hist.Add((veloX, veloY));
                 if (numbers.Item1 <= posX && posX <= numbers.Item2 && numbers.Item3 <= posY && posY <= numbers.Item4)
