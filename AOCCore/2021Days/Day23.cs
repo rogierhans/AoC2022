@@ -37,8 +37,8 @@ class Day23 : Day
             //  Console.Write(state.Costs + "\t");
             if (state.IsDone())
             {
-                state.PrintHeritage();
-                Console.ReadLine();
+                state.Print();
+               // Console.ReadLine();
                 return;
 
             }
@@ -65,7 +65,6 @@ class Day23 : Day
                     }
                 }
             }
-            //Console.WriteLine(currentKey)
             done.Add(currentKey);
             //state.Print();
             //Console.ReadLine();
@@ -96,17 +95,6 @@ class Day23 : Day
         {
             return Grid.Skip(1).Take(5).Select(x => string.Join("", x)).ToList().Flat();
         }
-
-        //public int MinimalDistance()
-        //{
-        //    for (int i = 0; i < height; i++)
-        //    {
-        //        for (int j = 0; j < width; j++)
-        //        {
-
-        //        }
-        //    }
-        //}
 
         public State(List<string> lines)
         {
@@ -351,48 +339,29 @@ class Day23 : Day
 
             Queue<((int, int), int)> q = new();
             var visited = grid.GridSelect(x => false);
+            var lengths = grid.GridSelect(x => 0);
             q.Enqueue((start, 0));
-            if (start.Item2 < end.Item2)
-                while (q.Count > 0)
+            while (q.Count > 0)
+            {
+                var ((i, j), length) = q.Dequeue();
+                foreach (var offset in new List<(int, int)>() { (-1, 0), (1, 0), (0, -1), (0, 1) })
                 {
-                    var ((i, j), length) = q.Dequeue();
-                    foreach (var offset in new List<(int, int)>() { (-1, 0), (1, 0), (0, 1) })
+                    int x = i + offset.Item1;
+                    int y = j + offset.Item2;
+                    bool outOfRow = x < 0 || x >= grid.Count;
+                    bool outOfColumn = y < 0 || y >= grid[0].Count;
+                    if (!outOfColumn && !outOfRow && !visited[x][y] && grid[x][y] == ".")
                     {
-                        int x = i + offset.Item1;
-                        int y = j + offset.Item2;
-                        bool outOfRow = x < 0 || x >= grid.Count;
-                        bool outOfColumn = y < 0 || y >= grid[0].Count;
-                        if (!outOfColumn && !outOfRow && !visited[x][y] && grid[x][y] == ".")
-                        {
-                            q.Enqueue(((x, y), length + 1));
-                            visited[x][y] = true;
+                        q.Enqueue(((x, y), length + 1));
+                        visited[x][y] = true;
+                        lengths[x][y] = length + 1;
 
-                            if (x == end.Item1 && y == end.Item2)
-                                return (true, length + 1);
-                        }
+                        if (x == end.Item1 && y == end.Item2)
+                            return (true, length + 1);
                     }
                 }
-            else
-                while (q.Count > 0)
-                {
-                    var ((i, j), length) = q.Dequeue();
-                    foreach (var offset in new List<(int, int)>() { (-1, 0), (1, 0), (0, -1) })
-                    {
-                        int x = i + offset.Item1;
-                        int y = j + offset.Item2;
-                        bool outOfRow = x < 0 || x >= grid.Count;
-                        bool outOfColumn = y < 0 || y >= grid[0].Count;
-                        if (!outOfColumn && !outOfRow && !visited[x][y] && grid[x][y] == ".")
-                        {
-                            q.Enqueue(((x, y), length + 1));
-                            visited[x][y] = true;
-
-                            if (x == end.Item1 && y == end.Item2)
-                                return (true, length + 1);
-                        }
-                    }
-                }
-            return (visited[end.Item1][end.Item2], int.MaxValue);
+            }
+            return (visited[end.Item1][end.Item2], lengths[end.Item1][end.Item2]);
         }
 
         private void FindLetterInColumn(List<(string, int, int)> lists, int j)
