@@ -37,9 +37,10 @@ class Day23 : Day
             //  Console.Write(state.Costs + "\t");
             if (state.IsDone())
             {
-                state.Print();
-               // Console.ReadLine();
-                return;
+                state.PrintHeritage();
+                Console.ReadLine();
+                Console.Clear();
+                // return;
 
             }
             foreach (var next in state.GetNextStates())
@@ -107,10 +108,10 @@ class Day23 : Day
 
 
             // GetNextStates().ForEach(x => x.Print());
-            //  PathTest();
+             //PathTest();
 
         }
-        public State Parent;
+        public State? Parent;
         public State(State oldState)
         {
             Parent = oldState;
@@ -164,6 +165,8 @@ class Day23 : Day
                 Parent.PrintHeritage();
             }
             Print();
+            Console.ReadLine();
+            Console.Clear();
         }
 
         public List<State> GetNextStates()
@@ -171,29 +174,7 @@ class Day23 : Day
             List<State> newStates = new List<State>();
             FromStack2HW(newStates);
             FromHW2Stack(newStates);
-            foreach (var (letter, i, j) in FindStackLetters())
-            {
-                int targetColum = Letter2Index(letter);
-                var ((x, y), validSpot) = FindStackSpot(letter);
-                //  Console.WriteLine( letter +" " + j + " "+ y);
-                if (validSpot && j != y)
-                {
-
-                    var (validPath, length) = IsPath((i, j), (x, y), Grid);
-                    // Console.WriteLine(validPath + " " + letter);
-                    if (validPath)
-                    {
-                        var newState = new State(this);
-                        SetCosts(letter, length, newState);
-                        newState.Grid[x][y] = letter;
-                        newState.Grid[i][j] = ".";
-                        //Console.WriteLine("#######################");
-                        //Print();
-                        //newState.Print();
-                        newStates.Add(newState);
-                    }
-                }
-            }
+            FromStack2Stack(newStates);
 
 
             //newStates.ForEach(
@@ -203,6 +184,23 @@ class Day23 : Day
 
             //    });
             return newStates;
+        }
+
+        private void FromStack2Stack(List<State> newStates)
+        {
+            foreach (var (letter, i, j) in FindStackLetters())
+            {
+                var ((x, y), validSpot) = FindStackSpot(letter);
+                if (!validSpot || j == y) return;
+                var (validPath, length, path) = IsPath((i, j), (x, y), Grid);
+                if (!validPath) return;
+                var newState = new State(this);
+                SetCosts(letter, length, newState);
+                newState.Grid[x][y] = letter;
+                newState.Grid[i][j] = ".";
+                newState.Path = path;
+                newStates.Add(newState);
+            }
         }
 
         private static void SetCosts(string letter, int length, State newState)
@@ -242,7 +240,7 @@ class Day23 : Day
                 //  Console.WriteLine(validSpot+" "+ letter);
                 if (validSpot)
                 {
-                    var (validPath, length) = IsPath((i, j), (x, y), Grid);
+                    var (validPath, length, path) = IsPath((i, j), (x, y), Grid);
                     // Console.WriteLine(validPath + " " + letter);
                     if (validPath)
                     {
@@ -251,10 +249,13 @@ class Day23 : Day
                         newState.Grid[x][y] = letter;
                         newState.Grid[i][j] = ".";
                         newStates.Add(newState);
+                        newState.Path = path;
                     }
                 }
             }
         }
+
+        List<(int, int, string)> Path = new List<(int, int, string)>();
 
         public int Letter2Index(string letter)
         {
@@ -290,13 +291,14 @@ class Day23 : Day
             {
                 foreach (var (i, j) in CoordsHallway)
                 {
-                    var (valid, length) = IsPath((x, y), (i, j), Grid);
+                    var (valid, length, path) = IsPath((x, y), (i, j), Grid);
                     if (Grid[i][j] == "." && valid)
                     {
                         var newState = new State(this);
                         SetCosts(letter, length, newState);
                         newState.Grid[i][j] = letter;
                         newState.Grid[x][y] = ".";
+                        newState.Path = path;
                         newStates.Add(newState);
                     }
                 }
@@ -305,19 +307,19 @@ class Day23 : Day
 
         private void PathTest()
         {
-            Print();
-            Grid[1][5] = "G";
             foreach (var (letter, x, y) in FindStackLetters())
             {
 
                 var copy = Grid.DeepCopy();
+                //copy[1][8] = "G";
                 foreach (var (i, j) in CoordsHallway)
                 {
-                    var (valid, length) = IsPath((x, y), (i, j), Grid);
-                    copy[i][j] = valid ? length.ToString() : "N";
+                    var (valid, length, path) = IsPath((x, y), (i, j), copy);
+                    copy[i][j] =  length.ToString() ;
 
                 }
-                copy.Print();
+               // copy[1][8] = "B";
+                copy.GridSelect(x => x=="#"? BLOCK: x).Print();
                 Console.ReadLine();
             }
             FindStackLetters().Print("");
@@ -334,17 +336,18 @@ class Day23 : Day
             return lists;
         }
 
-        private (bool, int) IsPath((int, int) start, (int, int) end, List<List<string>> grid)
+        private (bool, int, List<(int, int, string)>) IsPath((int, int) start, (int, int) end, List<List<string>> grid)
         {
 
-            Queue<((int, int), int)> q = new();
+            Queue<((int, int), int, List<(int, int, string)>)> q = new();
             var visited = grid.GridSelect(x => false);
             var lengths = grid.GridSelect(x => 0);
-            q.Enqueue((start, 0));
+            q.Enqueue((start, 0, new List<(int, int, string)>() { (start.Item1, start.Item2, grid[start.Item1][start.Item2]) }));
+
             while (q.Count > 0)
             {
-                var ((i, j), length) = q.Dequeue();
-                foreach (var offset in new List<(int, int)>() { (-1, 0), (1, 0), (0, -1), (0, 1) })
+                var ((i, j), length, pad) = q.Dequeue();
+                foreach (var (offset, dir) in new List<((int, int), string)>() { ((-1, 0), "^"), ((1, 0), "V"), ((0, -1), "<"), ((0, 1), ">") })
                 {
                     int x = i + offset.Item1;
                     int y = j + offset.Item2;
@@ -352,16 +355,18 @@ class Day23 : Day
                     bool outOfColumn = y < 0 || y >= grid[0].Count;
                     if (!outOfColumn && !outOfRow && !visited[x][y] && grid[x][y] == ".")
                     {
-                        q.Enqueue(((x, y), length + 1));
+                        var newPad = new List<(int, int, string)>(pad);
+                        newPad.Add((x, y, dir));
+                        q.Enqueue(((x, y), length + 1, newPad));
                         visited[x][y] = true;
                         lengths[x][y] = length + 1;
 
                         if (x == end.Item1 && y == end.Item2)
-                            return (true, length + 1);
+                            return (true, length + 1, newPad);
                     }
                 }
             }
-            return (visited[end.Item1][end.Item2], lengths[end.Item1][end.Item2]);
+            return (false, lengths[end.Item1][end.Item2], new List<(int, int, string)>());
         }
 
         private void FindLetterInColumn(List<(string, int, int)> lists, int j)
@@ -384,7 +389,57 @@ class Day23 : Day
         public void Print()
         {
             Console.WriteLine("{0}  A{1} B{2} C{3} D{4}", Costs, ACost, BCost, CCost, DCost);
-            Grid.Print();
+            var copy = Grid;
+
+            for (int i = 0; i < Path.Count - 1; i++)
+            {
+                var (_, _, dir2) = Path[i + 1];
+                var (x, y, dir) = Path[i];
+
+
+                if (dir == ">" && dir2 == "V")
+                {
+                    copy[x][y] = "╗";
+                }
+                else if (dir == "<" && dir2 == "V")
+                {
+                    copy[x][y] = "╔";
+                }
+                else if (dir == "^" && dir2 == "<")
+                {
+                    copy[x][y] = "╗";
+                }
+                else if (dir == "^" && dir2 == ">")
+                {
+                    copy[x][y] = "╔";
+                }
+                else if (dir == ">" && dir2 == ">")
+                {
+                    copy[x][y] = "═";
+                }
+                else if (dir == "^" && dir2 == "^")
+                {
+                    copy[x][y] = "║";
+                }
+                else if (dir == "V" && dir2 == "V")
+                {
+                    copy[x][y] = "║";
+                }
+                else if (dir == "<" && dir2 == "<")
+                {
+                    copy[x][y] = "═";
+                }
+                else
+                {
+                    copy[x][y] = dir;
+                }
+            }
+            if (Path.Count > 1)
+            {
+                var (x, y, dir) = Path.First();
+                copy[x][y] = copy[x][y].ToLower();
+            }
+            copy.GridSelect(x => x == "#" ? BLOCK : x).GridSelect(x => x == "." ? " " : x).Print();
 
         }
     }

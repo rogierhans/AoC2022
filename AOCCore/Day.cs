@@ -20,7 +20,7 @@ class Day
         var sw = new Stopwatch();
         sw.Start();
         Console.WriteLine("---###Test###---");
-        Main(testLines);
+       // Main(testLines);
         Console.WriteLine(sw.Elapsed.TotalMilliseconds);
         Console.WriteLine("---###Input###---");
         Main(inputLines);
