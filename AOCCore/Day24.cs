@@ -12,7 +12,7 @@ class Day24 : Day
 
     public override void Main(List<string> Lines)
     {
- 
+
 
         var setOfLines = new List<List<string>>();
         for (int i = 0; i < 14; i++)
@@ -29,11 +29,9 @@ class Day24 : Day
 
             Functions.Add((z, w) => DummyFunction(z, cz, c1, c2, w));
         }
-
-        var current = LastMapping(Functions.Last(), 26);
-
-        current.ToList().Print("\n");
-        for (int m = 12; m >= 0; m--)
+        var current =new Dictionary<int, long>();
+        current[0] = 0;
+        for (int m = 13; m >= 0; m--)
         {
             current = GetMapping(Functions[m], current, 26 * 26 * 26 * 26 * 26);
             current.ToList().Print("\n");
@@ -45,11 +43,11 @@ class Day24 : Day
     {
         Dictionary<int, long> list = new();
 
-        List<(int, int)> ZinputToDigit = new List<(int, int)> () ;
+        List<(int, int)> ZinputToDigit = new List<(int, int)>();
         for (int zInput = 0; zInput <= maxZinput; zInput++)
         {
 
-            for (int digit = 9; digit >0; digit--)
+            for (int digit = 9; digit > 0; digit--)
             {
                 var value = f(zInput, digit);
                 if (fromLast.ContainsKey(value))
@@ -65,7 +63,7 @@ class Day24 : Day
 
     public Dictionary<int, long> LastMapping(Func<int, int, int> f, int maxZinput)
     {
-       Dictionary<int, long> dict = new();
+        Dictionary<int, long> dict = new();
         for (int zInput = 0; zInput <= maxZinput; zInput++)
         {
             for (int digit = 1; digit <= 9; digit++)
@@ -73,7 +71,6 @@ class Day24 : Day
                 var value = f(zInput, digit);
                 if (value == 0)
                 {
-                    //Console.WriteLine(zInput + " " + digit);
                     dict[zInput] = digit;
                 }
             }
