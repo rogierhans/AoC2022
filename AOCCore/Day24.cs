@@ -36,6 +36,8 @@ class Day24 : Day
             current = GetMapping(Functions[m], current, 26 * 26 * 26 * 26 * 26);
             current.ToList().Print("\n");
         }
+        Console.WriteLine(current[0] / 10);
+        Console.ReadLine();
     }
 
 
