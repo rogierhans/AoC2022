@@ -34,7 +34,8 @@ class Day24 : Day
         for (int m = 13; m >= 0; m--)
         {
             current = GetMapping(Functions[m], current, 26 * 26 * 26 * 26 * 26);
-            current.ToList().Print("\n");
+            Console.WriteLine("Block "+m +" possible z values "+current.Count);
+         //   current.ToList().Print("\n");
         }
         Console.WriteLine(current[0] / 10);
         Console.ReadLine();
