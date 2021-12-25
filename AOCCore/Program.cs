@@ -26,8 +26,8 @@ class Program
           //  new Day15();
             var sw = new Stopwatch();
             sw.Start();
-            var test = new Day24();
-           // var test  =new Day15Gurobi();
+            //var test = new Day15();
+            var test  =new Day15Gurobi();
             Console.WriteLine(sw.Elapsed.TotalMilliseconds);
             Console.ReadLine();
         }
