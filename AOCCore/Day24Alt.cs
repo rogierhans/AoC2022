@@ -70,7 +70,7 @@ class Day24Alt : Day
         }
         else if (operatorString == "eql")
         {
-            var ifStatementIsTrue = model.NewBoolVar("b");
+            var ifStatementIsTrue = model.NewBoolVar("helperVariable");
             model.Add(b == c).OnlyEnforceIf(ifStatementIsTrue);
             model.Add(a == 1).OnlyEnforceIf(ifStatementIsTrue);
             model.Add(b != c).OnlyEnforceIf(ifStatementIsTrue.Not());
