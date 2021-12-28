@@ -34,7 +34,7 @@ class Day24Alt : Day
         model.Add(VariableNameToVar["z43"] == 0);
         AddObjective(model);
 
-       // Console.WriteLine(model.Model.Objective);
+        // Console.WriteLine(model.Model.Objective);
         var solver = new CpSolver();
         var status = solver.Solve(model);
         if (status == CpSolverStatus.Optimal)
@@ -43,41 +43,45 @@ class Day24Alt : Day
                 if (key[..1] == "w")
                     Console.WriteLine("{0} {1}", key, solver.Value(value));
             }
-       // Console.ReadLine();
+        // Console.ReadLine();
     }
 
     private static List<(string, string, string, string)> GiveEachVariableNewNames(List<string> Lines)
     {
         var tuples = new List<(string, string, string, string)>();
-        int w = 0;
-        int x = 1;
-        int y = 1;
-        int z = 1;
+
+        var dictLetter = new Dictionary<string, int>();
+        dictLetter["w"] = 0;
+        dictLetter["x"] = 1;
+        dictLetter["y"] = 1;
+        dictLetter["z"] = 1;
+
+        var letters = new List<string>() { "w", "x", "y", "z" };
         foreach (var line in Lines)
         {
             if (line[..3] == "inp")
             {
-                w++;
+                dictLetter["w"]++;
             }
             else
             {
                 var (multi, var1, var2) = line.Pattern("{0} {1} {2}", x => x, x => x, x => x);
-                string newVar2 = var2;
-                string newVar1 = "error";
-                string assignment = "error";
-                if (var2 == "x") newVar2 = "x" + x;
-                if (var2 == "y") newVar2 = "y" + y;
-                if (var2 == "z") newVar2 = "z" + z;
-                if (var2 == "w") newVar2 = "w" + w;
-                if (var1 == "x") newVar1 = "x" + x++;
-                if (var1 == "y") newVar1 = "y" + y++;
-                if (var1 == "z") newVar1 = "z" + z++;
-                if (var1 == "w") newVar1 = "w" + w++;
-                if (var1 == "x") assignment = "x" + x;
-                if (var1 == "y") assignment = "y" + y;
-                if (var1 == "z") assignment = "z" + z;
-                if (var1 == "w") assignment = "w" + w;
-                tuples.Add((assignment, newVar1, multi, newVar2));
+                string a = "";
+                string b = var2;
+                string c = "";
+                foreach (var letter in letters)
+                {
+                    if (var2 == letter)
+                    {
+                        b = letter + dictLetter[letter];
+                    }
+                    if (var1 == letter)
+                    {
+                        c = letter + dictLetter[letter]++;
+                        a = letter + dictLetter[letter];
+                    }
+                }
+                tuples.Add((a, c, multi, b));
             }
         }
         return tuples;
