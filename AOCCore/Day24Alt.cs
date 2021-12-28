@@ -13,15 +13,48 @@ class Day24Alt : Day
     public override void Main(List<string> Lines)
     {
         CpModel model = new CpModel();
-        var newLines = new List<string>();
-        int w = 1;
+
+        List<(string, string, string, string)> newLines = GiveEachVariableNewNames(Lines);
+
+
+        // a = b oper c
+        foreach (var (a, b, oper, c) in newLines)
+        {
+            if (c[..1] == "x" || c[..1] == "y" || c[..1] == "z" || c[..1] == "w")
+            {
+                AddConstraint(model, a, b, c, oper);
+            }
+            else
+            {
+                AddConstraintConstant(model, a, b, int.Parse(c), oper);
+            }
+        }
+
+        //set last z to 0
+        model.Add(VariableNameToVar["z43"] == 0);
+        AddObjective(model);
+
+        Console.WriteLine(model.Model.Objective);
+        var solver = new CpSolver();
+        var status = solver.Solve(model);
+        if (status == CpSolverStatus.Optimal)
+            foreach (var (key, value) in VariableNameToVar)
+            {
+                if (key[..1] == "w")
+                    Console.WriteLine("{0} {1}", key, solver.Value(value));
+            }
+        Console.ReadLine();
+    }
+
+    private static List<(string, string, string, string)> GiveEachVariableNewNames(List<string> Lines)
+    {
+        var tuples = new List<(string, string, string, string)>();
+        int w = 0;
         int x = 1;
         int y = 1;
         int z = 1;
         foreach (var line in Lines)
         {
-
-
             if (line[..3] == "inp")
             {
                 w++;
@@ -36,52 +69,47 @@ class Day24Alt : Day
                 if (var2 == "y") newVar2 = "y" + y;
                 if (var2 == "z") newVar2 = "z" + z;
                 if (var2 == "w") newVar2 = "w" + w;
-
-
                 if (var1 == "x") newVar1 = "x" + x++;
                 if (var1 == "y") newVar1 = "y" + y++;
                 if (var1 == "z") newVar1 = "z" + z++;
                 if (var1 == "w") newVar1 = "w" + w++;
-
                 if (var1 == "x") assignment = "x" + x;
                 if (var1 == "y") assignment = "y" + y;
                 if (var1 == "z") assignment = "z" + z;
                 if (var1 == "w") assignment = "w" + w;
-
-                string newLine = assignment + " = " + newVar1 + " " + multi + " " + newVar2;
-                newLines.Add(newLine);
-
-                Console.WriteLine(newLine);
-
-                Console.WriteLine(line);
-
-                AddConstraint(model, assignment, newVar1, newVar2, multi);
+                tuples.Add((assignment, newVar1, multi, newVar2));
             }
-
-
         }
-        var solver = new CpSolver();
-        var status = solver.Solve(model);
-
-        Console.WriteLine(status);
-        if (status == CpSolverStatus.Optimal)
-            foreach (var (key, value) in dict) {
-            Console.WriteLine("{0} {1}", key, solver.Value(value));
-        }
-
-        //newLines.Print("\n");
-        Console.ReadLine();
+        return tuples;
     }
 
-    Dictionary<string, IntVar> dict = new Dictionary<string, IntVar>();
+    private void AddObjective(CpModel model)
+    {
+        model.Minimize(VariableNameToVar["w14"]);
+        for (int i = 1; i < 14; i++)
+        {
+            Console.WriteLine("{0} {1}", VariableNameToVar["w" + ((14 - i))], 1 << i);
+            model.AddTermToObjective(VariableNameToVar["w" + ((14 - i))], 1 << i);
+        }
+    }
+
+    Dictionary<string, IntVar> VariableNameToVar = new Dictionary<string, IntVar>();
     private IntVar AddVarToModel(CpModel model, string varName)
     {
-        if (!dict.ContainsKey(varName))
+        if (!VariableNameToVar.ContainsKey(varName))
         {
-            IntVar x = model.NewIntVar(-100000,1000000, varName);
-            dict[varName] = x;
+            if (varName[..1] == "w")
+            {
+                IntVar x = model.NewIntVar(1, 9, varName);
+                VariableNameToVar[varName] = x;
+            }
+            else
+            {
+                IntVar x = model.NewIntVar(-1000000, 10000000, varName);
+                VariableNameToVar[varName] = x;
+            }
         }
-        return dict[varName];
+        return VariableNameToVar[varName];
     }
 
     private void AddConstraint(CpModel model, string assigment, string var1, string var2, string operatorString)
@@ -92,7 +120,32 @@ class Day24Alt : Day
 
         if (operatorString == "add")
         {
-           model.Add(assigmentVar == Var1 + Var2);
+            model.Add(assigmentVar == Var1 + Var2);
+        }
+        else if (operatorString == "mul")
+        {
+            model.AddMultiplicationEquality(assigmentVar, new List<IntVar>() { Var1, Var2 });
+        }
+        else if (operatorString == "div")
+        {
+            model.AddDivisionEquality(assigmentVar, Var1, Var2);
+        }
+        else if (operatorString == "mod")
+        {
+            model.AddModuloEquality(assigmentVar, Var1, Var2);
+            model.Add(assigmentVar >= 0);
+        }
+        else if (operatorString == "eql")
+        {
+            var B = model.NewBoolVar("b");
+            model.Add(Var1 == Var2).OnlyEnforceIf(B);
+            model.Add(assigmentVar == 1).OnlyEnforceIf(B);
+            model.Add(Var1 != Var2).OnlyEnforceIf(B.Not());
+            model.Add(assigmentVar == 0).OnlyEnforceIf(B.Not());
+        }
+        else
+        {
+            throw new Exception();
         }
     }
     private void AddConstraintConstant(CpModel model, string assigment, string var1, int number, string operatorString)
@@ -104,52 +157,33 @@ class Day24Alt : Day
         {
             model.Add(assigmentVar == Var1 + number);
         }
-        if (operatorString == "mul")
+        else if (operatorString == "mul")
         {
             model.Add(assigmentVar == Var1 * number);
         }
-        if (operatorString == "div")
+        else if (operatorString == "div")
         {
-            model.Add(assigmentVar == Var1 / number);
+            model.AddDivisionEquality(assigmentVar, Var1, number);
+        }
+        else if (operatorString == "mod")
+        {
+            model.AddModuloEquality(assigmentVar, Var1, number);
+
+            model.Add(assigmentVar >= 0);
+        }
+        else if (operatorString == "eql")
+        {
+            var B = model.NewBoolVar("b");
+            model.Add(Var1 == number).OnlyEnforceIf(B);
+            model.Add(assigmentVar == 1).OnlyEnforceIf(B);
+            model.Add(Var1 != number).OnlyEnforceIf(B.Not());
+            model.Add(assigmentVar == 0).OnlyEnforceIf(B.Not());
+        }
+        else
+        {
+            throw new Exception();
         }
     }
-
-    private void Test()
-    {
-
-
-        // Creates the model.
-        CpModel model = new CpModel();
-        // Creates the variables.
-        int num_vals = 3;
-
-        IntVar x = model.NewIntVar(0, num_vals - 1, "x");
-        IntVar y = model.NewIntVar(0, num_vals - 1, "y");
-        IntVar z = model.NewIntVar(0, num_vals - 1, "z");
-
-        var lel = x + y;
-        model.AddModuloEquality(z, x, y);
-        // Adds a different constraint.
-        model.Add(x != y);
-
-        // Creates a solver and solves the model.
-        CpSolver solver = new CpSolver();
-
-        // Adds a time limit. Parameters are stored as strings in the solver.
-        solver.StringParameters = "max_time_in_seconds:10.0";
-
-        CpSolverStatus status = solver.Solve(model);
-
-        if (status == CpSolverStatus.Optimal)
-        {
-            Console.WriteLine("x = " + solver.Value(x));
-            Console.WriteLine("y = " + solver.Value(y));
-            Console.WriteLine("z = " + solver.Value(z));
-        }
-        Console.WriteLine(status);
-        Console.ReadLine();
-    }
-
 
 }
 
