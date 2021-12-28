@@ -70,11 +70,11 @@ class Day24Alt : Day
         }
         else if (operatorString == "eql")
         {
-            var B = model.NewBoolVar("b");
-            model.Add(b == c).OnlyEnforceIf(B);
-            model.Add(a == 1).OnlyEnforceIf(B);
-            model.Add(b != c).OnlyEnforceIf(B.Not());
-            model.Add(a == 0).OnlyEnforceIf(B.Not());
+            var ifStatementIsTrue = model.NewBoolVar("b");
+            model.Add(b == c).OnlyEnforceIf(ifStatementIsTrue);
+            model.Add(a == 1).OnlyEnforceIf(ifStatementIsTrue);
+            model.Add(b != c).OnlyEnforceIf(ifStatementIsTrue.Not());
+            model.Add(a == 0).OnlyEnforceIf(ifStatementIsTrue.Not());
         }
         else
         {
