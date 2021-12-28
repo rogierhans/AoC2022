@@ -20,13 +20,19 @@ class Day24Alt : Day
         // a = b oper c
         foreach (var (a, b, oper, c) in newLines)
         {
+            var assigmentVar = AddVarToModel(model, a);
+            var Var1 = AddVarToModel(model, b);
+
             if (c[..1] == "x" || c[..1] == "y" || c[..1] == "z" || c[..1] == "w")
             {
-                AddConstraint(model, a, b, c, oper);
+
+                var Var2 = AddVarToModel(model, c);
+                AddConstraint(model, assigmentVar, Var1, Var2, oper);
             }
             else
             {
-                AddConstraintConstant(model, a, b, int.Parse(c), oper);
+                var constant = new ConstantExpr(int.Parse(c));
+                AddConstraint(model, assigmentVar, Var1, constant, oper);
             }
         }
 
@@ -34,7 +40,6 @@ class Day24Alt : Day
         model.Add(VariableNameToVar["z43"] == 0);
         AddObjective(model);
 
-        // Console.WriteLine(model.Model.Objective);
         var solver = new CpSolver();
         var status = solver.Solve(model);
         if (status == CpSolverStatus.Optimal)
@@ -43,9 +48,39 @@ class Day24Alt : Day
                 if (key[..1] == "w")
                     Console.WriteLine("{0} {1}", key, solver.Value(value));
             }
-        // Console.ReadLine();
     }
-
+    private void AddConstraint(CpModel model, IntVar a, IntVar b, LinearExpr c, string operatorString)
+    {
+        if (operatorString == "add")
+        {
+            model.Add(a == b + c);
+        }
+        else if (operatorString == "mul")
+        {
+            model.AddMultiplicationEquality(a, new List<LinearExpr>() { b, c });
+        }
+        else if (operatorString == "div")
+        {
+            model.AddDivisionEquality(a, b, c);
+        }
+        else if (operatorString == "mod")
+        {
+            model.AddModuloEquality(a, b, c);
+            model.Add(a >= 0);
+        }
+        else if (operatorString == "eql")
+        {
+            var B = model.NewBoolVar("b");
+            model.Add(b == c).OnlyEnforceIf(B);
+            model.Add(a == 1).OnlyEnforceIf(B);
+            model.Add(b != c).OnlyEnforceIf(B.Not());
+            model.Add(a == 0).OnlyEnforceIf(B.Not());
+        }
+        else
+        {
+            throw new Exception();
+        }
+    }
     private static List<(string, string, string, string)> GiveEachVariableNewNames(List<string> Lines)
     {
         var tuples = new List<(string, string, string, string)>();
@@ -115,78 +150,6 @@ class Day24Alt : Day
         return VariableNameToVar[varName];
     }
 
-    private void AddConstraint(CpModel model, string assigment, string var1, string var2, string operatorString)
-    {
-        var assigmentVar = AddVarToModel(model, assigment);
-        var Var1 = AddVarToModel(model, var1);
-        var Var2 = AddVarToModel(model, var2);
-
-        if (operatorString == "add")
-        {
-            model.Add(assigmentVar == Var1 + Var2);
-        }
-        else if (operatorString == "mul")
-        {
-            model.AddMultiplicationEquality(assigmentVar, new List<IntVar>() { Var1, Var2 });
-        }
-        else if (operatorString == "div")
-        {
-            model.AddDivisionEquality(assigmentVar, Var1, Var2);
-        }
-        else if (operatorString == "mod")
-        {
-            model.AddModuloEquality(assigmentVar, Var1, Var2);
-            model.Add(assigmentVar >= 0);
-        }
-        else if (operatorString == "eql")
-        {
-            var B = model.NewBoolVar("b");
-            model.Add(Var1 == Var2).OnlyEnforceIf(B);
-            model.Add(assigmentVar == 1).OnlyEnforceIf(B);
-            model.Add(Var1 != Var2).OnlyEnforceIf(B.Not());
-            model.Add(assigmentVar == 0).OnlyEnforceIf(B.Not());
-        }
-        else
-        {
-            throw new Exception();
-        }
-    }
-    private void AddConstraintConstant(CpModel model, string assigment, string var1, int number, string operatorString)
-    {
-        var assigmentVar = AddVarToModel(model, assigment);
-        var Var1 = AddVarToModel(model, var1);
-
-        if (operatorString == "add")
-        {
-            model.Add(assigmentVar == Var1 + number);
-        }
-        else if (operatorString == "mul")
-        {
-            model.Add(assigmentVar == Var1 * number);
-        }
-        else if (operatorString == "div")
-        {
-            model.AddDivisionEquality(assigmentVar, Var1, number);
-        }
-        else if (operatorString == "mod")
-        {
-            model.AddModuloEquality(assigmentVar, Var1, number);
-
-            model.Add(assigmentVar >= 0);
-        }
-        else if (operatorString == "eql")
-        {
-            var B = model.NewBoolVar("b");
-            model.Add(Var1 == number).OnlyEnforceIf(B);
-            model.Add(assigmentVar == 1).OnlyEnforceIf(B);
-            model.Add(Var1 != number).OnlyEnforceIf(B.Not());
-            model.Add(assigmentVar == 0).OnlyEnforceIf(B.Not());
-        }
-        else
-        {
-            throw new Exception();
-        }
-    }
 
 }
 
