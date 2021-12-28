@@ -34,7 +34,7 @@ class Day24Alt : Day
         model.Add(VariableNameToVar["z43"] == 0);
         AddObjective(model);
 
-        Console.WriteLine(model.Model.Objective);
+       // Console.WriteLine(model.Model.Objective);
         var solver = new CpSolver();
         var status = solver.Solve(model);
         if (status == CpSolverStatus.Optimal)
@@ -43,7 +43,7 @@ class Day24Alt : Day
                 if (key[..1] == "w")
                     Console.WriteLine("{0} {1}", key, solver.Value(value));
             }
-        Console.ReadLine();
+       // Console.ReadLine();
     }
 
     private static List<(string, string, string, string)> GiveEachVariableNewNames(List<string> Lines)
@@ -88,7 +88,6 @@ class Day24Alt : Day
         model.Minimize(VariableNameToVar["w14"]);
         for (int i = 1; i < 14; i++)
         {
-            Console.WriteLine("{0} {1}", VariableNameToVar["w" + ((14 - i))], 1 << i);
             model.AddTermToObjective(VariableNameToVar["w" + ((14 - i))], 1 << i);
         }
     }
