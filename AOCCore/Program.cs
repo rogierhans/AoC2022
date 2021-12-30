@@ -12,21 +12,29 @@ class Program
     [STAThreadAttribute]
     static void Main()
     {
-        var sw = new Stopwatch();
-        sw.Start(); double now = 0; double previous = now;
-        ExcuteDay(sw, ref now, ref previous, new Day1());
-        ExcuteDay(sw, ref now, ref previous, new Day2());
-        ExcuteDay(sw, ref now, ref previous, new Day3());
-        ExcuteDay(sw, ref now, ref previous, new Day4());
-        ExcuteDay(sw, ref now, ref previous, new Day5());
-        ExcuteDay(sw, ref now, ref previous, new Day6());
-        ExcuteDay(sw, ref now, ref previous, new Day7());
-        ExcuteDay(sw, ref now, ref previous, new Day8());
-        ExcuteDay(sw, ref now, ref previous, new Day9());
-        ExcuteDay(sw, ref now, ref previous, new Day10());
-        ExcuteDay(sw, ref now, ref previous, new Day11());
-         ExcuteDay(sw, ref now, ref previous, new Day12());
-        ExcuteDay(sw, ref now, ref previous, new Day13());
+
+        while (true)
+        {
+            var sw = new Stopwatch();
+            sw.Start(); double now = 0; double previous = now;
+            ExcuteDay(sw, ref now, ref previous, new Day1());
+            ExcuteDay(sw, ref now, ref previous, new Day2());
+            ExcuteDay(sw, ref now, ref previous, new Day3());
+            ExcuteDay(sw, ref now, ref previous, new Day4());
+            ExcuteDay(sw, ref now, ref previous, new Day5());
+            ExcuteDay(sw, ref now, ref previous, new Day6());
+            ExcuteDay(sw, ref now, ref previous, new Day7());
+            ExcuteDay(sw, ref now, ref previous, new Day8());
+            ExcuteDay(sw, ref now, ref previous, new Day9());
+            ExcuteDay(sw, ref now, ref previous, new Day10());
+            ExcuteDay(sw, ref now, ref previous, new Day11());
+            ExcuteDay(sw, ref now, ref previous, new Day12());
+            ExcuteDay(sw, ref now, ref previous, new Day13());
+            ExcuteDay(sw, ref now, ref previous, new Day14());
+            ExcuteDay(sw, ref now, ref previous, new Day15());
+            ExcuteDay(sw, ref now, ref previous, new Day16());
+            Console.ReadLine();
+        }
         //sw.Restart();
         //  var test = new Day10();
         //  test.Part1(true);

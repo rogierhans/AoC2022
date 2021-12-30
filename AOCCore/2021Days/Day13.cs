@@ -82,19 +82,28 @@ class Day13 : Day
             }
             coords = newCoords;
         }
-
-      //  Print(coords);
-        return PrintSolution("PZFJHRFZ", "PZFJHRFZ", "part 2");
-    }
-
-    public const string BLOCK = "\U00002588";
-    private static void Print(List<(int, int)> coords)
-    {
-        var newGrid = Grid.Make(coords.Max(x => x.Item2) + 1, coords.Max(x => x.Item1) + 1, 0);
-        foreach (var (x, y) in coords)
+        string word = "";
+        for (int letter = 0; letter < 8; letter++)
         {
-            newGrid[y][x] = 1;
+            int offSet = letter * 5;
+            string line = "";
+            for (int row = 0; row < 6; row++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    int column = j + offSet;
+                    bool exits = false;
+                    foreach (var coord in coords)
+                    {
+                        exits |= coord.Item1 == column && coord.Item2 == row;   
+
+                    }
+                    line += exits ? "1" : "0";
+                }
+            }
+            word += dict[line];
         }
-        newGrid.GridSelect(x => x > 0 ? BLOCK : " ").Print();
+
+        return PrintSolution(word, "PZFJHRFZ", "part 2");
     }
 }
