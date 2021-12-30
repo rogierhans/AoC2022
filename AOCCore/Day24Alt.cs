@@ -10,24 +10,57 @@ class Day24Alt : Day
         GetInput(RootFolder + @"2021_24\");
     }
 
-    public override void Main(List<string> Lines)
+    public override string Part1(List<string> Lines)
     {
+        VariableNameToVar = new Dictionary<string, IntVar>();
         CpModel model = new CpModel();
         AddLinesToModel(model, Lines);
         // a = b oper c
 
         //set last z to 0
         model.Add(VariableNameToVar["z43"] == 0);
-        AddObjective(model);
+        AddObjective(model, false);
 
         var solver = new CpSolver();
         var status = solver.Solve(model);
+        string line = "";
         if (status == CpSolverStatus.Optimal)
             foreach (var (key, value) in VariableNameToVar)
             {
                 if (key[..1] == "w")
-                    Console.WriteLine("{0} {1}", key, solver.Value(value));
+                {
+                    line += solver.Value(value);
+                    //Console.WriteLine("{0} {1}", key, solver.Value(value));
+                }
             }
+        return PrintSolution(line, "97919997299495", "part 1");
+    }
+
+    public override string Part2(List<string> Lines)
+    {
+        VariableNameToVar = new Dictionary<string, IntVar>();
+        CpModel model = new CpModel();
+        AddLinesToModel(model, Lines);
+        // a = b oper c
+
+        //set last z to 0
+        model.Add(VariableNameToVar["z43"] == 0);
+        AddObjective(model, true);
+
+        var solver = new CpSolver();
+        var status = solver.Solve(model);
+        string line = "";
+        if (status == CpSolverStatus.Optimal)
+            foreach (var (key, value) in VariableNameToVar)
+            {
+                if (key[..1] == "w")
+                {
+                    line += solver.Value(value);
+                    //Console.WriteLine("{0} {1}", key, solver.Value(value));
+                }
+            }
+
+        return PrintSolution(line, "51619131181131", "part 2");
     }
     private void AddConstraint(CpModel model, IntVar a, IntVar b, LinearExpr c, string operatorString)
     {
@@ -92,9 +125,16 @@ class Day24Alt : Day
 
     }
 
-    private void AddObjective(CpModel model)
+    private void AddObjective(CpModel model, bool minimizing)
     {
-        model.Minimize(VariableNameToVar["w14"]);
+        if (minimizing)
+        {
+            model.Minimize(VariableNameToVar["w14"]);
+        }
+        else
+        {
+            model.Maximize(VariableNameToVar["w14"]);
+        }
         for (int i = 1; i < 14; i++)
         {
             model.AddTermToObjective(VariableNameToVar["w" + ((14 - i))], 1 << i);

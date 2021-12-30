@@ -10,9 +10,12 @@ class Day23 : Day
         GetInput(RootFolder + @"2021_23\");
     }
 
-    public override void Main(List<string> Lines)
+    public override string Part1(List<string> Lines)
     {
-        State firstState = new State(Lines);
+        var newLines = new List<string>();
+        newLines.AddRange(Lines.Take(3));
+        newLines.AddRange(Lines.Skip(3).Take(2));
+        State firstState = new State(newLines);
 
         //  State test = new State(Lines);
         //  test.ForceState(@"C:\Users\Rogier\Dropbox\AOC2\AOC2\InputFiles\2021_23\state5.txt");
@@ -37,9 +40,8 @@ class Day23 : Day
             //  Console.Write(state.Costs + "\t");
             if (state.IsDone())
             {
-                state.PrintHeritage();
-                Console.ReadLine();
-                Console.Clear();
+                return PrintSolution(state.Costs, "15322", "part 1");
+
                 // return;
 
             }
@@ -70,7 +72,73 @@ class Day23 : Day
             //state.Print();
             //Console.ReadLine();
         }
-        Console.ReadLine();
+        throw new Exception();
+    }
+    public override string Part2(List<string> Lines)
+    {
+        var newLines = new List<string>();
+        newLines.AddRange(Lines.Take(3));
+        newLines.Add("  #D#C#B#A#");
+        newLines.Add("  #D#B#A#C#");
+        newLines.AddRange(Lines.Skip(3).Take(2));
+        State firstState = new State(newLines);
+
+        //  State test = new State(Lines);
+        //  test.ForceState(@"C:\Users\Rogier\Dropbox\AOC2\AOC2\InputFiles\2021_23\state5.txt");
+        //// test.Print();
+        //  test.GetNextStates().Where(state => true).ToList().ForEach(state => state.Print());
+        //   Console.WriteLine(test.ToKey());
+        //  Console.ReadLine();
+        Dictionary<string, State> keyValuePairs = new Dictionary<string, State>();
+        var q = new SimplePriorityQueue<string, int>();
+        {
+            string key = firstState.ToKey();
+            keyValuePairs.Add(key, firstState);
+            q.Enqueue(key, firstState.Costs);
+        }
+        HashSet<string> done = new HashSet<string>();
+
+        while (q.Count > 0)
+        {
+            var currentKey = q.Dequeue();
+            var state = keyValuePairs[currentKey];
+
+            //  Console.Write(state.Costs + "\t");
+            if (state.IsDone())
+            {
+                return PrintSolution(state.Costs, "56324", "part 2");
+
+                // return;
+
+            }
+            foreach (var next in state.GetNextStates())
+            {
+                string key = next.ToKey();
+
+
+                if (!done.Contains(key))
+                {
+                    if (keyValuePairs.ContainsKey(key))
+                    {
+                        var otherState = keyValuePairs[key];
+                        if (otherState.Costs > next.Costs)
+                        {
+                            keyValuePairs[key] = next;
+                            q.UpdatePriority(key, next.Costs);
+                        }
+                    }
+                    else
+                    {
+                        keyValuePairs[key] = next;
+                        q.Enqueue(key, next.Costs);
+                    }
+                }
+            }
+            done.Add(currentKey);
+            //state.Print();
+            //Console.ReadLine();
+        }
+         throw new Exception();
     }
     class State
     {

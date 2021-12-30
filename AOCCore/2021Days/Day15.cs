@@ -23,7 +23,7 @@ class Day15 : Day
             X = x;
         }
     }
-    private W<(int, int)>[,] ws;
+    private W<(int, int)>[,] ws = new W<(int, int)>[0,0];
 
     public struct Coord
     {

@@ -10,7 +10,34 @@ class Day22 : Day
         GetInput(RootFolder + @"2021_22\");
     }
 
-    public override void Main(List<string> Lines)
+
+    public override string Part1(List<string> Lines)
+    {
+        var tuples = Lines.FindPatterns("{0} x={1},y={2},z={3}", x => x, x => x, x => x, x => x);
+        var Areas = tuples.Select(x => new CubeThing(x)).ToList();
+        List<CubeThing> currentAreas = new List<CubeThing>() { };
+        foreach (var area in Areas.Where(a => Math.Abs(a.xmin) <= 50 && Math.Abs(a.xmax) <= 50 && Math.Abs(a.ymin) <= 50 && Math.Abs(a.zmin) <= 50 && Math.Abs(a.ymax) <= 50 && Math.Abs(a.zmax) <= 50))
+        {
+            var newAres = new List<CubeThing>();
+            CubeThing current = area;
+            foreach (var old in currentAreas)
+            {
+                var intersect = old.Intersect(current);
+                if (intersect.NonEmpty())
+                {
+                    newAres.Add(intersect);
+                }
+            }
+            if (current.Counter == 0)
+            {
+                newAres.Add(current);
+            }
+            newAres.AddRange(currentAreas);
+            currentAreas = newAres;
+        }
+        return PrintSolution(currentAreas.Where(x => x.Counter % 2 == 0).Sum(x => x.area) - currentAreas.Where(x => x.Counter % 2 == 1).Sum(x => x.area), "527915", "part 1");
+    }
+    public override string Part2(List<string> Lines)
     {
         var tuples = Lines.FindPatterns("{0} x={1},y={2},z={3}", x => x, x => x, x => x, x => x);
         var Areas = tuples.Select(x => new CubeThing(x)).ToList();
@@ -34,8 +61,7 @@ class Day22 : Day
             newAres.AddRange(currentAreas);
             currentAreas = newAres;
         }
-        Console.WriteLine("{0}", currentAreas.Where(x => x.Counter % 2 == 0).Sum(x => x.area) - currentAreas.Where(x => x.Counter % 2 == 1).Sum(x => x.area));
-        Console.ReadLine();
+        return PrintSolution(currentAreas.Where(x => x.Counter % 2 == 0).Sum(x => x.area) - currentAreas.Where(x => x.Counter % 2 == 1).Sum(x => x.area), "1218645427221987", "part 2");
     }
     public class CubeThing
     {

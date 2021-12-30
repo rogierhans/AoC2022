@@ -15,9 +15,8 @@ class Day1 : Day
     }
 
 
-    public override string Part1(List<string> Lines)
+    public override string Part1(List<string> lines)
     {
-        var lines = File.ReadAllLines(@"C:\Users\Rogier\Desktop\AOC\OtherDays\day1.txt");
         var input = lines.Select(x => double.Parse(x)).ToList();
         int count = 0;
         for (int i = 0; i < input.Count - 1; i++)
@@ -26,9 +25,8 @@ class Day1 : Day
         }
         return PrintSolution(count.ToString(), "1557", "part 1");
     }
-    public override string Part2(List<string> Lines)
+    public override string Part2(List<string> lines)
     {
-        var lines = File.ReadAllLines(@"C:\Users\Rogier\Desktop\AOC\OtherDays\day1.txt");
         var input = lines.Select(x => double.Parse(x)).ToList();
         int count = 0;
         for (int i = 0; i < input.Count - 3; i++)

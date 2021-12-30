@@ -18,7 +18,38 @@ class Day20 : Day
 
     private readonly int height = 250;
     private readonly int width = 250;
-    public override void Main(List<string> Lines)
+
+    public override string Part1(List<string> Lines)
+    {
+        //Main2(Lines);
+        //Lines.Print("\n");
+        var split = Lines.ClusterLines();
+        var map = split[0].First().List().Select(x => x == "#" ? 1 : 0).ToList();
+        //map.Print();
+        var second = split[1].Parse2D(x => x == "#" ? 1 : 0);
+        int[,] array = new int[height, width];
+        for (int i = 0; i < second.Count; i++)
+        {
+            for (int j = 0; j < second[0].Count; j++)
+            {
+                array[i + 75, j + 75] = second[i][j];
+            }
+        }
+
+        List<int> Row = new List<int>();
+        for (int i = 0; i < height; i++)
+        {
+            Row.Add(i);
+        }
+        for (int k = 0; k < 2; k++)
+        {
+            int[,] newArrray = new int[height, width];
+            Parallel.ForEach(Row, x => SetRow(map, array, newArrray, x));
+            array = newArrray;
+        }
+        return PrintSolution(array.ToLists().GridSum(x => x), "5846", "part 1");
+    }
+    public override string Part2(List<string> Lines)
     {
         //Main2(Lines);
         //Lines.Print("\n");
@@ -46,7 +77,7 @@ class Day20 : Day
             Parallel.ForEach(Row, x => SetRow(map, array, newArrray, x));
             array = newArrray;
         }
-        Console.WriteLine(array.ToLists().GridSum(x => x));
+        return PrintSolution(array.ToLists().GridSum(x => x), "21149", "part 2");
     }
 
     private void SetRow(List<int> map, int[,] array, int[,] newArrray, int i)

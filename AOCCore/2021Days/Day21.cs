@@ -15,17 +15,54 @@ class Day21 : Day
     {
         GetInput(RootFolder + @"2021_21\");
     }
-    private readonly (ulong, ulong)[,,,,] StateMem = new (ulong, ulong)[10, 10, 21, 21, 2];
-    public override void Main(List<string> Lines)
+
+    public override string Part1(List<string> Lines)
     {
-        Lines.Print("\n");
+        //Lines.Print("\n");
+        var pos1 = Lines.First().Pattern("Player 1 starting position: {0}", int.Parse);
+        var pos2 = Lines[1].Pattern("Player 2 starting position: {0}", int.Parse);
+        long score1 = 0;
+        long score2 = 0;
+        int die = 0;
+
+        int player1Space = pos1 - 1;
+        int player2Space = pos2 - 1;
+        bool turnPlayer1 = true;
+        int turn =0;
+
+        while (score1 < 1000 && score2 < 1000) {
+            turn++;
+            var number = 0;
+            for (int i = 0; i < 3; i++)
+            {
+                number += (die++ % 100) + 1;
+
+            }
+            if (turnPlayer1)
+            {
+                player1Space = (player1Space + number) % 10;
+                score1 += player1Space + 1;
+            }
+            else {
+                player2Space = (player2Space + number) % 10;
+                score2 += player2Space + 1;
+            }
+            turnPlayer1 = !turnPlayer1;
+        }
+
+        return PrintSolution(turn * 3 * score1, "989352", "part 1");
+    }
+
+
+    private readonly (ulong, ulong)[,,,,] StateMem = new (ulong, ulong)[10, 10, 21, 21, 2];
+    public override string Part2(List<string> Lines)
+    {
+        //Lines.Print("\n");
         var pos1 = Lines.First().Pattern("Player 1 starting position: {0}", int.Parse);
         var pos2 = Lines[1].Pattern("Player 2 starting position: {0}", int.Parse);
 
-        var x = CalcWhoWins(pos1 - 1, pos2 - 1, 1, 0, 0);
-        Console.WriteLine(x.Item1);
-        Console.WriteLine(x.Item2);
-        Console.ReadLine();
+        var (p1win,p2wins) = CalcWhoWins(pos1 - 1, pos2 - 1, 1, 0, 0);
+        return PrintSolution(p1win>p2wins?p1win:p2wins, "430229563871565", "part 2");
     }
     public (ulong, ulong) CalcWhoWins(int pos1, int pos2, int turnPlayer1, int score1, int score2)
     {

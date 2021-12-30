@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 //using ParsecSharp;
 //using FishLibrary;
-
+namespace AOC2021;
 class Day19 : Day
 {
 
@@ -14,7 +14,7 @@ class Day19 : Day
     }
     public const string BLOCK = "\U00002588";
 
-    public override void Main(List<string> Lines)
+    public override string Part2(List<string> Lines)
     {
         var scaners = Lines.ClusterLines().Select(clines => new Scanner(clines)).ToList();
         List<(long, long, long, Position, Position)> AllDistances = new();
@@ -46,7 +46,7 @@ class Day19 : Day
 
             }
         }
-        Console.WriteLine(max);
+        return PrintSolution(max, "13382", "part 2");
     }
     public class Position
     {
@@ -66,7 +66,7 @@ class Day19 : Day
         }
         public (long, long, long, Position) Distance(Position other)
         {
-            return (Squired(X, other.X), Squired(Y, other.Y), Squired(Z, other.Z),  other);
+            return (Squired(X, other.X), Squired(Y, other.Y), Squired(Z, other.Z), other);
         }
 
         public long DistanceNumber(Position other)
@@ -90,9 +90,9 @@ class Day19 : Day
 
             foreach (bool negativeX in new List<bool> { false, true })
             {
-                foreach (bool negativeY in new List<bool> { false, true  })
+                foreach (bool negativeY in new List<bool> { false, true })
                 {
-                    foreach (bool negativeZ in new List<bool> { false, true  })
+                    foreach (bool negativeZ in new List<bool> { false, true })
                     {
                         for (int i = 0; i < 6; i++)
                         {
@@ -154,7 +154,7 @@ class Day19 : Day
             var OGRelativePOS = Positions.Select(x => x.PermOfPos[perm]);
             Positions = OGRelativePOS.Select(x => Minus(newPos, x)).ToList();
             SetDistance();
-            Console.WriteLine(Name + "set to" + newPos);
+           // Console.WriteLine(Name + "set to" + newPos);
 
         }
 
@@ -244,7 +244,7 @@ class Day19 : Day
         List<(long, long, long, Position)> Distances = new List<(long, long, long, Position)>();
         private void SetDistance()
         {
-            Distances = new List<(long, long, long,  Position)>();
+            Distances = new List<(long, long, long, Position)>();
             for (int i = 0; i < Positions.Count; i++)
             {
                 var pos1 = Positions[i];

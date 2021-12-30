@@ -43,11 +43,11 @@ class Day
 
     public virtual string Part1(List<string> inputLines)
     {
-        throw new NotImplementedException();
+        return String.Format("Day {0} {1} not implemented yet", Folder, "part 1");
     }
     public virtual string Part2(List<string> inputLines)
     {
-        throw new NotImplementedException();
+        return String.Format("Day {0} {1} not implemented yet", Folder, "part 2");
     }
 
 

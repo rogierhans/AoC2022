@@ -10,7 +10,7 @@ class Day25 : Day
         GetInput(RootFolder + @"2021_25\");
     }
 
-    public override void Main(List<string> Lines)
+    public override string Part1(List<string> Lines)
     {
         //   Lines.Print();
         var grid = Lines.Select(x => x.List()).ToList();
@@ -72,10 +72,12 @@ class Day25 : Day
             //grid.Print();
          //   Console.ReadLine();
         }
-        Console.WriteLine(k);
-        Console.ReadLine();
+        return PrintSolution(k, "441", "part 1");
     }
-
+    public override string Part2(List<string> inputLines)
+    {
+        return PrintSolution("50 starts", "50 starts", "part 2");
+    }
 
 
 
