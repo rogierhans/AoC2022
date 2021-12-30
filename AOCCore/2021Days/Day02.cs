@@ -4,64 +4,66 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+namespace AOC2021;
 
 
-    class Day2 : Day
+class Day2 : Day
+{
+    public Day2()
     {
+        GetInput(RootFolder + @"2021_02\");
+    }
 
-        public Day2()
+
+    public override string Part1(List<string> Lines)
+    {
+        long depth = 0;
+        long horizontal = 0;
+        for (int i = 0; i < Lines.Count; i++)
         {
-
-            string folder = @"C:\Users\Rogier\Desktop\AOC\";
-            string name = "input.txt";
-            string filename = folder + name;
-            string filenameTest = folder + "test.txt";
-            var testLines = File.ReadAllLines(filenameTest).ToList();
-            var inputLines = File.ReadAllLines(filename).ToList();
-            Console.WriteLine("test:");
-            ComputeLines(testLines);
-            Console.WriteLine("input:");
-            ComputeLines(inputLines);
-        }
-
-
-
-
-
-
-        private static void ComputeLines(List<string> Lines)
-        {
-            long aim = 0;
-            long dept = 0;
-            long distance = 0;
-            for (int i = 0; i < Lines.Count; i++)
+            var line = Lines[i];
+            var input = line.Split(' ');
+            var value = long.Parse(input[1]);
+            if (input[0] == "forward")
             {
-                var line = Lines[i];
-                var input = line.Split(' ');
-                var value = long.Parse(input[1]);
-                if (input[0] == "forward")
-                {
-                    distance += value;
-                    dept += aim * value;
-                }
-                if (input[0] == "down")
-                {
-                    aim += value;
-                }
-                if (input[0] == "up")
-                {
-                    aim -= value;
-                }
+                horizontal += value;
+            }
+            if (input[0] == "down")
+            {
+                depth += value;
+            }
+            if (input[0] == "up")
+            {
+                depth -= value;
             }
         }
+        return PrintSolution((depth * horizontal).ToString(), "1427868", "part 1");
     }
-
-    class Row
+    public override string Part2(List<string> Lines)
     {
-        //  public List<int> Numbers = new List<int>();
-        public List<double> Numbers = new();
-        public Row(string line)
+        long aim = 0;
+        long depth = 0;
+        long horizontal = 0;
+        for (int i = 0; i < Lines.Count; i++)
         {
-            Numbers = line.Split(' ').Select(x => double.Parse(x)).ToList();
+            var line = Lines[i];
+            var input = line.Split(' ');
+            var value = long.Parse(input[1]);
+            if (input[0] == "forward")
+            {
+                horizontal += value;
+                depth += aim * value;
+            }
+            if (input[0] == "down")
+            {
+                aim += value;
+            }
+            if (input[0] == "up")
+            {
+                aim -= value;
+            }
         }
+        return PrintSolution((depth * horizontal).ToString(), "1568138742", "part 2");
     }
+}
+

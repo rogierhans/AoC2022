@@ -13,28 +13,8 @@ class Day24Alt : Day
     public override void Main(List<string> Lines)
     {
         CpModel model = new CpModel();
-
-        List<(string, string, string, string)> newLines = GiveEachVariableNewNames(Lines);
-
-
+        AddLinesToModel(model, Lines);
         // a = b oper c
-        foreach (var (a, b, oper, c) in newLines)
-        {
-            var assigmentVar = AddVarToModel(model, a);
-            var Var1 = AddVarToModel(model, b);
-
-            if (c[..1] == "x" || c[..1] == "y" || c[..1] == "z" || c[..1] == "w")
-            {
-
-                var Var2 = AddVarToModel(model, c);
-                AddConstraint(model, assigmentVar, Var1, Var2, oper);
-            }
-            else
-            {
-                var constant = new ConstantExpr(int.Parse(c));
-                AddConstraint(model, assigmentVar, Var1, constant, oper);
-            }
-        }
 
         //set last z to 0
         model.Add(VariableNameToVar["z43"] == 0);
@@ -81,16 +61,10 @@ class Day24Alt : Day
             throw new Exception();
         }
     }
-    private static List<(string, string, string, string)> GiveEachVariableNewNames(List<string> Lines)
+    private void AddLinesToModel(CpModel model, List<string> Lines)
     {
         var tuples = new List<(string, string, string, string)>();
-
-        var dictLetter = new Dictionary<string, int>();
-        dictLetter["w"] = 0;
-        dictLetter["x"] = 1;
-        dictLetter["y"] = 1;
-        dictLetter["z"] = 1;
-
+        var dictLetter = new Dictionary<string, int> { ["w"] = 0, ["x"] = 1, ["y"] = 1, ["z"] = 1 };
         var letters = new List<string>() { "w", "x", "y", "z" };
         foreach (var line in Lines)
         {
@@ -101,25 +75,21 @@ class Day24Alt : Day
             else
             {
                 var (multi, var1, var2) = line.Pattern("{0} {1} {2}", x => x, x => x, x => x);
-                string a = "";
-                string b = var2;
-                string c = "";
-                foreach (var letter in letters)
+                var b = string2ModelVar(model, var1 + dictLetter[var1]);
+                var a = string2ModelVar(model, var1 + ++dictLetter[var1]);
+                LinearExpr c = new();
+                if (letters.Contains(var2))
                 {
-                    if (var2 == letter)
-                    {
-                        b = letter + dictLetter[letter];
-                    }
-                    if (var1 == letter)
-                    {
-                        c = letter + dictLetter[letter]++;
-                        a = letter + dictLetter[letter];
-                    }
+                    c = string2ModelVar(model, var2 + dictLetter[var2]);
                 }
-                tuples.Add((a, c, multi, b));
+                else
+                {
+                    c = new ConstantExpr(int.Parse(var2));
+                }
+                AddConstraint(model, a, b, c, multi);
             }
         }
-        return tuples;
+
     }
 
     private void AddObjective(CpModel model)
@@ -132,25 +102,21 @@ class Day24Alt : Day
     }
 
     Dictionary<string, IntVar> VariableNameToVar = new Dictionary<string, IntVar>();
-    private IntVar AddVarToModel(CpModel model, string varName)
+    private IntVar string2ModelVar(CpModel model, string varName)
     {
         if (!VariableNameToVar.ContainsKey(varName))
         {
             if (varName[..1] == "w")
             {
-                IntVar x = model.NewIntVar(1, 9, varName);
-                VariableNameToVar[varName] = x;
+                VariableNameToVar[varName] = model.NewIntVar(1, 9, varName);
             }
             else
             {
-                IntVar x = model.NewIntVar(-1000000, 10000000, varName);
-                VariableNameToVar[varName] = x;
+                VariableNameToVar[varName] = model.NewIntVar(-1000000, 10000000, varName);
             }
         }
         return VariableNameToVar[varName];
     }
-
-
 }
 
 

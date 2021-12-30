@@ -4,67 +4,61 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-
-namespace AOC2
+namespace AOC2021;
+class Day3 : Day
 {
-    class Day3 : Day
+    public Day3()
     {
+        GetInput(RootFolder + @"2021_03\");
+    }
 
 
-        public Day3()
+    public override string Part1(List<string> lines)
+    {
+        var array = lines.Parse2D(x => int.Parse(x));
+        List<int> gammaRate = new List<int>();
+        List<int> eplislonRate = new List<int>();
+        for (int i = 0; i < array.First().Count; i++)
         {
-            string folder = @"C:\Users\Rogier\Desktop\AOC\";
-            string name = "input.txt";
-            string filename = folder + name;
-            string filenameTest = folder + "test.txt";
-            var testLines = File.ReadAllLines(filenameTest).ToList();
-            var inputLines = File.ReadAllLines(filename).ToList();
-            Console.WriteLine("test:");
-            ModeSelector(testLines);
-            Console.WriteLine("input:");
-            ModeSelector(inputLines);
+            int commonBit = array.Transpose().Select(x => Round(x.Average())).ToList()[i];
+            int leascommonBits = array.Transpose().Select(x =>1- Round(x.Average())).ToList()[i];
+            gammaRate.Add(commonBit);
+            eplislonRate.Add(leascommonBits);
+        }
+        return PrintSolution(Bits2Number(gammaRate) * Bits2Number(eplislonRate), "2035764", "part 1");
+    }
+    public override string Part2(List<string> Lines)
+    {
+        var oxygenBits = ReduceToSingle(Lines, x => x);
+        var CO2Bits = ReduceToSingle(Lines, x => 1 - x);
+        var oxygen = Bits2Number(oxygenBits);
+        var CO2 = Bits2Number(CO2Bits);
+        return PrintSolution((oxygen * CO2).ToString(), "2817661", "part 2");
+    }
+
+    private static List<int> ReduceToSingle(List<string> lines, Func<int, int> funcOnCommonBit)
+    {
+        var array = lines.Parse2D(x => int.Parse(x));
+        for (int i = 0; i < array.First().Count; i++)
+        {
+            int commonBit = array.Transpose().Select(x => Round(x.Average())).ToList()[i];
+            array = array.Where(bit => bit[i] == funcOnCommonBit(commonBit)).ToList();
+            if (array.Count == 1) return array.First();
         }
 
-
-        private static void ModeSelector(List<string> Lines)
+        throw new Exception("");
+    }
+    static int Round(double number)
+    {
+        return (number == 0.5) ? 1 : (int)Math.Round(number);
+    }
+    private static long Bits2Number(List<int> list)
+    {
+        long number = 0;
+        for (int i = 0; i < list.Count; i++)
         {
-            CleanerSolution(Lines);
-            // ParseLines(Lines);
+            number += list[list.Count - i - 1] << i;
         }
-        private static void CleanerSolution(List<string> lines)
-        {
-            var oxygenBits = ReduceToSingle(lines, x => x);
-            var CO2Bits = ReduceToSingle(lines, x => 1 - x);
-            var oxygen = Bits2Number(oxygenBits);
-            var CO2 = Bits2Number(CO2Bits);
-            Console.WriteLine(oxygen * CO2);
-        }
-
-        private static List<int>  ReduceToSingle(List<string> lines, Func<int, int> funcOnCommonBit)
-        {
-            var array = lines.Parse2D( x => int.Parse(x));
-            for (int i = 0; i < array.First().Count; i++)
-            {
-                int commonBit = array.Transpose().Select(x => Round(x.Average())).ToList()[i];
-                array = array.Where(bit => bit[i] == funcOnCommonBit(commonBit)).ToList();
-                if (array.Count == 1) return array.First();
-            }
-
-            static int Round(double number)
-            {
-                return (number == 0.5) ? 1 : (int)Math.Round(number);
-            }
-            throw new Exception("");
-        }
-
-        private static long Bits2Number(List<int> list)
-        {
-            long number = 0;
-            for (int i = 0; i < list.Count; i++)
-            {
-                number += list[list.Count - i - 1] << i;
-            }
-            return number;
-        }
+        return number;
     }
 }

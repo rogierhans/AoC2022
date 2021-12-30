@@ -7,6 +7,26 @@ using System.IO;
 
 namespace AOC2
 {
+
+    //class Day4 : Day
+    //{
+    //    public Day4()
+    //    {
+    //        GetInput(RootFolder + @"2021_03\");
+    //    }
+
+
+    //    public override string Part1(List<string> lines)
+    //    {
+
+    //        return PrintSolution("", "2035764", "part 1");
+    //    }
+    //    public override string Part2(List<string> Lines)
+    //    {
+
+    //        return PrintSolution("", "2817661", "part 2");
+    //    }
+    //}
     class Day5 : Day
     {
 

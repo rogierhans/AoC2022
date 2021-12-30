@@ -5,20 +5,36 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace AOC2
+namespace AOC2021;
+
+class Day1 : Day
 {
-    class Day1
+    public Day1()
     {
-        public Day1()
+        GetInput(RootFolder + @"2021_01\");
+    }
+
+
+    public override string Part1(List<string> Lines)
+    {
+        var lines = File.ReadAllLines(@"C:\Users\Rogier\Desktop\AOC\OtherDays\day1.txt");
+        var input = lines.Select(x => double.Parse(x)).ToList();
+        int count = 0;
+        for (int i = 0; i < input.Count - 1; i++)
         {
-            var lines = File.ReadAllLines(@"C:\Users\Rogier\Desktop\AOC\OtherDays\day1.txt");
-            var input = lines.Select(x => double.Parse(x)).ToList();
-            int count = 0;
-            for (int i = 0; i < input.Count - 3; i++)
-            {
-                if (input[i] < input[i + 3]) count++;
-            }
-            Console.WriteLine(count);
+            if (input[i] < input[i + 1]) count++;
         }
+        return PrintSolution(count.ToString(), "1557", "part 1");
+    }
+    public override string Part2(List<string> Lines)
+    {
+        var lines = File.ReadAllLines(@"C:\Users\Rogier\Desktop\AOC\OtherDays\day1.txt");
+        var input = lines.Select(x => double.Parse(x)).ToList();
+        int count = 0;
+        for (int i = 0; i < input.Count - 3; i++)
+        {
+            if (input[i] < input[i + 3]) count++;
+        }
+        return PrintSolution(count.ToString(), "1608", "part 2");
     }
 }

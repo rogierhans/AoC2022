@@ -9,22 +9,20 @@ using System.Diagnostics;
 class Day
 {
     public string RootFolder = @"C:\Users\Rogier\Dropbox\AOC2\AOC2\InputFiles\";
-    //   public string RootFolder = @"C:\Users\Rogier\source\repos\AOC\AOC2\InputFiles\";
+    private List<string> testLines = new List<string>();
+    private List<string> inputLines = new List<string>();
+
+    private string Folder = "";
     public void GetInput(string folder)
     {
+        Folder = folder.Split('\\')[folder.Split('\\').Count() - 2];
         string name = "input.txt";
         string filename = folder + name;
         string filenameTest = folder + "test.txt";
-        var testLines = File.ReadAllLines(filenameTest).ToList();
-        var inputLines = File.ReadAllLines(filename).ToList();
-        var sw = new Stopwatch();
-        sw.Start();
-        Console.WriteLine("---###Test###---");
-       // Main(testLines);
-        Console.WriteLine(sw.Elapsed.TotalMilliseconds);
-        Console.WriteLine("---###Input###---");
-        Main(inputLines);
+        testLines = File.ReadAllLines(filenameTest).ToList();
+        inputLines = File.ReadAllLines(filename).ToList();
     }
+
 
     public virtual void Main(List<string> inputLines)
     {
@@ -32,43 +30,37 @@ class Day
     }
 
 
-    public List<List<T>> Transpose<T>(List<List<T>> oldList)
+    public string Part1(bool withTest)
     {
-        List<List<T>> newlist = new List<List<T>>();
+        if (withTest) Part1(testLines);
+        return Part1(inputLines);
+    }
+    public string Part2(bool withTest)
+    {
+        if (withTest) Part2(testLines);
+        return Part2(inputLines);
+    }
 
-        for (int j = 0; j < oldList[0].Count; j++)
+    public virtual string Part1(List<string> inputLines)
+    {
+        throw new NotImplementedException();
+    }
+    public virtual string Part2(List<string> inputLines)
+    {
+        throw new NotImplementedException();
+    }
+
+
+    public string PrintSolution(object answer, string expectedAnswer, string additionalInfo)
+    {
+
+        if (answer.ToString() == expectedAnswer)
         {
-            List<T> list = new List<T>();
-            for (int i = 0; i < oldList.Count; i++)
-            {
-                list.Add(oldList[i][j]);
-            }
-            newlist.Add(list);
+            return String.Format("Passed {0} {1}:    {2} == {3}", Folder, additionalInfo, answer, expectedAnswer);
         }
-
-        return newlist;
-    }
-    public List<List<T>> Parse2D<T>(List<string> lines, Func<string, T> func)
-    {
-        return lines.Select(line => line.ToCharArray().Select(x => func(x.ToString())).ToList()).ToList();
-    }
-
-    public List<List<string>> ClusterLines(List<string> lines)
-    {
-        List<List<string>> List = new List<List<string>>();
-
-        var currentList = new List<string>();
-        foreach (var line in lines)
+        else
         {
-            if (line == "")
-            {
-                List.Add(currentList);
-                currentList = new List<string>();
-            }
-            currentList.Add(line);
+            return String.Format("Failed {0}:    {1} != {2}", additionalInfo, answer, expectedAnswer);
         }
-        List.Add(currentList);
-        return List;
     }
-
 }
