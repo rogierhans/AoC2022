@@ -8,11 +8,13 @@ namespace CforFSharp
 {
     public class Fish
     {
-        public Fish? left;
-        public Fish? right;
+        public Fish left;
+        public Fish right;
         public int depth;
         public long Number;
         public bool isLeaf = false;
+
+
 
         public Fish(long value)
         {

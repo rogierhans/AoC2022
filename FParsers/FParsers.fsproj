@@ -6,9 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="BitParser.fs" />
+    <Compile Include="Day16.fs" />
     <Compile Include="FishNumberParser.fs" />
-    <Compile Include="HexaParser.fs" />
+    <Compile Include="EmptyFileOtherwiseParsecWillCrash.fs" />
   </ItemGroup>
 
   <ItemGroup>

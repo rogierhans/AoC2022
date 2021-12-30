@@ -76,7 +76,7 @@ class Day25 : Day
     }
     public override string Part2(List<string> inputLines)
     {
-        return PrintSolution("50 starts", "50 starts", "part 2");
+        return PrintSolution("50 stars", "50 stars", "part 2");
     }
 
 

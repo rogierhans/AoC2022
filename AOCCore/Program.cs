@@ -63,14 +63,14 @@ class Program
     private static void PrintTime(Stopwatch sw, string solution, ref double now, ref double previous)
     {
         now = sw.Elapsed.TotalMilliseconds;
-        Console.WriteLine("{0}\t ({1} ms totaal) \t{2}", FixedLenght( Math.Round(now - previous,1).ToString() +" ms",9), FixedLenght(Math.Round(now).ToString(), 5), solution);
+        Console.WriteLine("{0}\t ({1} ms totaal) \t{2}", FixedLenght(Math.Round(now - previous, 1).ToString() + " ms", 9), FixedLenght(Math.Round(now).ToString(), 5), solution);
         previous = now;
     }
 
     private static string FixedLenght(string input, int max)
     {
         int lel = max - input.Length;
-        for (int i = 0; i <lel ; i++)
+        for (int i = 0; i < lel; i++)
         {
             input += " ";
         }

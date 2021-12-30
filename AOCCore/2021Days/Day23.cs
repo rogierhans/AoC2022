@@ -14,15 +14,10 @@ class Day23 : Day
     {
         var newLines = new List<string>();
         newLines.AddRange(Lines.Take(3));
-        newLines.AddRange(Lines.Skip(3).Take(2));
+        newLines.AddRange(Lines.Skip(3).Take(1));
+
         State firstState = new State(newLines);
 
-        //  State test = new State(Lines);
-        //  test.ForceState(@"C:\Users\Rogier\Dropbox\AOC2\AOC2\InputFiles\2021_23\state5.txt");
-        //// test.Print();
-        //  test.GetNextStates().Where(state => true).ToList().ForEach(state => state.Print());
-        //   Console.WriteLine(test.ToKey());
-        //  Console.ReadLine();
         Dictionary<string, State> keyValuePairs = new Dictionary<string, State>();
         var q = new SimplePriorityQueue<string, int>();
         {
@@ -32,18 +27,14 @@ class Day23 : Day
         }
         HashSet<string> done = new HashSet<string>();
 
+       
         while (q.Count > 0)
         {
             var currentKey = q.Dequeue();
             var state = keyValuePairs[currentKey];
-
-            //  Console.Write(state.Costs + "\t");
             if (state.IsDone())
             {
                 return PrintSolution(state.Costs, "15322", "part 1");
-
-                // return;
-
             }
             foreach (var next in state.GetNextStates())
             {
@@ -69,8 +60,7 @@ class Day23 : Day
                 }
             }
             done.Add(currentKey);
-            //state.Print();
-            //Console.ReadLine();
+           // if (done.Count % 1000 == 0) Console.WriteLine(done.Count);
         }
         throw new Exception();
     }
@@ -142,6 +132,9 @@ class Day23 : Day
     }
     class State
     {
+
+
+
         public int Costs = new int();
 
         public int ACost = 0;
@@ -170,14 +163,6 @@ class Day23 : Day
             Grid = lines.Select(x => x.List()).ToList();
             height = Grid.Count;
             width = Grid[0].Count;
-            //ForceState(@"C:\Users\Rogier\Dropbox\AOC2\AOC2\InputFiles\2021_23\state2.txt");
-            //  Print();
-            // Console.ReadLine();
-
-
-            // GetNextStates().ForEach(x => x.Print());
-             //PathTest();
-
         }
         public State? Parent;
         public State(State oldState)
@@ -196,6 +181,7 @@ class Day23 : Day
 
         public bool IsDone()
         {
+           // return false;
             bool q = ColumnCorrect("A") && ColumnCorrect("B") && ColumnCorrect("C") && ColumnCorrect("D");
             if (!q) return q;
             bool p = true;
@@ -226,23 +212,14 @@ class Day23 : Day
 
 
 
-        public void PrintHeritage()
-        {
-            if (Parent is not null)
-            {
-                Parent.PrintHeritage();
-            }
-            Print();
-            Console.ReadLine();
-            Console.Clear();
-        }
+
 
         public List<State> GetNextStates()
         {
             List<State> newStates = new List<State>();
             FromStack2HW(newStates);
             FromHW2Stack(newStates);
-            FromStack2Stack(newStates);
+            //FromStack2Stack(newStates);
 
 
             //newStates.ForEach(
@@ -260,13 +237,12 @@ class Day23 : Day
             {
                 var ((x, y), validSpot) = FindStackSpot(letter);
                 if (!validSpot || j == y) return;
-                var (validPath, length, path) = IsPath((i, j), (x, y), Grid);
+                var (validPath, length) = IsPath((i, j), (x, y), Grid);
                 if (!validPath) return;
                 var newState = new State(this);
                 SetCosts(letter, length, newState);
                 newState.Grid[x][y] = letter;
                 newState.Grid[i][j] = ".";
-                newState.Path = path;
                 newStates.Add(newState);
             }
         }
@@ -308,7 +284,7 @@ class Day23 : Day
                 //  Console.WriteLine(validSpot+" "+ letter);
                 if (validSpot)
                 {
-                    var (validPath, length, path) = IsPath((i, j), (x, y), Grid);
+                    var (validPath, length) = IsPath((i, j), (x, y), Grid);
                     // Console.WriteLine(validPath + " " + letter);
                     if (validPath)
                     {
@@ -317,7 +293,6 @@ class Day23 : Day
                         newState.Grid[x][y] = letter;
                         newState.Grid[i][j] = ".";
                         newStates.Add(newState);
-                        newState.Path = path;
                     }
                 }
             }
@@ -359,14 +334,13 @@ class Day23 : Day
             {
                 foreach (var (i, j) in CoordsHallway)
                 {
-                    var (valid, length, path) = IsPath((x, y), (i, j), Grid);
+                    var (valid, length) = IsPath((x, y), (i, j), Grid);
                     if (Grid[i][j] == "." && valid)
                     {
                         var newState = new State(this);
                         SetCosts(letter, length, newState);
                         newState.Grid[i][j] = letter;
                         newState.Grid[x][y] = ".";
-                        newState.Path = path;
                         newStates.Add(newState);
                     }
                 }
@@ -382,7 +356,7 @@ class Day23 : Day
                 //copy[1][8] = "G";
                 foreach (var (i, j) in CoordsHallway)
                 {
-                    var (valid, length, path) = IsPath((x, y), (i, j), copy);
+                    var (valid, length) = IsPath((x, y), (i, j), copy);
                     copy[i][j] =  length.ToString() ;
 
                 }
@@ -403,19 +377,18 @@ class Day23 : Day
 
             return lists;
         }
-
-        private (bool, int, List<(int, int, string)>) IsPath((int, int) start, (int, int) end, List<List<string>> grid)
+        private (bool, int) IsPath((int, int) start, (int, int) end, List<List<string>> grid)
         {
 
-            Queue<((int, int), int, List<(int, int, string)>)> q = new();
+            Queue<((int, int), int)> q = new();
             var visited = grid.GridSelect(x => false);
             var lengths = grid.GridSelect(x => 0);
-            q.Enqueue((start, 0, new List<(int, int, string)>() { (start.Item1, start.Item2, grid[start.Item1][start.Item2]) }));
+            q.Enqueue((start, 0 ));
 
             while (q.Count > 0)
             {
-                var ((i, j), length, pad) = q.Dequeue();
-                foreach (var (offset, dir) in new List<((int, int), string)>() { ((-1, 0), "^"), ((1, 0), "V"), ((0, -1), "<"), ((0, 1), ">") })
+                var ((i, j), length) = q.Dequeue();
+                foreach (var offset in new List<(int, int)>() { (-1, 0), (1, 0), (0, -1),(0, 1) })
                 {
                     int x = i + offset.Item1;
                     int y = j + offset.Item2;
@@ -423,19 +396,17 @@ class Day23 : Day
                     bool outOfColumn = y < 0 || y >= grid[0].Count;
                     if (!outOfColumn && !outOfRow && !visited[x][y] && grid[x][y] == ".")
                     {
-                        var newPad = new List<(int, int, string)>(pad);
-                        newPad.Add((x, y, dir));
-                        q.Enqueue(((x, y), length + 1, newPad));
+                        q.Enqueue(((x, y), length + 1));
                         visited[x][y] = true;
                         lengths[x][y] = length + 1;
 
                         if (x == end.Item1 && y == end.Item2)
-                            return (true, length + 1, newPad);
+                            return (true, length + 1);
                     }
                 }
             }
-            return (false, lengths[end.Item1][end.Item2], new List<(int, int, string)>());
-        }
+            return (false, lengths[end.Item1][end.Item2]);
+        } 
 
         private void FindLetterInColumn(List<(string, int, int)> lists, int j)
         {
@@ -447,68 +418,6 @@ class Day23 : Day
                     break;
                 }
             }
-        }
-
-        public State Copy()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Print()
-        {
-            Console.WriteLine("{0}  A{1} B{2} C{3} D{4}", Costs, ACost, BCost, CCost, DCost);
-            var copy = Grid;
-
-            for (int i = 0; i < Path.Count - 1; i++)
-            {
-                var (_, _, dir2) = Path[i + 1];
-                var (x, y, dir) = Path[i];
-
-
-                if (dir == ">" && dir2 == "V")
-                {
-                    copy[x][y] = "╗";
-                }
-                else if (dir == "<" && dir2 == "V")
-                {
-                    copy[x][y] = "╔";
-                }
-                else if (dir == "^" && dir2 == "<")
-                {
-                    copy[x][y] = "╗";
-                }
-                else if (dir == "^" && dir2 == ">")
-                {
-                    copy[x][y] = "╔";
-                }
-                else if (dir == ">" && dir2 == ">")
-                {
-                    copy[x][y] = "═";
-                }
-                else if (dir == "^" && dir2 == "^")
-                {
-                    copy[x][y] = "║";
-                }
-                else if (dir == "V" && dir2 == "V")
-                {
-                    copy[x][y] = "║";
-                }
-                else if (dir == "<" && dir2 == "<")
-                {
-                    copy[x][y] = "═";
-                }
-                else
-                {
-                    copy[x][y] = dir;
-                }
-            }
-            if (Path.Count > 1)
-            {
-                var (x, y, dir) = Path.First();
-                copy[x][y] = copy[x][y].ToLower();
-            }
-            copy.GridSelect(x => x == "#" ? BLOCK : x).GridSelect(x => x == "." ? " " : x).Print();
-
         }
     }
 }

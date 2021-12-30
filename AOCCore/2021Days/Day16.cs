@@ -15,61 +15,15 @@ class Day16 : Day
     }
     public const string BLOCK = "\U00002588";
 
-    //public override string Part1(List<string> Lines)
-    //{
-
-    //    return "";
-    //}
-    public  override string Part1(List<string> Lines)
+    public override string Part1(List<string> Lines)
     {
-        Dictionary<string, string> hex2String = new Dictionary<string, string>()
-        {
-            ["0"] = "0000",
-            ["1"] = "0001",
-            ["2"] = "0010",
-            ["3"] = "0011",
-            ["4"] = "0100",
-            ["5"] = "0101",
-            ["6"] = "0110",
-            ["7"] = "0111",
-            ["8"] = "1000",
-            ["9"] = "1001",
-            ["A"] = "1010",
-            ["B"] = "1011",
-            ["C"] = "1100",
-            ["D"] = "1101",
-            ["E"] = "1110",
-            ["F"] = "1111",
-        };
-        string startString = Lines.First().List().Select(x => hex2String[x]).ToList().Flat();
-       // Console.WriteLine(startString);
-        Console.WriteLine("hallod"+HexaParser.bits4.ToString());
-       // var test = HexaParser.strToPacket(HexaParser.bits4);
-        //Packet packet = HexaParser.strToPacket(startString);
-        //var result = ToNumber(packet);
-        //return result.ToString();
-        return "";
+        return PrintSolution(Day16Fsharp.day16part1, "974", "part 1");
+    }
+    public  override string Part2(List<string> Lines)
+    {
+
+        return PrintSolution(Day16Fsharp.day16part2, "180616437720", "part 2");
     }
 
-    public long ToNumber(Packet packet)
-    {
-        if (packet.Literal()) return packet.Number;
-        else
-        {
-            return ToNumber(packet.SubPackets.Select(ToNumber).ToList(), packet.PacketId);
-        }
-    }
-
-    private long ToNumber(List<long> numbers, int mode)
-    {
-        if (mode == 0) return numbers.Sum();
-        if (mode == 1) return numbers.Aggregate((a, b) => a * b);
-        if (mode == 2) return numbers.Min();
-        if (mode == 3) return numbers.Max();
-        if (mode == 5) return numbers[0] > numbers[1] ? 1 : 0;
-        if (mode == 6) return numbers[0] < numbers[1] ? 1 : 0;
-        if (mode == 7) return numbers[0] == numbers[1] ? 1 : 0;
-        throw new Exception("");
-    }
 }
 

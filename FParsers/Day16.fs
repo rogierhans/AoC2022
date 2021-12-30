@@ -1,9 +1,6 @@
-﻿
-module HexaParser
+﻿module Day16Fsharp
 open FParsec
-open CforFSharp
-open System.Collections.Generic
-//type Packet = Literal of (int * int) * int64 | Operator of (int * int) *  Packet list 
+type Packet = Literal of (int * int) * int64 | Operator of (int * int) *  Packet list 
 
 let bitsToInt x = System.Convert.ToInt32(x,2)
 let bitsToLong x = System.Convert.ToInt64(x,2)
@@ -35,41 +32,39 @@ and  strToPackets  str =
     match run (many packetParser) str with
     | Success(result, x, y)   ->  result
     | Failure(errorMsg, x, y) -> failwith ("Cannot parse lel "+ errorMsg)
-and literal = version  .>>.?  literalID .>>.?   blockBitsParser  |>> fun ((a,b),c) -> new Packet(a,b,c)
-and operator0 = version  .>>.? packtetID .>>? zero .>>. (bitsFromSubstring 15 >>=  repeatBits) |>> fun ((a,b),d) ->   new Packet(a,b,new List<Packet>(strToPackets d))
-and operator1 =   version  .>>.? packtetID  .>>? one  .>>. multiplePacket |>> fun ((a,b),(c:Packet list)) -> new Packet(a,b, new List<Packet>(c))
+and literal = version  .>>.?  literalID .>>.?   blockBitsParser  |>> Literal
+and operator0 = version  .>>.? packtetID .>>? zero .>>. (bitsFromSubstring 15 >>=  repeatBits) |>> fun (x,d) ->  Operator (x,strToPackets d)
+and operator1 =   version  .>>.? packtetID  .>>? one  .>>. multiplePacket |>> Operator
 and multiplePacket = bitsFromSubstring 11 >>=( fun length ->  repeatParser packetParser length )
 
+let rec sumVersionNumber packet =
+    match packet with
+    | Literal ((v,_),_) -> v
+    | Operator ((v,_),list) ->  v + List.fold  (fun a b -> a + sumVersionNumber b) 0 list
+
+
+let min a b = if a < b then a else b
+let max a b = if a < b then b else a
+let rec eval (pak:Packet) =
+    match pak with
+    | Literal ((_,_),x) -> x
+    | Operator ((_,p),list) ->  applyOperator p list
+and applyOperator p list = 
+    let evalList = (List.map eval list)
+    match p with
+    | 0 -> List.sum evalList
+    | 1 -> List.fold (*) 1 evalList
+    | 2 -> List.fold min System.Int64.MaxValue  evalList
+    | 3 -> List.fold max System.Int64.MinValue evalList
+    | 5 -> if evalList[0]> evalList[1] then 1 else 0
+    | 6 -> if evalList[0]< evalList[1] then 1 else 0
+    | 7 -> if evalList[0] = evalList[1] then 1 else 0
+    | _ -> failwith "packetId does not exists"
 
 let strToPacket  str =
     match run packetParser str with
-    | Success(result, _, _)   -> result
+    | Success(result, _, _)   ->  result
     | Failure(errorMsg, _, _) -> failwith ("Cannot parse lel "+ errorMsg)
-
-
-
-//let min a b = if a < b then a else b
-//let max a b = if a < b then b else a
-//let rec eval (pak:Packet) =
-//    match pak with
-//    | Literal ((_,_),x) -> x
-//    | Operator ((_,p),list) ->  applyOperator p list
-//and applyOperator p list = 
-//    let evalList = (List.map eval list)
-//    match p with
-//    | 0 -> List.sum evalList
-//    | 1 -> List.fold (*) 1 evalList
-//    | 2 -> List.fold min System.Int64.MaxValue  evalList
-//    | 3 -> List.fold max System.Int64.MinValue evalList
-//    | 5 -> if evalList[0]> evalList[1] then 1 else 0
-//    | 6 -> if evalList[0]< evalList[1] then 1 else 0
-//    | 7 -> if evalList[0] = evalList[1] then 1 else 0
-//    | _ -> failwith "packetId does not exists"
-
-//let strToPacket  str =
-//    match run packetParser str with
-//    | Success(result, _, _)   ->  result
-//    | Failure(errorMsg, _, _) -> failwith ("Cannot parse lel "+ errorMsg)
 
 
 let Hex2Bits (a:string) =
@@ -109,11 +104,5 @@ let bits5:string = String.concat "" ( Seq.map ( string>>Hex2Bits ) teststring5)
 let bits6:string = String.concat "" ( Seq.map ( string>>Hex2Bits ) teststring6)
 let bits7:string = String.concat "" ( Seq.map ( string>>Hex2Bits ) teststring7)
 let bits8:string = String.concat "" ( Seq.map ( string>>Hex2Bits ) teststring8)
-printfn "Result: %A" (  (strToPacket  bits1))
-printfn "Result: %A" (  (strToPacket  bits2))
-printfn "Result: %A" (  (strToPacket  bits3))
-printfn "Result: %A" (  (strToPacket  bits4))
-printfn "Result: %A" (  (strToPacket  bits5))
-printfn "Result: %A" (  (strToPacket  bits6))
-printfn "Result: %A" (  (strToPacket  bits7))
-printfn "Result: %A" (  (strToPacket  bits8))
+let day16part1 = ( sumVersionNumber (strToPacket  bits8))
+let day16part2 = ( eval (strToPacket  bits8))
