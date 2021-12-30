@@ -10,12 +10,12 @@ class Day
 {
     public string RootFolder = @"C:\Users\Rogier\Dropbox\AOC2\AOC2\InputFiles\";
     private List<string> testLines = new List<string>();
-    private List<string> inputLines = new List<string>();
+    public List<string> inputLines = new List<string>();
 
     private string Folder = "";
     public void GetInput(string folder)
     {
-        Folder = folder.Split('\\')[folder.Split('\\').Count() - 2];
+        Folder = folder.Split('\\')[folder.Split('\\').Count() - 2].Split('_').Last();
         string name = "input.txt";
         string filename = folder + name;
         string filenameTest = folder + "test.txt";
@@ -56,7 +56,7 @@ class Day
 
         if (answer.ToString() == expectedAnswer)
         {
-            return String.Format("Passed {0} {1}:    {2} == {3}", Folder, additionalInfo, answer, expectedAnswer);
+            return String.Format("Day {0} {1}:    {2} == {3}", Folder, additionalInfo, answer, expectedAnswer);
         }
         else
         {

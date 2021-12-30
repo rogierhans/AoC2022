@@ -14,11 +14,6 @@ static class Printer
     {
         return string.Join(seperator, s);
     }
-    public static void Log(params object[] values)
-    {
-        Console.WriteLine(string.Join(" ", values));
-
-    }
     public static void Print<T>(this List<T> oldList, string seperator = "")
     {
         string line = string.Join(seperator, oldList);

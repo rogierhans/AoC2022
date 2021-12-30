@@ -3,22 +3,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-class Day12DFS : Day
+namespace AOC2021;
+
+
+
+class Day12 : Day
 {
-
-
-    public Day12DFS()
+    public Day12()
     {
         GetInput(RootFolder + @"2021_12\");
     }
-    int startIndex;
-    int endIndex;
-    Dictionary<long, int> Memory = new();
-    List<string> Caves = new();
-    List<string> SmallCaves = new();
-    List<string> BigCaves = new();
-    Dictionary<string, List<string>> Edges = new();
-    public override void Main(List<string> Lines)
+
+
+    public override string Part1(List<string> Lines)
     {
         GetCaves(Lines);
         startIndex = SmallCaves.IndexOf("start");
@@ -35,9 +32,35 @@ class Day12DFS : Day
             NumberOfPaths.Add(list);
         }
 
-        Console.WriteLine("Answer:" + DFSWithMem(NumberOfPaths, new int[Caves.Count], startIndex, false));
+        return PrintSolution(DFSWithMem(NumberOfPaths, new int[Caves.Count], startIndex, true), "3485", "part 1");
+    }
+    public override string Part2(List<string> Lines)
+    {
+        GetCaves(Lines);
+        startIndex = SmallCaves.IndexOf("start");
+        endIndex = SmallCaves.IndexOf("end");
+        Memory = new Dictionary<long, int>();
+        List<List<int>> NumberOfPaths = new();
+        for (int i = 0; i < SmallCaves.Count; i++)
+        {
+            var list = new List<int>();
+            for (int j = 0; j < SmallCaves.Count; j++)
+            {
+                list.Add(CountPaths(SmallCaves[i], SmallCaves[j]));
+            }
+            NumberOfPaths.Add(list);
+        }
+
+        return PrintSolution(DFSWithMem(NumberOfPaths, new int[Caves.Count], startIndex, false), "85062", "part 2");
     }
 
+    int startIndex;
+    int endIndex;
+    Dictionary<long, int> Memory = new();
+    List<string> Caves = new();
+    List<string> SmallCaves = new();
+    List<string> BigCaves = new();
+    Dictionary<string, List<string>> Edges = new();
 
 
     public static long Convert(int[] Visited, int caveFrom, bool twice)
@@ -167,9 +190,6 @@ class Day12DFS : Day
         }
         return count;
     }
-
-
-
 
 
 }

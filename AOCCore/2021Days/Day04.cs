@@ -42,8 +42,6 @@ class Day4 : Day
         var parsed = clusterLine;
         var numbers = parsed.First().First().Split(',').Select(x => long.Parse(x)).ToList();
         var bingocard = parsed.Skip(1).Select(line => new BingoCard(line)).ToList();
-
-
         var done = new List<long>();
         for (int i = 0; i < numbers.Count; i++)
         {
@@ -52,9 +50,7 @@ class Day4 : Day
             {
                 if (bingocard[b].Bingo(done))
                 {
-                    //Console.WriteLine("{0} {1}", numbers[i], bingocard[b].Score(done));
-                    //Console.WriteLine(numbers[i] * bingocard[b].Score(done));
-                    if (bingocard.Count() == 1)
+                    if (bingocard.Count == 1)
                         return PrintSolution(numbers[i] * bingocard[b].Score(done), "6256", "part 2");
                     bingocard.Remove(bingocard[b]);
                 }
