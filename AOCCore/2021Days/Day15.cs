@@ -23,7 +23,7 @@ class Day15 : Day
             X = x;
         }
     }
-    private W<(int, int)>[,] ws = new W<(int, int)>[0,0];
+    private W<(int, int)>[,] ws = new W<(int, int)>[0, 0];
 
     public struct Coord
     {
@@ -62,16 +62,23 @@ class Day15 : Day
         q.Enqueue(ws[0, 0], 0);
         bool[,] added = new bool[grid.Count, grid[0].Count];
         int counter = 0;
+        var list = new List<(int, int)>() { (-1, 0), (1, 0), (0, -1), (0, 1) };
         while (q.Count > 0)
         {
 
             var W = q.Dequeue();
             var (x, y) = W.X;
             if (realDistance[x][y] > realDistance.Last().Last()) break;
-            foreach (var (nx, ny) in grid.Neighbor4(x, y))
+            foreach (var (xoff, yoff) in list)
             {
+                var nx = x + xoff;
+                var ny = y + yoff;
+                bool outOfRow = nx < 0 || nx >= grid.Count;
+                bool outOfColumn = ny < 0 || ny >= grid[0].Count;
+                if (outOfColumn || outOfRow) continue;
                 var riskLevel = grid[nx][ny];
                 var newTotal = riskLevel + realDistance[x][y];
+
                 if (realDistance[nx][ny] > newTotal)
                 {
                     realDistance[nx][ny] = newTotal;
@@ -93,6 +100,7 @@ class Day15 : Day
 
         return realDistance;
     }
+
 
     private void Init(List<List<int>> grid, List<List<int>> dist)
     {

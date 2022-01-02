@@ -79,7 +79,16 @@ public static class SL
         return oldCells.Select(x => new List<T>(x)).ToList();
 
     }
+    public static List<T[]> DeepCopy<T>(this List<T[]> oldCells)
+    {
+        return oldCells.Select(x =>
+        {
+            var newarray = new T[x.Length];
+            Array.Copy(x, newarray, x.Length);
+            return newarray;
+        }).ToList();
 
+    }
 
     public static void Line()
     {
@@ -120,7 +129,15 @@ public static class SL
     {
         return oldList.Sum(x => x.Sum(y => func(y)));
     }
-
+    public static List<int> GetNumbersInt(int from, int to)
+    {
+        List<int> list = new List<int>();
+        for (int i = from; i < to; i++)
+        {
+            list.Add(i);
+        }
+        return list;
+    }
     public static List<long> GetNumbers(long from, long to)
     {
         List<long> list = new List<long>();

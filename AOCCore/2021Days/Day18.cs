@@ -28,19 +28,26 @@ class Day18 : Day
         }
         return PrintSolution(Magnitude(megaFish), "4391", "part 1");
     }
+    private Object someListLock = new Object(); // only once
+
     public override string Part2(List<string> Lines)
     {
         var schoolOfFish = Lines.Select(FishNumberParser.strToFish).ToList();
         long max = 0;
         for (int i = 0; i < schoolOfFish.Count; i++)
         {
-            for (int j = 0; j < schoolOfFish.Count; j++)
-            {
-                if (i == j) continue;
-                var megaFish = new Fish(CopyFish(schoolOfFish[i]), CopyFish(schoolOfFish[j]));
-                PutFishInTheOven(megaFish);
-                max = Math.Max(max, Magnitude(megaFish));
-            }
+            Parallel.ForEach(SL.GetNumbersInt(0, schoolOfFish.Count) ,j => {
+
+                if (i != j)
+                {
+                    var megaFish = new Fish(CopyFish(schoolOfFish[i]), CopyFish(schoolOfFish[j]));
+                    PutFishInTheOven(megaFish);
+                    var mag = Magnitude(megaFish);
+                    lock (someListLock)
+                        max = Math.Max(max, mag);
+                }
+            });
+           
         }
         //Console.ReadLine();
         return PrintSolution(max, "4626", "part 2");
@@ -49,12 +56,19 @@ class Day18 : Day
     {
         bool p = true;
         SetDepth(fish, 0);
+        List<Fish> fishOrder = new List<Fish>();
+        GetLiterals(fish, fishOrder);
         while (p)
         {
             p = false;
-            while (Explode(fish)) ;
 
-            p |= LeftMostSplit(fish);
+            bool q = true;
+
+            while (q) {
+                q = Explode(fish, fishOrder);
+            };
+
+            p |= LeftMostSplit(fish, fishOrder);
         }
 
     }
@@ -66,7 +80,7 @@ class Day18 : Day
             return Magnitude(fish.left) * 3 + Magnitude(fish.right) * 2;
         }
     }
-    public bool LeftMostSplit(Fish fish)
+    public bool LeftMostSplit(Fish fish,List<Fish> fishOrder)
     {
         if (fish.isLeaf)
         {
@@ -76,26 +90,30 @@ class Day18 : Day
                 int leftNumber = (int)Math.Floor(halved);
                 int rightNumber = (int)Math.Ceiling(halved);
                 fish.isLeaf = false;
+
+    
                 fish.left = new Fish(leftNumber);
                 fish.left.depth = fish.depth + 1;
                 fish.right = new Fish(rightNumber);
                 fish.right.depth = fish.depth + 1;
+                fishOrder.Insert(fishOrder.IndexOf(fish), fish.left);
+                fishOrder.Insert(fishOrder.IndexOf(fish), fish.right);
+                fishOrder.Remove(fish);
                 return true;
             }
             else return false;
         }
         else
         {
-            bool p = LeftMostSplit(fish.left);
+            bool p = LeftMostSplit(fish.left, fishOrder);
             if (p) return p;
-            else return LeftMostSplit(fish.right);
+            else return LeftMostSplit(fish.right, fishOrder);
         }
     }
 
-    public bool Explode(Fish fish)
+    public bool Explode(Fish fish, List<Fish> fishOrder)
     {
-        List<Fish> fishOrder = new List<Fish>();
-        GetLiterals(fish, fishOrder);
+
         return ExplodeLeftMost(fish, fishOrder);
     }
 
@@ -111,7 +129,7 @@ class Day18 : Day
     }
     public bool ExplodeLeftMost(Fish fish, List<Fish> fishOrder)
     {
-        if (fish.isLeaf        ) return false;
+        if (fish.isLeaf) return false;
         else if (fish.depth == 4)
         {
             int indexLeft = fishOrder.IndexOf(fish.left);
@@ -124,6 +142,9 @@ class Day18 : Day
             {
                 fishOrder[indexRight + 1].Number += fish.right.Number;
             }
+            fishOrder.Insert(indexLeft, fish);
+            fishOrder.Remove(fish.left);
+            fishOrder.Remove(fish.right);
             BecomeLeaf(fish);
             return true;
         }

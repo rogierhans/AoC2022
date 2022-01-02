@@ -130,7 +130,7 @@ class Day19 : Day
         }
     }
 
-    public class Scanner
+    private class Scanner
     {
         public int id = 0;
         public string Name = "";
@@ -154,7 +154,7 @@ class Day19 : Day
             var OGRelativePOS = Positions.Select(x => x.PermOfPos[perm]);
             Positions = OGRelativePOS.Select(x => Minus(newPos, x)).ToList();
             SetDistance();
-           // Console.WriteLine(Name + "set to" + newPos);
+            Console.WriteLine(Name + "set to" + newPos);
 
         }
 
@@ -232,13 +232,13 @@ class Day19 : Day
             var x = k.Item1;
             var y = k.Item2;
             var z = k.Item3;
-            bool match = (a == x && b == y && c == z) ||
+            return (a == x && b == y && c == z) ||
                    (a == x && b == z && c == y) ||
                    (a == y && b == x && c == z) ||
                    (a == y && b == z && c == x) ||
                    (a == z && b == x && c == y) ||
                    (a == z && b == y && c == x);
-            return match;
+            return (a == x ||a == y || a == z) && (b == x || b == y || b == z) && (c == x || c == y || c == z);
         }
 
         List<(long, long, long, Position)> Distances = new List<(long, long, long, Position)>();

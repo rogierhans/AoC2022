@@ -30,7 +30,7 @@ namespace CforFSharp
         public override string ToString()
         {
             if (isLeaf)
-                return Number.ToString();
+                return Number.ToString() ;
             else
                 return "(" + left + "," + right + ")";
         }

@@ -12,65 +12,64 @@ class Day25 : Day
 
     public override string Part1(List<string> Lines)
     {
-        //   Lines.Print();
-        var grid = Lines.Select(x => x.List()).ToList();
-        // grid.Print();
-
+        var grid = new List<char[]>();
+        for (int i = 0; i < Lines.Count; i++)
+        {
+            grid.Add(Lines[i].ToCharArray());
+        }
 
         int k = 0;
         bool p = true;
-        while(p)  // for (int k = 0; k < 5; k++)
+        while (p)
         {
             p = false;
             k++;
 
             var newGrid = grid.DeepCopy();
-            for (int i = 0; i < grid.Count; i++)
+
+
+            Parallel.ForEach(SL.GetNumbersInt(0, grid.Count), i =>
             {
-                for (int j = 0; j < grid[0].Count; j++)
+
+                for (int j = 0; j < grid[0].Length; j++)
                 {
 
-                    if (grid[i][j] == ">")
+                    if (grid[i][j] == '>')
                     {
-                        var neighbor = grid[(i) % grid.Count][(j + 1) % grid[0].Count];
+                        var neighbor = grid[(i) % grid.Count][(j + 1) % grid[0].Length];
 
-                        if (neighbor == ".")
+                        if (neighbor == '.')
                         {
                             p = true;
-                            newGrid[i][j] = ".";
-                            newGrid[(i) % grid.Count][(j + 1) % grid[0].Count] = grid[i][j];
+                            newGrid[i][j] = '.';
+                            newGrid[(i) % grid.Count][(j + 1) % grid[0].Length] = grid[i][j];
                         }
                     }
                 }
-            }
+            });
+
+
             grid = newGrid;
             newGrid = grid.DeepCopy();
-            //Console.WriteLine();
-            //grid.Print();            //Console.WriteLine();
-            //grid.Print();
-            for (int i = 0; i < grid.Count; i++)
-            {
-                for (int j = 0; j < grid[0].Count; j++)
+
+            Parallel.ForEach(SL.GetNumbersInt(0, grid[0].Length), j => {
+                for (int i = 0; i < grid.Count; i++)
                 {
 
-                    if (grid[i][j] == "v")
+                    if (grid[i][j] == 'v')
                     {
-                        var neighbor = grid[(i + 1) % grid.Count][(j) % grid[0].Count];
-                       // Console.WriteLine("first "+grid[i][j]);
-                        if (neighbor == ".")
+                        var neighbor = grid[(i + 1) % grid.Count][(j) % grid[0].Length];
+                        if (neighbor == '.')
                         {
                             p = true;
-                            newGrid[i][j] = ".";
-                          //  Console.WriteLine(grid[i][j]);
-                            newGrid[(i + 1) % grid.Count][(j) % grid[0].Count] = grid[i][j];
+                            newGrid[i][j] = '.';
+                            newGrid[(i + 1) % grid.Count][(j) % grid[0].Length] = grid[i][j];
                         }
                     }
                 }
-            }
+            });
+
             grid = newGrid;
-            //Console.WriteLine();
-            //grid.Print();
-         //   Console.ReadLine();
         }
         return PrintSolution(k, "441", "part 1");
     }

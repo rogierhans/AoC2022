@@ -22,11 +22,8 @@ class Day22 : Day
             CubeThing current = area;
             foreach (var old in currentAreas)
             {
-                var intersect = old.Intersect(current);
-                if (intersect.NonEmpty())
-                {
-                    newAres.Add(intersect);
-                }
+                old.Intersect(current, newAres);
+
             }
             if (current.Counter == 0)
             {
@@ -37,23 +34,24 @@ class Day22 : Day
         }
         return PrintSolution(currentAreas.Where(x => x.Counter % 2 == 0).Sum(x => x.area) - currentAreas.Where(x => x.Counter % 2 == 1).Sum(x => x.area), "527915", "part 1");
     }
+    private static Object someListLock = new Object(); // only once
+
+
     public override string Part2(List<string> Lines)
     {
         var tuples = Lines.FindPatterns("{0} x={1},y={2},z={3}", x => x, x => x, x => x, x => x);
         var Areas = tuples.Select(x => new CubeThing(x)).ToList();
         List<CubeThing> currentAreas = new List<CubeThing>() { };
+
         foreach (var area in Areas)//.Where(a => Math.Abs(a.xmin) <= 50 && Math.Abs(a.xmax) <= 50 && Math.Abs(a.ymin) <= 50 && Math.Abs(a.zmin) <= 50 && Math.Abs(a.ymax) <= 50 && Math.Abs(a.zmax) <= 50))
         {
             var newAres = new List<CubeThing>();
             CubeThing current = area;
-            foreach (var old in currentAreas)
-            {
-                var intersect = old.Intersect(current);
-                if (intersect.NonEmpty())
-                {
-                    newAres.Add(intersect);
-                }
-            }
+
+            Parallel.ForEach(currentAreas, old =>
+                        {
+                            old.Intersect(current, newAres);
+                        });
             if (current.Counter == 0)
             {
                 newAres.Add(current);
@@ -92,7 +90,7 @@ class Day22 : Day
             bool valid = xmax - xmin >= 0 && ymax - ymin >= 0 && zmax - zmin >= 0;
             return valid;
         }
-        public CubeThing Intersect(CubeThing otherCube)
+        public void Intersect(CubeThing otherCube, List<CubeThing> newArreas)
         {
             long newxmin = Math.Max(xmin, otherCube.xmin);
             long newymin = Math.Max(ymin, otherCube.ymin);
@@ -102,8 +100,12 @@ class Day22 : Day
             long newymax = Math.Min(ymax, otherCube.ymax);
             long newzmax = Math.Min(zmax, otherCube.zmax);
 
-            var newAr = new CubeThing(newxmin, newxmax, newymin, newymax, newzmin, newzmax, Counter + 1);
-            return newAr;
+
+            if (newxmax - newxmin >= 0 && newymax - newymin >= 0 && newzmax - newzmin >= 0)
+            {
+                lock (someListLock)
+                    newArreas.Add(new CubeThing(newxmin, newxmax, newymin, newymax, newzmin, newzmax, Counter + 1));
+            }
         }
     }
 
