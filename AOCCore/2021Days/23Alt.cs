@@ -14,7 +14,7 @@ class Day23Alt : Day
     {
 
 
-        State firstState = new State(Lines,true);
+        State firstState = new State(Lines, true);
 
         Dictionary<string, State> keyValuePairs = new Dictionary<string, State>();
         var q = new SimplePriorityQueue<string, int>();
@@ -153,9 +153,9 @@ class Day23Alt : Day
         {
             throw new Exception();
         }
-
-
-        string[,] Home = new string[2, 4];
+        int Empty = 8;
+        int[] HallWay = new int[7];
+        int[,] Home = new int[2, 4];
         public State(List<string> lines, bool part1)
         {
             Grid = lines.Select(x => x.List()).ToList();
@@ -168,13 +168,17 @@ class Day23Alt : Day
                     {
                         var col = 3 + j * 2;
                         var row = i + 2;
-                        Home[i, j] = Grid[row][col];
-                        Console.WriteLine(Grid[row][col]);
+                        Home[i, j] = Grid[row][col].ToCharArray().First() - 'A';
                     }
                 }
 
             }
-            Home.ToLists().Print();
+            for (int i = 0; i < 7; i++)
+            {
+                HallWay[i] = Empty;
+
+            }
+            Console.WriteLine(this);
             Console.ReadLine();
         }
         public State? Parent;
@@ -183,52 +187,48 @@ class Day23Alt : Day
         public State(State oldState)
         {
             Parent = oldState;
-            Grid = oldState.Grid.DeepCopy();
             Costs = oldState.Costs;
             ACost = oldState.ACost;
             BCost = oldState.BCost;
             CCost = oldState.CCost;
             DCost = oldState.DCost;
-            height = Grid.Count;
-            width = Grid[0].Count;
+
+            Home = new int[oldState.Home.GetLength(0), oldState.Home.GetLength(1)];
+            for (int row = 0; row < Home.GetLength(0); row++)
+            {
+                for (int col = 0; col < Home.GetLength(1); col++)
+                {
+                    Home[row, col] = oldState.Home[row, col];
+                }
+            }
+            SetDone();
         }
 
+        bool[] done = new bool[4];
+        public void SetDone()
+        {
+            for (int col = 0; col < Home.GetLength(1); col++)
+            {
+                var p = true;
+                for (int row = 0; row < Home.GetLength(0); row++)
+
+                {
+                    p |= Home[row, col] == col;
+                }
+                done[col] = p;
+            }
+
+        }
 
         public bool IsDone()
         {
-            // return false;
-            bool q = ColumnCorrect("A") && ColumnCorrect("B") && ColumnCorrect("C") && ColumnCorrect("D");
-            if (!q) return q;
             bool p = true;
-            foreach (var (x, y) in CoordsHallway)
+            for (int col = 0; col < Home.GetLength(1); col++)
             {
-                p &= Grid[x][y] == ".";
-            }
-
-            return p;
-        }
-
-        private bool ColumnCorrect(string letter)
-        {
-            int index = Letter2Index(letter);
-            bool p = true;
-            for (int i = 0; i < height; i++)
-            {
-                p &= Grid[i][index] == letter || Grid[i][index] == "." || Grid[i][index] == "#";
+                p |= done[col];
             }
             return p;
         }
-
-
-        public void ForceState(string filename)
-        {
-            Grid = File.ReadAllLines(filename).Select(x => x.List()).ToList();
-        }
-
-
-
-
-
         public List<State> GetNextStates()
         {
             List<State> newStates = new List<State>();
@@ -382,14 +382,13 @@ class Day23Alt : Day
             FindStackLetters().Print("");
         }
 
-        public List<(string, int, int)> FindStackLetters()
+        public List<(int, int, int)> FindStackLetters()
         {
-            var lists = new List<(string, int, int)>();
-            FindLetterInColumn(lists, 3);
-            FindLetterInColumn(lists, 5);
-            FindLetterInColumn(lists, 7);
-            FindLetterInColumn(lists, 9);
-
+            var lists = new List<(int, int, int)>();
+            for (int col = 0; col < 4; col++)
+            {
+                FindLetterInColumn(lists, col);
+            }
             return lists;
         }
         private (bool, int) IsPath((int, int) start, (int, int) end, List<List<string>> grid)
@@ -423,16 +422,42 @@ class Day23Alt : Day
             return (false, lengths[end.Item1][end.Item2]);
         }
 
-        private void FindLetterInColumn(List<(string, int, int)> lists, int j)
+        private void FindLetterInColumn(List<(int, int, int)> lists, int col
+            )
         {
-            for (int i = 0; i < height; i++)
+            for (int row = 0; row < Home.GetLength(0); row++)
             {
-                if (letters.Contains(Grid[i][j]))
+                if (Home[row, col] != Empty)
                 {
-                    lists.Add((Grid[i][j], i, j));
-                    break;
+                    lists.Add((Home[row, col], row, col));
                 }
             }
+        }
+
+        public override string ToString()
+        {
+            string line = "";
+            int i = 0;
+            line += HallWay[i++] == Empty ? "." : HallWay[i - 1];
+            line += HallWay[i++] == Empty ? "." : HallWay[i - 1];
+
+            line += "." + (HallWay[i++] == Empty ? "." : HallWay[i - 1]);
+
+            line += "." + (HallWay[i++] == Empty ? "." : HallWay[i - 1]);
+
+            line += "." + (HallWay[i++] == Empty ? "." : HallWay[i - 1]);
+
+            line += "." + (HallWay[i++] == Empty ? "." : HallWay[i - 1]);
+            line += (HallWay[i++] == Empty ? "." : HallWay[i - 1]) + "\n" + "##";
+            for (int row = 0; row < Home.GetLength(0); row++)
+            {
+                for (int col = 0; col < Home.GetLength(1); col++)
+                {
+                    line += ((char)(Home[row, col] + 'A')) + "#";
+                }
+                line += "\n" + "##";
+            }
+            return line;
         }
     }
 }
