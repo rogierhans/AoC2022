@@ -12,147 +12,120 @@ class Day23Alt : Day
 
     public override string Part1(List<string> Lines)
     {
-
-
         State firstState = new State(Lines, true);
-
-        Dictionary<string, State> keyValuePairs = new Dictionary<string, State>();
-        var q = new SimplePriorityQueue<string, int>();
+       var result =  RunAStar(firstState);
+        return PrintSolution(result, "15322", "part 1");
+    }
+    public override string Part2(List<string> Lines)
+    {
+        var newLines = new List<string>();
+        newLines.AddRange(Lines.Take(3));
+        newLines.Add("  #D#C#B#A#");
+        newLines.Add("  #D#B#A#C#");
+        newLines.AddRange(Lines.Skip(3).Take(2));
+        State firstState = new State(newLines, false);
+        var result = RunAStar(firstState);
+        return PrintSolution(result, "56324", "part 2");
+    }
+    private string RunAStar(State firstState) {
+        Dictionary<ulong, State> keyValuePairs = new Dictionary<ulong, State>();
+        var q = new SimplePriorityQueue<ulong, int>();
         {
-            string key = firstState.ToKey();
+            ulong key = firstState.ToKey();
             keyValuePairs.Add(key, firstState);
-            q.Enqueue(key, firstState.Costs);
+            q.Enqueue(key, firstState.GetCosts());
         }
-        HashSet<string> done = new HashSet<string>();
+        HashSet<ulong> done = new HashSet<ulong>();
+        int counter = 0;
+        int bestCost = int.MaxValue;
+
         while (q.Count > 0)
         {
+            counter++;
             var currentKey = q.Dequeue();
             var state = keyValuePairs[currentKey];
-            Console.WriteLine(state);
-            // Console.ReadLine();
+            state.SetDone();
+
             if (state.IsDone())
             {
-                Console.WriteLine(currentKey);
-                return PrintSolution(state.Costs, "15322", "part 1");
+                Console.WriteLine(state);
+
+                bestCost = Math.Min(state.GetCosts(),bestCost);
+                //break;
             }
             foreach (var next in state.GetNextStates())
             {
-                string key = next.ToKey();
-
-
+                ulong key = next.ToKey();
                 if (!done.Contains(key))
                 {
                     if (keyValuePairs.ContainsKey(key))
                     {
                         var otherState = keyValuePairs[key];
-                        if (otherState.Costs > next.Costs)
+                        if (otherState.GetCosts() > next.GetCosts())
                         {
                             keyValuePairs[key] = next;
-                            q.UpdatePriority(key, next.Costs);
+                            q.UpdatePriority(key, next.GetCosts());
                         }
                     }
                     else
                     {
                         keyValuePairs[key] = next;
-                        q.Enqueue(key, next.Costs);
+                        q.Enqueue(key, next.GetCosts());
                     }
                 }
             }
-            Console.WriteLine(currentKey);
+          //  Console.WriteLine(currentKey);
             done.Add(currentKey);
-            // if (done.Count % 1000 == 0) Console.WriteLine(done.Count);
         }
-        Console.WriteLine("DonewithoutSolutionlel");
-        Console.ReadLine();
-        throw new Exception();
+        return bestCost.ToString();
     }
-    //  public override string Part2(List<string> Lines)
-    // {
-    //var newLines = new List<string>();
-    //newLines.AddRange(Lines.Take(3));
-    //newLines.Add("  #D#C#B#A#");
-    //newLines.Add("  #D#B#A#C#");
-    //newLines.AddRange(Lines.Skip(3).Take(2));
-    //State firstState = new State(newLines);
-
-    ////  State test = new State(Lines);
-    ////  test.ForceState(@"C:\Users\Rogier\Dropbox\AOC2\AOC2\InputFiles\2021_23\state5.txt");
-    ////// test.Print();
-    ////  test.GetNextStates().Where(state => true).ToList().ForEach(state => state.Print());
-    ////   Console.WriteLine(test.ToKey());
-    ////  Console.ReadLine();
-    //Dictionary<string, State> keyValuePairs = new Dictionary<string, State>();
-    //var q = new SimplePriorityQueue<string, int>();
-    //{
-    //    string key = firstState.ToKey();
-    //    keyValuePairs.Add(key, firstState);
-    //    q.Enqueue(key, firstState.Costs);
-    //}
-    //HashSet<string> done = new HashSet<string>();
-
-    //while (q.Count > 0)
-    //{
-    //    var currentKey = q.Dequeue();
-    //    var state = keyValuePairs[currentKey];
-
-    //    //  Console.Write(state.Costs + "\t");
-    //    if (state.IsDone())
-    //    {
-    //        return PrintSolution(state.Costs, "56324", "part 2");
-
-    //        // return;
-
-    //    }
-    //    foreach (var next in state.GetNextStates())
-    //    {
-    //        string key = next.ToKey();
-
-
-    //        if (!done.Contains(key))
-    //        {
-    //            if (keyValuePairs.ContainsKey(key))
-    //            {
-    //                var otherState = keyValuePairs[key];
-    //                if (otherState.Costs > next.Costs)
-    //                {
-    //                    keyValuePairs[key] = next;
-    //                    q.UpdatePriority(key, next.Costs);
-    //                }
-    //            }
-    //            else
-    //            {
-    //                keyValuePairs[key] = next;
-    //                q.Enqueue(key, next.Costs);
-    //            }
-    //        }
-    //    }
-    //    done.Add(currentKey);
-    //    //state.Print();
-    //    //Console.ReadLine();
-    //}
-    //throw new Exception();
-    //   }
-    //. . % . % . % . % . .
-    //0 1 2 3 4 5 6 7 8 9 10
 
     class State
     {
 
 
 
-        public int Costs = new int();
+        private int Costs = new int();
 
-        public int ACost = 0;
-        public int BCost = 0;
-        public int CCost = 0;
-        public int DCost = 0;
 
-        public string ToKey()
+        public int GetCosts()
         {
-            return String.Join("", HallWay) + String.Join("", Home.ToLists().Select(x => String.Join("", x)));
+            int extraCost = 0;
+            for (int col = 0; col < HallWay.Length; col++)
+            {
+             //  if (HallWay[col] != Empty) extraCost += ExtraCost(HallWay[col], Math.Abs(col - HallWay[col]));
+            }
+
+            return Costs + extraCost;
         }
-        int Empty = 8;
-        int Illegal = 5;
+
+        private static int ExtraCost(int letter, int length)
+        {
+            if (letter == 0) return 1 * length;
+            if (letter == 1) return  10 * length;
+            if (letter == 2) return  100 * length;
+            if (letter == 3) return 1000 * length;
+            return 0;
+        }
+        public ulong ToKey()
+        {
+            ulong number = 0;
+            for (int col = 0; col < HallWay.Length; col++)
+            {
+                if(col != 2 || col != 4 || col != 6 || col != 8)
+                number = number * 5 + (ulong) HallWay[col];
+            }
+            for (int row = 0; row < Home.GetLength(0); row++)
+            {
+                for (int col = 0; col < Home.GetLength(1); col++)
+                {
+                    number = number * 5 + (ulong)Home[row, col];
+
+                }
+            }
+            return number;
+        }
+        int Empty = 5;
         int[] HallWay = new int[7 + 4];
         int[,] Home = new int[2, 4];
         public State(List<string> lines, bool part1)
@@ -170,19 +143,49 @@ class Day23Alt : Day
                     }
                 }
             }
+            else
+            {
+                Home = new int[4, 4];
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        var col = 3 + j * 2;
+                        var row = i + 2;
+                        Home[i, j] = Grid[row][col].ToCharArray().First() - 'A';
+                    }
+                }
+            }
             for (int i = 0; i < 11; i++)
             {
                 HallWay[i] = Empty;
 
             }
-            List<int> illegalHW = new List<int> { 2, 4, 6, 8 };
-            foreach (var hw in illegalHW)
-            {
-                HallWay[hw] = Illegal;
-            }
-            Console.WriteLine(this);
+            // Console.WriteLine(this);
             //  Console.ReadLine();
         }
+
+        public void ForceState(List<string> lines)
+        {
+
+            var Grid = lines.Select(x => x.List()).ToList();
+            for (int i = 0; i < 2; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    var col = 3 + j * 2;
+                    var row = i + 2;
+                    Home[i, j] = (Grid[row][col] == ".") ? Empty : Grid[row][col].ToCharArray().First() - 'A';
+                }
+            }
+            for (int i = 0; i < 11; i++)
+            {
+                HallWay[i] = Grid[1][i + 1] == "." ? Empty : Grid[1][i + 1].ToCharArray().First() - 'A';
+            }
+            Console.WriteLine(this);
+            SetDone();
+        }
+
         public State? Parent;
 
 
@@ -202,11 +205,6 @@ class Day23Alt : Day
             }
             HallWay[3] = 0;
             HallWay[5] = 0;
-            List<int> illegalHW = new List<int> { 2, 4, 6, 8 };
-            foreach (var hw in illegalHW)
-            {
-                HallWay[hw] = Illegal;
-            }
             SetDone();
         }
 
@@ -214,10 +212,6 @@ class Day23Alt : Day
         {
             Parent = oldState;
             Costs = oldState.Costs;
-            ACost = oldState.ACost;
-            BCost = oldState.BCost;
-            CCost = oldState.CCost;
-            DCost = oldState.DCost;
 
             Home = new int[oldState.Home.GetLength(0), oldState.Home.GetLength(1)];
             for (int row = 0; row < Home.GetLength(0); row++)
@@ -264,62 +258,27 @@ class Day23Alt : Day
         }
         public List<State> GetNextStates()
         {
+            SetDone();
             List<State> newStates = new List<State>();
             FromStack2HW(newStates);
             FromHW2Stack(newStates);
             return newStates;
         }
-
-        //private void FromStack2Stack(List<State> newStates)
-        //{
-        //    foreach (var (letter, i, j) in FindStackLetters())
-        //    {
-        //        var ((x, y), validSpot) = FindStackSpot(letter);
-        //        if (!validSpot || j == y) return;
-        //        var (validPath, length) = IsPath((i, j), (x, y), Grid);
-        //        if (!validPath) return;
-        //        var newState = new State(this);
-        //        SetCosts(letter, length, newState);
-        //        newState.Grid[x][y] = letter;
-        //        newState.Grid[i][j] = ".";
-        //        newStates.Add(newState);
-        //    }
-        //}
-
         private static void SetCosts(int letter, int length, State newState)
         {
-            //Console.WriteLine(letter);
-            //Console.ReadLine();
-            if (letter == 0)
-            {
-                newState.Costs += 1 * length;
-                newState.ACost += 1 * length;
-            }
-            if (letter == 1)
-            {
-                newState.Costs += 10 * length;
-                newState.BCost += 10 * length;
-            }
-            if (letter == 2)
-            {
-                newState.Costs += 100 * length;
-                newState.CCost += 100 * length;
-            }
-            if (letter == 3)
-            {
-                newState.Costs += 1000 * length;
-                newState.DCost += 1000 * length;
-            }
+            if (letter == 0) newState.Costs += 1 * length;
+            if (letter == 1) newState.Costs += 10 * length;
+            if (letter == 2) newState.Costs += 100 * length;
+            if (letter == 3) newState.Costs += 1000 * length;
         }
-
-        public const string BLOCK = "\U00002588";
         private void FromHW2Stack(List<State> newStates)
         {
             for (int col = 0; col < HallWay.Length; col++)
             {
                 var letter = HallWay[col];
-                if (letter == Empty || letter == Illegal) continue;
+                if (letter == Empty) continue;
                 var ((x, y), validSpot) = FindStackSpot(letter);
+                //  Console.WriteLine(validSpot);
                 if (validSpot)
                 {
                     var (validPath, length) = PathFromHWToStack(col, (x, y));
@@ -355,7 +314,7 @@ class Day23Alt : Day
             {
                 for (int c = 0; c < HallWay.Length; c++)
                 {
-                    if (HallWay[c] != Empty || HallWay[c] == Illegal) continue;
+                    if (HallWay[c] != Empty || c == 2 || c == 4 || c == 6 || c == 8) continue;
                     var (valid, length) = PathFromStackToHW(c, (x, y));
                     if (valid)
                     {
@@ -385,9 +344,6 @@ class Day23Alt : Day
 
             var (row, col) = start;
             var from = 2 + col * 2;
-            //Console.WriteLine("stack" + start);
-            //Console.WriteLine("hallway" + hallway);
-            //Console.WriteLine("stackHW" + from);
             var (suc, length1) = H2H(from, hallway);
             if (!suc) return (false, int.MaxValue);
             return (suc, length1 + 1 + row);
@@ -407,7 +363,7 @@ class Day23Alt : Day
                 bool p = true;
                 for (int col = fromHallway + 1; col <= toHallway; col++)
                 {
-                    p &= HallWay[col] == Empty || HallWay[col] == Illegal;
+                    p &= HallWay[col] == Empty;
                 }
                 return (p, toHallway - fromHallway);
             }
@@ -416,18 +372,15 @@ class Day23Alt : Day
                 bool p = true;
                 for (int col = toHallway; col < fromHallway; col++)
                 {
-                    p &= HallWay[col] == Empty || HallWay[col] == Illegal;
+                    p &= HallWay[col] == Empty;
                 }
-                return (p, fromHallway -toHallway );
+                return (p, fromHallway - toHallway);
             }
             else
             {
                 throw new Exception();
             }
         }
-
-
-
         private void FindLetterInColumn(List<(int, int, int)> lists, int col
             )
         {
@@ -446,7 +399,7 @@ class Day23Alt : Day
             string line = "";
             for (int col = 0; col < HallWay.Length; col++)
             {
-                line += (HallWay[col] == Empty || HallWay[col] == Illegal ? "." : ((char)(HallWay[col] + 'A')));
+                line += (HallWay[col] == Empty ? "." : ((char)(HallWay[col] + 'A')));
             }
             line += "\n" + "##";
             for (int row = 0; row < Home.GetLength(0); row++)

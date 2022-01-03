@@ -16,6 +16,40 @@ class Day19Alt : Day
 
 
     public static HashSet<int> counts = new HashSet<int>();
+
+    public override string Part1(List<string> Lines)
+    {
+        var scaners = Lines.ClusterLines().Select(clines => new Scanner(clines)).ToList();
+        List<(long, long, long, Position, Position)> AllDistances = new();
+        //scaners[0].Machtes(scaners[1]);
+        scaners[0].HasPosition = true;
+        scaners[0].PositionScanner = new Position(0, 0, 0);
+        Queue<Scanner> Q = new Queue<Scanner>();
+        Q.Enqueue(scaners[0]);
+
+        while (Q.Any())
+        {
+            var scanner1 = Q.Dequeue();
+            for (int i = 0; i < scaners.Count; i++)
+            {
+                if (!scaners[i].HasPosition)
+                    scanner1.Machtes(scaners[i], Q);
+            }
+        }
+        List<Position> AllBeamers = new List<Position>();
+        foreach (var scanner in scaners)
+        {
+            foreach (var pos in scanner.GetAbsolutePosition())
+            {
+                if (!AllBeamers.Any(x => pos.Equal(x)))
+                {
+                    AllBeamers.Add(pos);
+                }
+            }
+        }
+
+        return PrintSolution(AllBeamers.Count, "440", "part 1");
+    }
     public override string Part2(List<string> Lines)
     {
         var scaners = Lines.ClusterLines().Select(clines => new Scanner(clines)).ToList();
@@ -161,7 +195,11 @@ class Day19Alt : Day
         public string Coordssystem;
         public Position PositionScanner = new(int.MinValue, int.MinValue, int.MinValue);
         public bool HasPosition = false;
-        List<Position> Positions = new();
+        public List<Position> Positions = new();
+
+        public List<Position> GetAbsolutePosition() {
+            return Positions.Select(x => new Position(x.X + PositionScanner.X, x.Y + PositionScanner.Y, x.Z + PositionScanner.Z)).ToList();
+        }
 
         public Scanner(List<string> inputLines)
         {
@@ -179,7 +217,6 @@ class Day19Alt : Day
             PositionScanner = newPos;
             Positions.ForEach(x => x.ApplyGivePermutations(perm));
             HasPosition = true;
-            // Console.WriteLine(this + " " + newPos);
         }
 
         public void Machtes(Scanner otherScanner, Queue<Scanner> Q)

@@ -14,6 +14,37 @@ class Day19 : Day
     }
     public const string BLOCK = "\U00002588";
 
+    public override string Part1(List<string> Lines)
+    {
+        var scaners = Lines.ClusterLines().Select(clines => new Scanner(clines)).ToList();
+        List<(long, long, long, Position, Position)> AllDistances = new();
+        scaners[0].PositionScanner = new Position(0, 0, 0, false);
+        scaners[0].HasPosition = true;
+        while (scaners.Where(x => x.HasPosition).Count() < scaners.Count)
+        {
+            for (int i = 0; i < scaners.Count; i++)
+            {
+                for (int j = 0; j < scaners.Count; j++)
+                {
+                    if (i != j)
+                        scaners[i].Machtes(scaners[j]);
+                }
+            }
+        }
+        List<Position> AllBeamers = new List<Position>();
+        foreach (var scanner in scaners)
+        {
+            foreach (var pos in scanner.Positions)
+            {
+                if (!AllBeamers.Any(x => pos.Equal(x)))
+                {
+                    AllBeamers.Add(pos);
+                }
+            }
+        }
+
+        return PrintSolution(AllBeamers.Count, "440", "part 1");
+    }
     public override string Part2(List<string> Lines)
     {
         var scaners = Lines.ClusterLines().Select(clines => new Scanner(clines)).ToList();
@@ -136,7 +167,7 @@ class Day19 : Day
         public string Name = "";
         public string Coordssystem;
         public Position PositionScanner = new(-1, -1, -1, false);
-        List<Position> Positions = new();
+        public List<Position> Positions = new();
 
         public Scanner(List<string> inputLines)
         {
@@ -238,7 +269,7 @@ class Day19 : Day
                    (a == y && b == z && c == x) ||
                    (a == z && b == x && c == y) ||
                    (a == z && b == y && c == x);
-            return (a == x ||a == y || a == z) && (b == x || b == y || b == z) && (c == x || c == y || c == z);
+            return (a == x || a == y || a == z) && (b == x || b == y || b == z) && (c == x || c == y || c == z);
         }
 
         List<(long, long, long, Position)> Distances = new List<(long, long, long, Position)>();
