@@ -48,7 +48,7 @@ class Day23Alt : Day
 
             if (state.IsDone())
             {
-                Console.WriteLine(state);
+               // Console.WriteLine(state);
 
                 bestCost = Math.Min(state.GetCosts(),bestCost);
                 //break;
