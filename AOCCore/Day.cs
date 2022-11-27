@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 class Day
 {
-    public string RootFolder = @"C:\Users\Rogier\Dropbox\AOC2\AOC2\InputFiles\";
+    public string RootFolder = @"C:\Users\Rogier\Desktop\InputFiles\";
     private List<string> testLines = new List<string>();
     public List<string> inputLines = new List<string>();
 
@@ -18,10 +18,18 @@ class Day
         Folder = folder.Split('\\')[folder.Split('\\').Count() - 2].Split('_').Last();
         string name = "input.txt";
         string filename = folder + name;
-        string filenameTest = folder + "test.txt";
+        string filenameTest = folder + "test.txt"; 
         testLines = File.ReadAllLines(filenameTest).ToList();
         inputLines = File.ReadAllLines(filename).ToList();
     }
+    public void GetInput(string year, string day)
+    {
+        string filename = RootFolder + year + "_" + day +@"\";
+        testLines = File.ReadAllLines(filename + "test.txt").ToList();
+        inputLines = File.ReadAllLines(filename + "input.txt").ToList();
+    }
+
+
 
 
     public virtual void Main(List<string> inputLines)
