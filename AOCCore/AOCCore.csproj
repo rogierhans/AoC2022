@@ -13,22 +13,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FSharp.Core" Version="6.0.1" />
-    <PackageReference Include="Google.OrTools" Version="9.2.9972" />
+    <PackageReference Include="FSharp.Core" Version="7.0.0" />
+    <PackageReference Include="Google.OrTools" Version="9.4.1874" />
     <PackageReference Include="OptimizedPriorityQueue" Version="5.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\CforFSharp\CforFSharp.csproj" />
-    <ProjectReference Include="..\FParsers\FParsers.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Gurobi80.NET">
       <HintPath>..\..\..\..\..\..\gurobi801\win64\bin\Gurobi80.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="Gurobi81.NET">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Gurobi\win64\bin\Gurobi81.NET.dll</HintPath>
     </Reference>
   </ItemGroup>
 
