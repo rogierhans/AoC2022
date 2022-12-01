@@ -18,7 +18,7 @@ class Day01 : Day
     public override void Part1(List<string> Lines)
     {
         TryParse(Lines);
-        // first solution had a loop and this is far more retarded.
+        // first solution had a loop and this is far more [REDACTED].
         NumberedBlocks.Select(x => x.GridSum(y => y)).Max().P();
         NumberedBlocks.Select(x => x.GridSum(y => y)).OrderByDescending(x => x).Take(3).Sum().P();
     }

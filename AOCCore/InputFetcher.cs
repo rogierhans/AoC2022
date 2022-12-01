@@ -26,7 +26,7 @@ namespace AOCCore
                 Console.WriteLine(folder + " does not  exists");
                 Directory.CreateDirectory(folder);
 
-                string cookie = "";
+                string cookie = File.ReadAllText(@"C:\Users\Rogier\Desktop\Cookie.txt");
                 string site = string.Format(@"https://adventofcode.com/{0}/day/{1}/input", year, int.Parse(day).ToString());
                 //Download input file from advent of code with cookie session 
                 var client = new HttpClient();
