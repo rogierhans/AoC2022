@@ -26,16 +26,16 @@ namespace AOCCore
                 Console.WriteLine(folder + " does not  exists");
                 Directory.CreateDirectory(folder);
 
-                string cookie = File.ReadAllText(@"C:\Users\Rogier\Desktop\Cookie.txt");
+                var lines = File.ReadAllLines(@"C:\Users\Rogier\Desktop\Cookie.txt");
+                string cookie = lines[0];
                 string site = string.Format(@"https://adventofcode.com/{0}/day/{1}/input", year, int.Parse(day).ToString());
                 //Download input file from advent of code with cookie session 
                 var client = new HttpClient();
 
                 var request = new HttpRequestMessage(HttpMethod.Get, site);
                 request.Headers.Add("Cookie", cookie);
-                var productValue = new ProductInfoHeaderValue("r"+"ogie"+"rhan"+"s@gm"+"ail.com");
-                var commentValue = new ProductInfoHeaderValue(@"https://github.com/rogierhans/AoC2022/blob/Master/AOCCore/InputFetcher.cs");
-
+                var productValue = new ProductInfoHeaderValue("Saving1Second", "1.0");
+                var commentValue = new ProductInfoHeaderValue(@"(+https://github.com/rogierhans/AoC2022/blob/Master/AOCCore/InputFetcher.cs by " + lines[1]+ ")");
                 request.Headers.UserAgent.Add(productValue);
                 request.Headers.UserAgent.Add(commentValue);
                 var result = await client.SendAsync(request);
