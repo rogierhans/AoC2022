@@ -14,7 +14,7 @@ class Day01 : Day
 
     }
 
-    public override string Part1(List<string> Lines)
+    public override void Part1(List<string> Lines)
     {
         var digits = Lines.First().List().Select(int.Parse).ToList(); ;
         long sum = 0;
@@ -24,6 +24,6 @@ class Day01 : Day
             if (digits[i] == digits[indexNext]) sum += digits[i];
         }
         Console.WriteLine(sum);
-        return "";
+        return;
     }
 }

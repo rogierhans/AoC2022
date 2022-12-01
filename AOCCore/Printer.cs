@@ -41,4 +41,10 @@ static class Printer
         //  Process myProcess = new Process();
         //ProcessStartInfo info= new ProcessStartInfo("notepad++.exe", @"C:\Users\Rogier\Desktop\Print.txt");
     }
+
+
+    public static void P(this object i)
+    {
+        Console.WriteLine(i);
+    }
 }

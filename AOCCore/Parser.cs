@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using static Microsoft.FSharp.Core.ByRefKinds;
 
-public static class Parser
+public static class CustomParser
 {
 
     public static List<List<T>> Parse2D<T>(this List<string> lines, Func<string, T> func)
@@ -195,7 +196,15 @@ public static class Parser
     }
 
 
+    public static List<int> GetInts(this string line)
+    {
+       return Regex.Split(line, @"\D+").Select(int.Parse).ToList();
+    }
 
+    public static List<double> GetDoubles(this string line)
+    {
+        return Regex.Split(line, @"\D+").Select(double.Parse).ToList();
+    }
     public static string Trim(this string line, int front, int back)
     {
         return line.Substring(front, line.Length - front - back);
@@ -215,7 +224,7 @@ public static class Parser
             var subline = line.Substring(i, front.Length);
             if (front == subline)
             {
-                for (int j = i + front.Length; j < line.Length ; j++)
+                for (int j = i + front.Length; j < line.Length; j++)
                 {
                     var subline2 = line.Substring(j, back.Length);
                     if (subline2 == back)
