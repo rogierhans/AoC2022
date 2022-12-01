@@ -15,24 +15,30 @@ namespace AOCCore
             if (Directory.Exists(folder))
             {
                 Console.WriteLine(folder + "already exists");
+                var lines = File.ReadAllLines(folder + "input.txt");
+                lines.ToList().Take(10).ToList().ForEach(x => x.P());
+                Console.WriteLine("########################");
                 return;
             }
             else
             {
                 Console.WriteLine(folder + " does not  exists");
                 Directory.CreateDirectory(folder);
+
+                string cookie = "session=53616c7465645f5f38e4710264fb0b68580b6722b42d44b4e96d5b80e782ad1e66217a013b2e454714918eb2e081863a3c0c053547b3e620a8681dc025529f9f";
+                string site = string.Format(@"https://adventofcode.com/{0}/day/{1}/input", year, int.Parse(day).ToString());
+                //Download input file from advent of code with cookie session 
+                var client = new HttpClient();
+
+                var request = new HttpRequestMessage(HttpMethod.Get, site);
+                request.Headers.Add("Cookie", cookie);
+                var result = await client.SendAsync(request);
+                Console.WriteLine("code: " + result.StatusCode);
+                var nogEenKeerResult = await result.Content.ReadAsStringAsync();
+                Console.WriteLine(nogEenKeerResult[100]);
+                File.WriteAllText(folder + "input.txt", nogEenKeerResult);
+                File.WriteAllText(folder + "test.txt", nogEenKeerResult);
             }
-            string cookie = "session=53616c7465645f5f6a7421e82bcec60d223e79afe7deea2d7cb51fdb2c2fa7c284ab377007c14de0a333c5165a987b915a72b781e4092995f0ad6a3997ced285";
-            //Download input file from advent of code with cookie session 
-            var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Get, string.Format(@"https://adventofcode.com/{0}/day/{1}/input", year, day));
-            request.Headers.Add("Cookie", cookie);
-            var result = await client.SendAsync(request);
-            Console.WriteLine(result.StatusCode);
-            var nogEenKeerResult = await result.Content.ReadAsStringAsync();
-            Console.WriteLine(nogEenKeerResult);
-            File.WriteAllText(folder + "input", nogEenKeerResult);
-            File.WriteAllText(folder + "test.txt", nogEenKeerResult);
         }
     }
 }

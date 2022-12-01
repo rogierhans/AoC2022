@@ -7,19 +7,42 @@ using System.IO;
 using System.Diagnostics;
 using Google.OrTools.Sat;
 using AOCCore;
-using AOCCore._2017;
+using AOCCore._2022;
+using ParsecSharp;
+using static ParsecSharp.Parser;
+using static ParsecSharp.Text;
+
+using Google.OrTools.ConstraintSolver;
+using static Google.OrTools.ConstraintSolver.RoutingModel.ResourceGroup;
 
 class Program
 {
     [STAThreadAttribute]
-    static  void Main()
+    static async Task Main()
     {
+        //var a = Text.OneOf("a");
+        //var b = Text.OneOf("b");
+        //var ab = a.Append(b);
+        //var abalt = a | b;
+        //ab.Parse("ab").Value.ToArray().Select(x => x.ToString()).ToList().Print(" ");
+        //return;
+        //{
+        //    var source = "(1 + 2 * (3 - 4) + 5 / 6) - 7 + (8 * 9)";
+        //    var IntParser = Parser.Many(Text.DecDigit());
+        //    var test = IntParser.Map(x => x.Select(y => int.Parse(y.ToString())).ToList());
+        //    var OperatorParser = Parser.Many(Text.OneOf("+*-"));
+        //    // var ExpersionParser = IntParser.
+        //    var result = IntParser.Parse(source);
+        //    result.Value.ToList().Print();
+        //}
+
         // Year2021();
 
-        //  InputFetcher.GetFile("2017", "01");
+        await InputFetcher.GetFile("2022", "01");
 
         var day = new Day01();
         day.Part1(true);
     }
+
 }
 

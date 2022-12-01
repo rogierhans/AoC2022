@@ -18,13 +18,13 @@ class Day
         Folder = folder.Split('\\')[folder.Split('\\').Count() - 2].Split('_').Last();
         string name = "input.txt";
         string filename = folder + name;
-        string filenameTest = folder + "test.txt"; 
+        string filenameTest = folder + "test.txt";
         testLines = File.ReadAllLines(filenameTest).ToList();
         inputLines = File.ReadAllLines(filename).ToList();
     }
     public void GetInput(string year, string day)
     {
-        string filename = RootFolder + year + "_" + day +@"\";
+        string filename = RootFolder + year + "_" + day + @"\";
         testLines = File.ReadAllLines(filename + "test.txt").ToList();
         inputLines = File.ReadAllLines(filename + "input.txt").ToList();
     }
@@ -38,24 +38,27 @@ class Day
     }
 
 
-    public string Part1(bool withTest)
+    public void Part1(bool withTest)
     {
         if (withTest) Part1(testLines);
-        return Part1(inputLines);
+        Part1(inputLines);
+
+        return;
     }
-    public string Part2(bool withTest)
+    public void Part2(bool withTest)
     {
         if (withTest) Part2(testLines);
-        return Part2(inputLines);
+        Part2(inputLines);
+        return;
     }
 
-    public virtual string Part1(List<string> inputLines)
+    public virtual void Part1(List<string> inputLines)
     {
-        return String.Format("Day {0} {1} not implemented yet", Folder, "part 1");
+        Console.WriteLine(String.Format("Day {0} {1} not implemented yet", Folder, "part 1"));
     }
-    public virtual string Part2(List<string> inputLines)
+    public virtual void Part2(List<string> inputLines)
     {
-        return String.Format("Day {0} {1} not implemented yet", Folder, "part 2");
+        Console.WriteLine(String.Format("Day {0} {1} not implemented yet", Folder, "part 2"));
     }
 
 
