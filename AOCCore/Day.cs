@@ -74,4 +74,105 @@ class Day
             return String.Format("Failed {0}:    {1} != {2}", additionalInfo, answer, expectedAnswer);
         }
     }
+    protected string FirstLine = "";
+    protected List<int> Numbers = new List<int>();
+
+    protected List<string> Rows = new List<string>();
+    protected List<List<int>> NumberedRows = new List<List<int>>();
+    protected List<List<string>> SplitRows = new List<List<string>>();
+    protected List<List<string>> Blocks = new List<List<string>>();
+    protected List<List<List<int>>> NumberedBlocks = new List<List<List<int>>>();
+    protected List<List<string>> Grid = new List<List<string>>();
+
+    public void TryParse(List<string> lines)
+    {
+        FirstLine = lines.Count > 0 ? lines.First() : "";
+        Numbers = new List<int>();
+        Rows = lines;
+        Blocks = new List<List<string>>();
+        NumberedBlocks = new List<List<List<int>>>();
+        NumberedRows = lines.Select(line => GetNumbers(line)).ToList();
+        SplitRows = lines.Select(line => line.Split(" ").ToList()).ToList();
+        Grid = new List<List<string>>();
+        Console.WriteLine();
+        List<string> subset = new List<string>();
+        foreach (var line in lines)
+        {
+            if (line == "")
+            {
+                Blocks.Add(subset);
+                subset = new List<string>();
+            }
+            subset.Add(line);
+        }
+        Blocks.Add(subset);
+        subset = new List<string>();
+
+
+        try
+        {
+            NumberedBlocks = Blocks.Select(x => x.Select(x => GetNumbers(x)).ToList()).ToList();
+            Numbers = NumberedBlocks.Select(x => x.Flat()).ToList().Flat();
+        }
+        catch { }
+
+        if (Blocks.Count == 1)
+        {
+            Grid = Blocks[0].Select(x => x.List()).ToList();
+        }
+        if (Blocks.Count == 2)
+        {
+            Grid = Blocks[1].Select(x => x.List()).ToList();
+        }
+        //grid
+
+        Console.WriteLine("Rows________:\t{0}", Rows.Count);
+        Console.WriteLine("Numbers_____:\t{0}", Numbers.Count);
+        Console.WriteLine("NumberedRows:\t{0} {1}", NumberedRows.Count, NumberedRows.Average(x => x.Count));
+        Console.WriteLine("SplitRow____:\t{0} {1}", SplitRows.Count, SplitRows.Average(x => x.Count));
+        Console.WriteLine("Blocks______:\t{0}", Blocks.Count);
+        Console.WriteLine("Grid________:\t{0}x{1}", Grid.Count, Grid.Count > 0 ? Grid[0].Count : "0");
+        //Console.WriteLine("NBlocks_____:\t{0} {1}", NumberedBlocks.Count, Caps(NumberedBlocks.Count > 1));
+        Numbers.Take(10).ToList().Print(" ");
+    }
+
+    public List<int> GetNumbers(string line)
+    {
+        // Console.WriteLine(line);
+        List<int> list = new List<int>();
+        string number = "";
+        for (int i = 0; i < line.Length; i++)
+        {
+            //Console.WriteLine(number);
+            if ((number == "") && (line[i] == '-'))
+            {
+                number = "-";
+            }
+            else if (line[i] >= '0' && line[i] <= '9')
+            {
+                number += line[i];
+            }
+            else if (number.Length > 0 && number != "-")
+            {
+                _ = int.TryParse(number, out int parsedNumber);
+                list.Add(parsedNumber);
+                number = "";
+            }
+            else
+            {
+                number = "";
+            }
+        }
+        if (number.Length > 0 && number != "-")
+        {
+
+            _ = int.TryParse(number, out int parsedNumber);
+            list.Add(parsedNumber);
+
+        }
+        //Console.ReadLine();
+        return list;
+        //return ..Where(x => !string.IsNullOrEmpty(x)).Where(x => x.Length < 9).Select(int.Parse).ToList();
+    }
+
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,22 +17,9 @@ class Day01 : Day
 
     public override void Part1(List<string> Lines)
     {
-        List<int> sums = new List<int>();    
-        int sum = 0;    
-        for (int i = 0; i < Lines.Count; i++)
-        {
-            string line = Lines[i];
-            if (line == "")
-            {
-                sums.Add(sum);
-                sum = 0;
-            }
-            else {
-
-                sum += int.Parse(line);
-            }
-        }
-        Console.WriteLine(sums.Max());
-        Console.WriteLine(sums.OrderByDescending(x=> x).Take(3).Sum());
+        TryParse(Lines);
+        // first solution had a loop and this is far more retarded.
+        NumberedBlocks.Select(x => x.GridSum(y => y)).Max().P();
+        NumberedBlocks.Select(x => x.GridSum(y => y)).OrderByDescending(x => x).Take(3).Sum().P();
     }
 }

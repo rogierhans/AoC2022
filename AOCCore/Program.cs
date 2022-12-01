@@ -8,9 +8,7 @@ using System.Diagnostics;
 using Google.OrTools.Sat;
 using AOCCore;
 using AOCCore._2022;
-using ParsecSharp;
-using static ParsecSharp.Parser;
-using static ParsecSharp.Text;
+
 
 using Google.OrTools.ConstraintSolver;
 using static Google.OrTools.ConstraintSolver.RoutingModel.ResourceGroup;
@@ -38,7 +36,8 @@ class Program
 
         // Year2021();
 
-        await InputFetcher.GetFile("2022", "01");
+
+        //await InputFetcher.GetFile("2022", "01");
 
         var day = new Day01();
         day.Part1(true);

@@ -90,11 +90,6 @@ public static class SL
 
     }
 
-    public static void Line()
-    {
-        Console.WriteLine("#############################################");
-    }
-
     public static void Log(string txt)
     {
         Console.WriteLine(txt);
@@ -203,5 +198,27 @@ public static class SL
         }
         return lists;
 
+    }
+    public static List<T> Flat<T>(this List<List<T>> lists)
+    {
+        var newList = new List<T>();
+        foreach (var list in lists)
+        {
+            foreach (var element in list)
+            {
+                newList.Add(element);
+            }
+        }
+        return newList;
+    }
+
+    public static string F<T>(this List<T> list, string seperator = "")
+    {
+        var newList = "";
+        foreach (var a in list)
+        {
+            newList += a + seperator;
+        }
+        return newList;
     }
 }
