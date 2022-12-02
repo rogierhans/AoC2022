@@ -134,6 +134,8 @@ class Day
         Console.WriteLine("Grid________:\t{0}x{1}", Grid.Count, Grid.Count > 0 ? Grid[0].Count : "0");
         //Console.WriteLine("NBlocks_____:\t{0} {1}", NumberedBlocks.Count, Caps(NumberedBlocks.Count > 1));
         Numbers.Take(10).ToList().Print(" ");
+        Console.WriteLine("#############################");
+        Console.WriteLine();
     }
 
     public List<int> GetNumbers(string line)

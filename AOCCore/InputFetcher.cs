@@ -31,7 +31,6 @@ namespace AOCCore
                 string site = string.Format(@"https://adventofcode.com/{0}/day/{1}/input", year, int.Parse(day).ToString());
                 //Download input file from advent of code with cookie session 
                 var client = new HttpClient();
-
                 var request = new HttpRequestMessage(HttpMethod.Get, site);
                 request.Headers.Add("Cookie", cookie);
                 var productValue = new ProductInfoHeaderValue("Saving1Second", "1.0");

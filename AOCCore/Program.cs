@@ -37,10 +37,13 @@ class Program
         // Year2021();
 
 
-        await InputFetcher.GetFile("2020", "01");
-        return;
-        var day = new Day01();
+        //
+        var day = new Day02();
         day.Part1(true);
+        day.Part2(true);
+        if (false) {
+            await InputFetcher.GetFile("2022", "02");
+        }
     }
 
 }
