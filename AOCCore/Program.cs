@@ -16,7 +16,7 @@ using static Google.OrTools.ConstraintSolver.RoutingModel.ResourceGroup;
 class Program
 {
     [STAThreadAttribute]
-    static async Task Main()
+    static void Main()
     {
         //var a = Text.OneOf("a");
         //var b = Text.OneOf("b");
@@ -38,12 +38,12 @@ class Program
 
 
         //
-        var day = new Day02();
+        var day = new Day03();
         day.Part1(true);
         day.Part2(true);
-        if (false) {
-            await InputFetcher.GetFile("2022", "02");
-        }
+        //if (false) {
+        //    await InputFetcher.GetFile("2022", "02");
+        //}
     }
 
 }
