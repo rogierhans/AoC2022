@@ -18,6 +18,9 @@ class Program
     [STAThreadAttribute]
     static void Main()
     {
+
+
+
         //var a = Text.OneOf("a");
         //var b = Text.OneOf("b");
         //var ab = a.Append(b);
@@ -38,9 +41,8 @@ class Program
 
 
         //
-        var day = new Day03();
+        var day = new Day04();
         day.Part1(true);
-        day.Part2(true);
         //if (false) {
         //    await InputFetcher.GetFile("2022", "02");
         //}

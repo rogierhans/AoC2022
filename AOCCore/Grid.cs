@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using Gurobi;
 
-static class Grid
+public static class GridHelper
 {
 
 
@@ -23,11 +26,14 @@ static class Grid
         return list;
     }
 
-    public static List<(int, int)> Neighbor8<T>(this List<List<T>> list, int i, int j, bool includeSelf = false)
+    public static List<(int, int)> Neighbor8()
     {
-        return (NeighborList(i, j, -1, 1, -1, 1, list.Count, list[0].Count, includeSelf));
+        return new List<(int, int)> { (1,1), (-1, 1), (1, -1), (-1, -1) , (1,0), (-1, 0), (0, 1), (0, -1) };
     }
-
+    public static List<(int, int)> Neighbor4()
+    {
+        return new List<(int, int)> { (1, 0), (-1, 0), (0, 1), (0, -1) };
+    }
 
     public static List<(int, int)> NeighborList<T>(this List<List<T>> list, int i, int j, int minI, int maxI, int minJ, int maxJ, bool includeSelf = true)
     {
@@ -42,7 +48,7 @@ static class Grid
             for (int offsetJ = minJ; offsetJ <= maxJ; offsetJ++)
             {
 
-               // Console.WriteLine(offsetI +" "+ offsetJ);
+                // Console.WriteLine(offsetI +" "+ offsetJ);
                 int newI = i + offsetI;
                 int newJ = j + offsetJ;
 
@@ -76,4 +82,39 @@ static class Grid
         }
         return neighborList;
     }
+
+    public static List<(T, int, int)> DFS<T>(this List<List<T>> grid, (int, int) index, List<(int, int)> neightbors, Func<T, bool> Condition)
+    {
+        var list = new List<(T, int, int)>();
+        bool[,] visited = new bool[grid.Count, grid[0].Count];
+        var start = grid[index.Item1][index.Item2];
+        var stack = new Stack<(T, int, int)>();
+        stack.Push((start, index.Item1, index.Item2));
+        while (stack.Count > 0)
+        {
+            var current = stack.Pop();
+            var (item, x, y) = current;
+            visited[x, y] = true;
+            list.Add(current);
+            foreach (var (dx, dy) in neightbors)
+            {
+                int nx = x + dx;
+                int ny = y + dy;
+                if (0 <= nx && nx < grid.Count && 0 <= ny && ny < grid[0].Count && !visited[nx,ny])
+                {
+                   // Console.WriteLine("{0} {1}  from {2} {3}", nx, ny,x,y);
+                    var nextItem = grid[nx][ny];
+                    if (Condition(nextItem))
+                    {
+                      //  Console.WriteLine(nextItem);    
+                        stack.Push((nextItem, nx, ny));
+                        visited[nx, ny] = true;
+                    }
+                }
+
+            }
+        }
+        return list;
+    }
+
 }

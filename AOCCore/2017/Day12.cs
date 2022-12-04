@@ -93,9 +93,10 @@ public class DFS<T> where T : notnull
         }
     }
 
-    public void WalkDFS(Node<T> start)
+    public List<Node<T>> WalkDFS(Node<T> start)
     {
         Stack<Node<T>> Stack = new Stack<Node<T>>();
+        var vistedNodes = new List<Node<T>>(); 
         Stack.Push(start);
         while (Stack.Count > 0)
         {
@@ -104,8 +105,10 @@ public class DFS<T> where T : notnull
             foreach (var element in Neighbors[currentElement].Where(x => !x.Visited))
             {
                 Stack.Push(element);
+                vistedNodes.Add(element);
             }
         }
+        return vistedNodes;
     }
 
 }
