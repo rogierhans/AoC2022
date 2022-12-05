@@ -18,26 +18,23 @@ class Day05 : Day
     public override void Part1(List<string> Lines)
     {
         TryParse(Lines);
-        var Rows = Blocks[0].Select(x => x.Split('\t').ToList());
-        int size = Rows.Count();
-        var newRows = Rows.Take(size - 1).ToList();
-        int max = newRows.Max(x => x.Count);
+        var Rows = Blocks[0];
+        int max = (Lines.First().Count()+1)/4;
         List<Stack<string>> stacks = new List<Stack<string>>();
         for (int i = 0; i < max; i++)
         {
             stacks.Add(new Stack<string>());
         }
-        for (int i = newRows.Count - 1; i >= 0; i--)
+        for (int i = Rows.Count - 2; i >= 0; i--)
         {
-            for (int j = 0; j < newRows[i].Count; j++)
+            for (int stack = 0; stack < Rows[i].Length; stack+=4)
             {
-                if (!(newRows[i][j] == ""|| newRows[i][j] == "x"))
+                if (Rows[i][stack+1] != ' ')
                 {
-                    stacks[j].Push(newRows[i][j]);
+                    stacks[stack/4].Push(Rows[i][stack+1].ToString());
                 }
             }
         }
-
 
         foreach (var line in Blocks[1])
         {
@@ -58,30 +55,25 @@ class Day05 : Day
                 stacks[index2].Push(Pops[i]);
             }
         }
-        stacks.ToList().Select(x => x.ToList().First().Replace("[","").Replace("]", "")).ToList().Print();
-       // Console.ReadLine();
-
-
+        stacks.ToList().Select(x => x.ToList().First()).ToList().Print();
     }
     public override void Part2(List<string> Lines)
     {
         TryParse(Lines);
-        var Rows = Blocks[0].Select(x => x.Split('\t').ToList());
-        int size = Rows.Count();
-        var newRows = Rows.Take(size - 1).ToList();
-        int max = newRows.Max(x => x.Count);
+        var Rows = Blocks[0];
+        int max = (Lines.First().Count() + 1) / 4;
         List<Stack<string>> stacks = new List<Stack<string>>();
         for (int i = 0; i < max; i++)
         {
             stacks.Add(new Stack<string>());
         }
-        for (int i = newRows.Count - 1; i >= 0; i--)
+        for (int i = Rows.Count - 2; i >= 0; i--)
         {
-            for (int j = 0; j < newRows[i].Count; j++)
+            for (int stack = 0; stack < Rows[i].Length; stack += 4)
             {
-                if (!(newRows[i][j] == "" || newRows[i][j] == "x"))
+                if (Rows[i][stack + 1] != ' ')
                 {
-                    stacks[j].Push(newRows[i][j]);
+                    stacks[stack / 4].Push(Rows[i][stack + 1].ToString());
                 }
             }
         }
@@ -106,9 +98,6 @@ class Day05 : Day
                 stacks[index2].Push(Pops[i]);
             }
         }
-        stacks.ToList().Select(x => x.ToList().First().Replace("[", "").Replace("]", "")).ToList().Print();
-       // Console.ReadLine();
-
-
+        stacks.ToList().Select(x => x.ToList().First()).ToList().Print();
     }
 }
