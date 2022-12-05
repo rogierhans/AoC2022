@@ -41,8 +41,9 @@ class Program
 
 
         //
-        var day = new Day04();
+        var day = new Day05();
         day.Part1(true);
+        day.Part2(true);
         //if (false) {
         //    await InputFetcher.GetFile("2022", "02");
         //}

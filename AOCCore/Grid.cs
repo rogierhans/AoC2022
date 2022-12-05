@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using Google.OrTools.LinearSolver;
 using Gurobi;
 
 public static class GridHelper
@@ -28,38 +29,65 @@ public static class GridHelper
 
     public static List<(int, int)> Neighbor8()
     {
-        return new List<(int, int)> { (1,1), (-1, 1), (1, -1), (-1, -1) , (1,0), (-1, 0), (0, 1), (0, -1) };
+        return new List<(int, int)> { (1, 1), (-1, 1), (1, -1), (-1, -1), (1, 0), (-1, 0), (0, 1), (0, -1) };
     }
     public static List<(int, int)> Neighbor4()
     {
         return new List<(int, int)> { (1, 0), (-1, 0), (0, 1), (0, -1) };
     }
 
-    public static List<(int, int)> NeighborList<T>(this List<List<T>> list, int i, int j, int minI, int maxI, int minJ, int maxJ, bool includeSelf = true)
+    public static List<List<T>> GOL<T>(this List<List<T>> list, List<(int, int)> neighbors, Func<List<T>, T> f, int iterations, bool loop = false)
     {
-        return (NeighborList(i, j, minI, maxI, minJ, maxJ, list.Count, list[0].Count, includeSelf));
+        var newList = list.DeepCopy();
+        for (int i = 0; i < iterations; i++)
+        {
+            newList = list.GOLIteration(neighbors, f, loop);
+        }
+        return newList;
     }
 
-    public static List<(int, int)> NeighborList(int i, int j, int minI, int maxI, int minJ, int maxJ, int width, int height, bool includeSelf = true)
+    public static List<List<T>> GOLIteration<T>(this List<List<T>> list, List<(int, int)> neighbors, Func<List<T>, T> f, bool loop = false)
     {
-        List<(int, int)> neighborList = new List<(int, int)>();
-        for (int offsetI = minI; offsetI <= maxI; offsetI++)
+        var newGrid = list.DeepCopy();
+        for (int x = 0; x < list[0].Count; x++)
         {
-            for (int offsetJ = minJ; offsetJ <= maxJ; offsetJ++)
+            for (int y = 0; y < list.Count; y++)
             {
+                newGrid[x][y] = f(list.GetNeighbors(x, y, neighbors, loop));
+            }
+        }
+        return newGrid;
+    }
 
-                // Console.WriteLine(offsetI +" "+ offsetJ);
-                int newI = i + offsetI;
-                int newJ = j + offsetJ;
+    public static List<T> GetNeighbors<T>(this List<List<T>> list, int oldX, int oldY, List<(int, int)> neighbors, bool loop = false)
+    {
+        List<T> neighborList = new List<T>();
+        int width = list[0].Count;
+        int height = list.Count;
+        foreach (var (dx, dy) in neighbors)
+        {
 
-                bool outOfRow = newI < 0 || newI >= width;
-                bool outOfColumn = newJ < 0 || newJ >= height;
-                if (!outOfColumn && !outOfRow && !(!includeSelf && i == newI && j == newJ))
+            // Console.WriteLine(offsetI +" "+ offsetJ);
+            int x = oldX + dx;
+            int y = oldY + dy;
+
+            bool inRow = 0 <= x && x <= width - 1;
+            bool inColouwm = 0 <= y && y <= height - 1;
+
+
+            if (loop)
+            {
+                neighborList.Add(list[(x + width) % width][(y + height) % height]);
+            }
+            else
+            {
+                if (inRow && inColouwm)
                 {
-                    neighborList.Add((newI, newJ));
+                    neighborList.Add(list[x][y]);
                 }
             }
         }
+
 
 
         return neighborList;
@@ -100,13 +128,13 @@ public static class GridHelper
             {
                 int nx = x + dx;
                 int ny = y + dy;
-                if (0 <= nx && nx < grid.Count && 0 <= ny && ny < grid[0].Count && !visited[nx,ny])
+                if (0 <= nx && nx < grid.Count && 0 <= ny && ny < grid[0].Count && !visited[nx, ny])
                 {
-                   // Console.WriteLine("{0} {1}  from {2} {3}", nx, ny,x,y);
+                    // Console.WriteLine("{0} {1}  from {2} {3}", nx, ny,x,y);
                     var nextItem = grid[nx][ny];
                     if (Condition(nextItem))
                     {
-                      //  Console.WriteLine(nextItem);    
+                        //  Console.WriteLine(nextItem);    
                         stack.Push((nextItem, nx, ny));
                         visited[nx, ny] = true;
                     }
