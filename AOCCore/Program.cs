@@ -41,7 +41,7 @@ class Program
 
 
         //
-        var day = new Day05();
+        var day = new Day06();
         day.Part1(true);
         day.Part2(true);
         //if (false) {

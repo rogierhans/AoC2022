@@ -15,8 +15,6 @@ class Day05 : Day
 
     }
 
-
-    //Tried to improve work and failed
     public override void Part1(List<string> Lines)
     {
         TryParse(Lines);
