@@ -6,7 +6,6 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using Google.OrTools.LinearSolver;
-using Gurobi;
 
 public static class GridHelper
 {

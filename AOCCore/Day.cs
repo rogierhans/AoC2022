@@ -79,7 +79,6 @@ class Day
 
     protected List<string> Rows = new List<string>();
     protected List<List<int>> NumberedRows = new List<List<int>>();
-    protected List<List<string>> SplitRows = new List<List<string>>();
     protected List<List<string>> Blocks = new List<List<string>>();
     protected List<List<List<int>>> NumberedBlocks = new List<List<List<int>>>();
     protected List<List<string>> Grid = new List<List<string>>();
@@ -92,7 +91,6 @@ class Day
         Blocks = new List<List<string>>();
         NumberedBlocks = new List<List<List<int>>>();
         NumberedRows = lines.Select(line => GetNumbers(line)).ToList();
-        SplitRows = lines.Select(line => line.Split(" ").ToList()).ToList();
         Grid = new List<List<string>>();
         Console.WriteLine();
         List<string> subset = new List<string>();
@@ -128,14 +126,15 @@ class Day
 
         Console.WriteLine("Rows________:\t{0}", Rows.Count);
         Console.WriteLine("Numbers_____:\t{0}", Numbers.Count);
-        Console.WriteLine("NumberedRows:\t{0} {1}", NumberedRows.Count, NumberedRows.Average(x => x.Count));
-        Console.WriteLine("SplitRow____:\t{0} {1}", SplitRows.Count, SplitRows.Average(x => x.Count));
         Console.WriteLine("Blocks______:\t{0}", Blocks.Count);
         Console.WriteLine("Grid________:\t{0}x{1}", Grid.Count, Grid.Count > 0 ? Grid[0].Count : "0");
         //Console.WriteLine("NBlocks_____:\t{0} {1}", NumberedBlocks.Count, Caps(NumberedBlocks.Count > 1));
         Numbers.Take(10).ToList().Print(" ");
         Console.WriteLine("#############################");
         Console.WriteLine();
+
+        var SM = new StreetMagic(lines);
+
     }
 
     public List<int> GetNumbers(string line)

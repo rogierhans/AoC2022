@@ -19,10 +19,4 @@
     <PackageReference Include="ParsecSharp" Version="3.5.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Gurobi80.NET">
-      <HintPath>..\..\..\..\..\..\gurobi801\win64\bin\Gurobi80.NET.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
