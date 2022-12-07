@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AOCCore._2022;
+﻿namespace AOCCore._2022;
 
 class Day06 : Day
 {
