@@ -159,7 +159,7 @@ public static class CustomParser
             regexString = regexString.Replace(variable(i), pattern(i));
         }
         regexString = "^" + regexString + "$";
-        //  Console.WriteLine(regexString);
+         Console.WriteLine(regexString);
         return regexString;
     }
 
