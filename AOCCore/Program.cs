@@ -44,7 +44,7 @@ class Program
         //while (true)
         {
             var day = new Day10();
-            day.Part1(true);
+            day.Part2(false);
         }
 
         //if (false) {

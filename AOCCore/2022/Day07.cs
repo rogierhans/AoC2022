@@ -21,17 +21,14 @@ class Day07 : Day
 
     public override void Part1(List<string> Lines)
     {
-        TryParse(Lines);
-        int sum = 0;
-        bool lsMode = false;
+        TryParse(Lines); ;
         var currentDirectory = new Dir();
         var root = currentDirectory;
         HashSet<Dir> dirs = new HashSet<Dir>();
         dirs.Add(root);
         foreach (var line in Lines.Skip(1))
         {
-            if (line == "$ ls") { lsMode = true; }
-            else if (line.Substring(0, 3) == "dir")
+            if (line.Substring(0, 3) == "dir")
             {
 
             }
@@ -58,22 +55,21 @@ class Day07 : Day
                     currentDirectory = newDir;
                     newDir.Parent.Dirs.Add(newDir);
                     dirs.Add(newDir);
-                   // Console.WriteLine("{0} {1}", currentDirectory.name, currentDirectory.Parent.name);
-                   // Console.ReadLine();
+                    // Console.WriteLine("{0} {1}", currentDirectory.name, currentDirectory.Parent.name);
+                    // Console.ReadLine();
                 }
-            }
-            else { 
-            Console.WriteLine(line);
             }
         }
         // root.Print();
         var totalSize = root.Size();
-      //  Console.WriteLine();
+        //  Console.WriteLine();
         Console.WriteLine(dirs.Select(x => x.Size()).Where(x => x <= 100000).Sum());
 
-        foreach (var size in dirs.Select(x => x.Size()).OrderBy(x => x)) {
+        foreach (var size in dirs.Select(x => x.Size()).OrderBy(x => x))
+        {
             //Console.WriteLine("try {0} {1}",size, 70000000 - size);
-            if ((70000000 - totalSize) +  size >= 30000000) {
+            if ((70000000 - totalSize) + size >= 30000000)
+            {
                 Console.WriteLine(size);
                 break;
             }
@@ -88,8 +84,9 @@ public class Dir
     public List<Dir> Dirs = new List<Dir>();
     public List<long> Files = new List<long>();
     public string name = "";
-    public void Print() {
-        Console.WriteLine("{0} {1}",name, string.Join(",",Files));
+    public void Print()
+    {
+        Console.WriteLine("{0} {1}", name, string.Join(",", Files));
         Dirs.ForEach(x => Dirs.Print());
     }
     public long Size()

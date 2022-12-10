@@ -23,7 +23,6 @@ class Day09 : Day
     public override void Part1(List<string> Lines)
     {
         TryParse(Lines);
-        int sum = 0;
         Dictionary<(int, int), int> dict = new Dictionary<(int, int), int>();
         int length = 10;
         int[] RopeX = new int[length];

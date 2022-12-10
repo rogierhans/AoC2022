@@ -20,22 +20,23 @@ class Day10 : Day
 
     }
 
-    //part1 is lost RIP
+    //part1 
     public override void Part2(List<string> Lines)
     {
         int Position = 1;
-        int Cycle = 1;
+        int Cycle = 0;
         string output = "";
         for (int i = 0; i < Lines.Count; i++)
         {
-            output += (Math.Abs(Position - ((Cycle++ - 1) % 40)) <= 1) ? "#" : ".";
+            output += Math.Abs(Position - Cycle++ % 40) <= 1 ? "#" : ".";
             if (Lines[i].Contains("addx"))
             {
-                output += (Math.Abs(Position - ((Cycle++ - 1) % 40)) <= 1) ? "#" : ".";
+                output += Math.Abs(Position - Cycle++ % 40) <= 1 ? "#" : ".";
                 Position += int.Parse(Lines[i].Split(' ')[1]);
             }
         }
-        output.P();
+        for (int i = 0; i < 6; i++)
+            Console.WriteLine(output.Substring(i * 40, 40));
     }
 
 
