@@ -199,6 +199,7 @@ public static class SL
         return lists;
 
     }
+
     public static List<T> Flat<T>(this List<List<T>> lists)
     {
         var newList = new List<T>();

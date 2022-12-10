@@ -133,7 +133,7 @@ class Day
         Console.WriteLine("#############################");
         Console.WriteLine();
 
-        var SM = new StreetMagic(lines);
+      //  var SM = new StreetMagic(lines);
 
     }
 
