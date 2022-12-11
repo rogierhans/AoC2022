@@ -101,6 +101,7 @@ class Day
                 Blocks.Add(subset);
                 subset = new List<string>();
             }
+            else
             subset.Add(line);
         }
         Blocks.Add(subset);
