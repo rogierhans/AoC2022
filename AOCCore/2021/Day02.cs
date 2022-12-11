@@ -1,138 +1,69 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using
-//;
-//using System.Text;
-//using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+namespace AOC2021;
 
-//namespace AOCCore._2022;
 
-//class Day02 : Day
-//{
-//    public Day02()
-//    {
-//        GetInput("2022", "02");
+class Day2 : Day
+{
+    public Day2()
+    {
+        GetInput(RootFolder + @"2021_02\");
+    }
 
-//    }
 
-//    public override void Part1(List<string> Lines)
-//    {
-//        TryParse(Lines);
-//        int sum = 0;
-//        for (int i = 0; i < Lines.Count; i++)
-//        {
+    public override void Part1(List<string> Lines)
+    {
+        long depth = 0;
+        long horizontal = 0;
+        for (int i = 0; i < Lines.Count; i++)
+        {
+            var line = Lines[i];
+            var input = line.Split(' ');
+            var value = long.Parse(input[1]);
+            if (input[0] == "forward")
+            {
+                horizontal += value;
+            }
+            if (input[0] == "down")
+            {
+                depth += value;
+            }
+            if (input[0] == "up")
+            {
+                depth -= value;
+            }
+        }
+      PrintSolution((depth * horizontal).ToString(), "1427868", "part 1");
+    }
+    public override void Part2(List<string> Lines)
+    {
+        long aim = 0;
+        long depth = 0;
+        long horizontal = 0;
+        for (int i = 0; i < Lines.Count; i++)
+        {
+            var line = Lines[i];
+            var input = line.Split(' ');
+            var value = long.Parse(input[1]);
+            if (input[0] == "forward")
+            {
+                horizontal += value;
+                depth += aim * value;
+            }
+            if (input[0] == "down")
+            {
+                aim += value;
+            }
+            if (input[0] == "up")
+            {
+                aim -= value;
+            }
+        }
+      PrintSolution((depth * horizontal).ToString(), "1568138742", "part 2");
+    }
+}
 
-//            var elf = Lines[i][0];
-//            var you = Lines[i][2];
-//            if (elf == 'A')
-//            {
-//                if (you == 'X') {
-//                    sum += 1 + 3;
-//                }
-//                else if (you == 'Y')
-//                {
-//                    sum += 2 + 6;
-//                }
-//                else if(you == 'Z')
-//                {
-//                    sum += 3 + 0;
-//                }
-
-//            }
-//            else if (elf == 'B')
-//            {
-//                if (you == 'X')
-//                {
-//                    sum += 1 + 0;
-//                }
-//                else if (you == 'Y')
-//                {
-//                    sum += 2 + 3;
-//                }
-//                else if (you == 'Z')
-//                {
-//                    sum += 3 + 6;
-//                }
-//            }
-//            else if (elf == 'C')
-//            {
-//                if (you == 'X')
-//                {
-//                    sum += 1 + 6;
-//                }
-//                else if (you == 'Y')
-//                {
-//                    sum += 2 + 0;
-//                }
-//                else if(you == 'Z')
-//                {
-//                    sum += 3 + 3;
-//                }
-//            }
-
-//        }
-//        Console.WriteLine(sum);
-
-//    }
-//    public override void Part2(List<string> Lines)
-//    {
-//        TryParse(Lines);
-//        int sum = 0;
-//        for (int i = 0; i < Lines.Count; i++)
-//        {
-
-//            var elf = Lines[i][0];
-//            var you = Lines[i][2];
-//            if (elf == 'A')
-//            {
-//                if (you == 'X')
-//                {
-//                    sum += 0 + 3;
-//                }
-//                else if (you == 'Y')
-//                {
-//                    sum += 3 + 1;
-//                }
-//                else if (you == 'Z')
-//                {
-//                    sum += 6 + 2;
-//                }
-
-//            }
-//            else if (elf == 'B')
-//            {
-//                if (you == 'X')
-//                {
-//                    sum += 0 + 1;
-//                }
-//                else if (you == 'Y')
-//                {
-//                    sum += 3 + 2;
-//                }
-//                else if (you == 'Z')
-//                {
-//                    sum += 6 + 3;
-//                }
-//            }
-//            else if (elf == 'C')
-//            {
-//                if (you == 'X')
-//                {
-//                    sum += 0 + 2;
-//                }
-//                else if (you == 'Y')
-//                {
-//                    sum += 3 + 3;
-//                }
-//                else if (you == 'Z')
-//                {
-//                    sum += 6 + 1;
-//                }
-//            }
-
-//        }
-//        Console.WriteLine(sum);
-
-//    }
-//}

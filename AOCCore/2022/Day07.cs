@@ -80,7 +80,9 @@ class Day07 : Day
 }
 public class Dir
 {
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
     public Dir Parent = null;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
     public List<Dir> Dirs = new List<Dir>();
     public List<long> Files = new List<long>();
     public string name = "";
