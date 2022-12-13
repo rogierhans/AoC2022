@@ -1,6 +1,5 @@
 ﻿//using Priority_Queue;
 using Microsoft.FSharp.Core;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,20 +22,21 @@ class Day13 : Day
     //part1 
     public override void Part1(List<string> Lines)
     {
+
         TryParse(Lines);
         int sum = 1;
         List<NestedList<int>> Packages = new List<NestedList<int>>();
         for (int i = 0; i < Blocks.Count; i++)
         {
             var block = Blocks[i];
-            var left = new NestedList<int>(block[0], x => int.Parse(x), '[', ']');
-            var right = new NestedList<int>(block[1], x => int.Parse(x), '[', ']');
+            var left = NestedList<int>.Create(block[0], x => int.Parse(x), '[', ']');
+            var right = NestedList<int>.Create(block[1], x => int.Parse(x), '[', ']');
             var test = Compare(left, right);
             Packages.Add(left);
             Packages.Add(right);
         }
-        Packages.Add(new NestedList<int>("[[2]]", x => int.Parse(x), '[', ']'));
-        Packages.Add(new NestedList<int>("[[6]]", x => int.Parse(x), '[', ']'));
+        Packages.Add(NestedList<int>.Create("[[2]]", x => int.Parse(x), '[', ']'));
+        Packages.Add(NestedList<int>.Create("[[6]]", x => int.Parse(x), '[', ']'));
         int counter = 1;
         while (Packages.Count() > 1)
         {
@@ -48,7 +48,7 @@ class Day13 : Day
                     lowest = Packages[i];
                 }
             }
-            if (lowest.Stacking() == "[[2]]" || lowest.Stacking() == "[[6]]")
+            if (lowest.FlatString() == "[[2]]" || lowest.FlatString() == "[[6]]")
                 sum *= counter;
             counter++;
             Packages.Remove(lowest);
@@ -59,89 +59,105 @@ class Day13 : Day
 
     public int Compare(NestedList<int> left, NestedList<int> right)
     {
-        if (!left.isList && !right.isList)
+
+        if (left is NestedListLeaf<int> leftLeaf)
         {
-            return left.number.CompareTo(right.number);
-        }
-        else if (left.isList && right.isList)
-        {
-            for (int i = 0; i < Math.Min(left.Childeren.Count, right.Childeren.Count); i++)
+            if (right is NestedListLeaf<int> rightLeaf)
+                return leftLeaf.leaf.CompareTo(rightLeaf.leaf);
+            else
             {
-                if (Compare(left.Childeren[i], right.Childeren[i]) != 0)
-                    return Compare(left.Childeren[i], right.Childeren[i]);
+                return Compare(new NesteListNode<int>("[" + leftLeaf.leaf + "]", x => int.Parse(x), '[', ']'), right);
             }
-            return left.Childeren.Count.CompareTo(right.Childeren.Count);
         }
-        else if (left.isList && !right.isList)
+        else if (left is NesteListNode<int> leftNode)
         {
-            return Compare(left, new NestedList<int>("[" + right.number + "]", x => int.Parse(x), '[', ']'));
+            if (right is NesteListNode<int> rightNode)
+            {
+                for (int i = 0; i < Math.Min(leftNode.Childeren.Count, rightNode.Childeren.Count); i++)
+                {
+                    if (Compare(leftNode.Childeren[i], rightNode.Childeren[i]) != 0)
+                        return Compare(leftNode.Childeren[i], rightNode.Childeren[i]);
+                }
+                return leftNode.Childeren.Count.CompareTo(rightNode.Childeren.Count);
+            }
+            else if (right is NestedListLeaf<int> rightLeaf)
+            {
+                return Compare(leftNode, new NesteListNode<int>("[" + rightLeaf.leaf + "]", x => int.Parse(x), '[', ']'));
+            }
         }
-        else
-        {
-            return Compare(new NestedList<int>("[" + left.number + "]", x => int.Parse(x), '[', ']'), right);
-        }
+        throw new Exception();
     }
     public class NestedList<T>
     {
-        public List<NestedList<T>> Childeren = new List<NestedList<T>>();
-        public bool isList = false;
-        public T number;
-#pragma warning disable CS8618 
-        public NestedList(string line, Func<string, T> leafParse, char BracketLeft, char BracketRight)
-#pragma warning restore CS8618 
+
+        public static NestedList<T> Create(string line, Func<string, T> leafParse, char BracketLeft, char BracketRight)
         {
-            if (line == "" + BracketLeft + BracketRight)
-            { isList = true; }
-            else if (line[0] == BracketLeft)
+            //   Console.WriteLine("->"+line);
+            if (line[0] == BracketLeft)
             {
-                isList = true;
-                var trimmedLine = line.Trim(1, 1);
-                string substring = "";
-                int level = 0;
-                for (int i = 0; i < trimmedLine.Length; i++)
-                {
-                    if ((trimmedLine[i] == ',' && level == 0))
-                    {
-                        Childeren.Add(new NestedList<T>(substring, leafParse, BracketLeft, BracketRight));
-                        substring = "";
-                    }
-                    else if (trimmedLine[i] == BracketLeft)
-                    {
-                        level++;
-                        substring += trimmedLine[i];
-                    }
-                    else if (trimmedLine[i] == BracketRight)
-                    {
-                        level--;
-                        substring += trimmedLine[i];
-                    }
-                    else
-                    {
-                        substring += trimmedLine[i];
-                    }
-                }
-                Childeren.Add(new NestedList<T>(substring, leafParse, BracketLeft, BracketRight));
+                return new NesteListNode<T>(line, leafParse, BracketLeft, BracketRight);
             }
             else
             {
-                number = leafParse(line);
+                return new NestedListLeaf<T>(line, leafParse);
             }
-
         }
-
-        public string Stacking()
+        public string FlatString()
         {
-#pragma warning disable CS8603 
-#pragma warning disable CS8602 
-            if (!isList) { return number.ToString(); }
-#pragma warning restore CS8602
-#pragma warning restore CS8603
-            string test = "[";
-            test += string.Join(",", Childeren.Select(x => x.Stacking()).ToList());
-            test += "]";
-            return test;
-
+            if (this is NestedListLeaf<T> leaf) { return leaf.leaf.ToString(); }
+            else if (this is NesteListNode<T> node)
+            {
+                string test = "[";
+                test += string.Join(",", node.Childeren.Select(x => x.FlatString()).ToList());
+                test += "]";
+                return test;
+            }
+            throw new Exception();
         }
+    }
+    public class NestedListLeaf<T> : NestedList<T>
+    {
+        public T leaf;
+        public NestedListLeaf(string line, Func<string, T> leafParse)
+        {
+            leaf = leafParse(line);
+        }
+    }
+    public class NesteListNode<T> : NestedList<T>
+    {
+        public List<NestedList<T>> Childeren = new List<NestedList<T>>();
+        public NesteListNode(string line, Func<string, T> leafParse, char BracketLeft, char BracketRight)
+        {
+            var trimmedLine = line.Trim(1, 1);
+            if (trimmedLine == "") return;
+            string substring = "";
+            int level = 0;
+            for (int i = 0; i < trimmedLine.Length; i++)
+            {
+                if ((trimmedLine[i] == ',' && level == 0))
+                {
+                    Childeren.Add(Create(substring, leafParse, BracketLeft, BracketRight));
+                    substring = "";
+                }
+                else if (trimmedLine[i] == BracketLeft)
+                {
+                    level++;
+                    substring += trimmedLine[i];
+                }
+                else if (trimmedLine[i] == BracketRight)
+                {
+                    level--;
+                    substring += trimmedLine[i];
+                }
+                else
+                {
+                    substring += trimmedLine[i];
+                }
+            }
+            Childeren.Add(Create(substring, leafParse, BracketLeft, BracketRight));
+        }
+
+
 
 
     }
