@@ -14,16 +14,16 @@ class Day15 : Day
     }
     public const string BLOCK = "\U00002588";
 
-    class W<T> : FastPriorityQueueNode
+    class PQNode<T> : FastPriorityQueueNode
     {
         public T X;
 
-        public W(T x)
+        public PQNode(T x)
         {
             X = x;
         }
     }
-    private W<(int, int)>[,] ws = new W<(int, int)>[0, 0];
+    private PQNode<(int, int)>[,] ws = new PQNode<(int, int)>[0, 0];
 
     public struct Coord
     {
@@ -55,8 +55,8 @@ class Day15 : Day
     private List<List<int>> GetDistances(List<List<int>> grid)
     {
         var realDistance = new List<List<int>>();
-        var q = new FastPriorityQueue<W<(int, int)>>(grid.Sum(x => x.Count));
-        ws = new W<(int, int)>[grid.Count, grid[0].Count];
+        var q = new FastPriorityQueue<PQNode<(int, int)>>(grid.Sum(x => x.Count));
+        ws = new PQNode<(int, int)>[grid.Count, grid[0].Count];
         Init(grid, realDistance);
         realDistance[0][0] = 0;
         q.Enqueue(ws[0, 0], 0);
@@ -109,7 +109,7 @@ class Day15 : Day
             List<int> list = new List<int>();
             for (int j = 0; j < grid.Count; j++)
             {
-                ws[i, j] = new W<(int, int)>((i, j));
+                ws[i, j] = new PQNode<(int, int)>((i, j));
                 list.Add(int.MaxValue);
             }
             dist.Add(list);

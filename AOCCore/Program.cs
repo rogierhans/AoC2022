@@ -18,7 +18,27 @@ class Program
     [STAThreadAttribute]
     static void Main()
     {
-
+        //var WRName = new List<string>() { "SB-", "AR+", "NAO-", "SB+", "NAO+", "AR-", "0 No Label" };
+        //var WRdict = File.ReadAllLines(@"C:\Users\Rogier\Desktop\WR_k6_combo.csv").Skip(1)
+        //    .Select(x => x.Split(',')).ToDictionary(x => DateTime.Parse(x[0]), x => int.Parse(x[1]));
+        //string line = "";
+        //for (int hours = 384; hours < 504; hours+=24)
+        //{
+        //    line += DateTime.Parse("1987-01-01").AddHours(hours) + "\t" + WRName[WRdict[DateTime.Parse("1987-01-01").AddHours(hours - (hours % 24))]] + "\n";
+        //}
+        //line.P();
+        //for (int hours = 8136; hours < 8328; hours += 24)
+        //{
+        //    line += DateTime.Parse("1996-01-01").AddHours(hours) + "\t" + WRName[WRdict[DateTime.Parse("1996-01-01").AddHours(hours - (hours % 24))]] + "\n";
+        //}
+        //line.P();
+        //for (int hours = 96; hours < 264; hours += 24)
+        //{
+        //    line += DateTime.Parse("1997-01-01").AddHours(hours) + "\t" + WRName[WRdict[DateTime.Parse("1997-01-01").AddHours(hours - (hours % 24))]] + "\n";
+        //}
+        //line.P();
+        //File.WriteAllText(@"C:\Users\Rogier\Desktop\temp.csvejmf", line);
+        //return;
 
 
         //var a = Text.OneOf("a");
@@ -43,7 +63,7 @@ class Program
         //
         //while (true)
         {
-            var day = new Day11();
+            var day = new Day13();
             day.Part1(true);
         }
 
