@@ -63,8 +63,8 @@ class Program
         //
         //while (true)
         {
-            var day = new Day13();
-            day.Part1(true);
+            var day = new Day14();
+            day.Part2(true);
         }
 
         //if (false) {
