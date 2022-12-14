@@ -42,49 +42,35 @@ class Day14 : Day
                 {
                     for (int i = 0; i <= Math.Max(fromX - X, X - fromX); i++)
                     {
-                        sandDictionary[((Math.Min(fromX, X) + i),Y)] = 0;
+                        sandDictionary[((Math.Min(fromX, X) + i), Y)] = 0;
                     }
                 }
                 (fromX, fromY) = (X, Y);
             }
         }
-        int counter = 0;
-
-        Stack<(int, int)> SandPath = new Stack<(int, int)>();
-        SandPath.Push((500, 0));
-        while (SandPath.Count > 0)
+        int loopCounter = 0;
+        Queue<(int, int)> SandQueue = new Queue<(int, int)>();
+        SandQueue.Enqueue((500, 0));
+        while (SandQueue.Count > 0)
         {
-            var sandGrain = SandPath.Peek(); ;
-            counter++;
-            var (X, Y) = sandGrain;
+            var sandGrain = SandQueue.Dequeue();
+            loopCounter++;
             sandDictionary[sandGrain] = 1;
-            var DownSand = (X, Y + 1);
-            var LeftSand = (X - 1, Y + 1);
-            var RightSand = (X + 1, Y + 1);
-            if (!sandDictionary.ContainsKey(DownSand))
-            {
-                sandGrain = DownSand;
-                SandPath.Push(sandGrain);
-            }
-            else if (!sandDictionary.ContainsKey(LeftSand))
-            {
-                sandGrain = LeftSand;
-                SandPath.Push(sandGrain);
-            }
-            else if (!sandDictionary.ContainsKey(RightSand))
-            {
-                sandGrain = RightSand;
-                SandPath.Push(sandGrain);
-            }
-            else
-            {
-                SandPath.Pop();
+            var (X, Y) = sandGrain;
+            Add((X, Y + 1));
+            Add((X - 1, Y + 1));
+            Add((X + 1, Y + 1));
+
+            void Add((int,int) PotentialSandGrain){
+                if (!sandDictionary.ContainsKey(PotentialSandGrain))
+                {
+                    sandDictionary[PotentialSandGrain] = 1;
+                    SandQueue.Enqueue(PotentialSandGrain);
+                }
             }
         }
-        Console.WriteLine(counter);
+        Console.WriteLine(loopCounter);
         sandDictionary.Values.Sum(x => x).P();
-
-        //Console.ReadLine();
     }
 
 
