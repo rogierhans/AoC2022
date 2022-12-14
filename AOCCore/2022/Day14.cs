@@ -81,6 +81,7 @@ class Day14 : Day
                 SandPath.Pop();
             }
         }
+        Console.WriteLine(counter);
         sandDictionary.Values.Sum(x => x).P();
 
         //Console.ReadLine();
