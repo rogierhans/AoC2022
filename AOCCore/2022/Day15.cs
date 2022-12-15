@@ -24,7 +24,7 @@ class Day15 : Day
         TryParse(Lines);
         int maxSearch = 4000000;
         List<(int, int)> EndPoints = new List<(int, int)>();
-        HashSet<int> ys = new HashSet<int>();
+
         foreach (var line in NumberedRows)
         {
             int scannerX = line[0];
@@ -36,21 +36,39 @@ class Day15 : Day
             int dy = Math.Abs(BaconY - scannerY);
 
             int length = dx + dy;
-            EndPoints.Add((scannerX, scannerY + length));
-            EndPoints.Add((scannerX, scannerY - length));
+
+            var TopPointDiamond = (scannerX, scannerY + length);
+            var BottomPointDiamond = (scannerX, scannerY - length);
+            EndPoints.Add(TopPointDiamond);
+            EndPoints.Add(BottomPointDiamond);
         }
+        HashSet<double> ys = new HashSet<double>();
         for (int i = 0; i < EndPoints.Count; i++)
         {
             for (int j = i + 1; j < EndPoints.Count; j++)
             {
                 var (x1, y1) = EndPoints[i];
                 var (x2, y2) = EndPoints[j];
-                ys.Add(((y1 + y2) / 2) + ((x1 - x2)/2));
-                ys.Add(((y1 + y2) / 2) + ((x2 - x1) / 2));
+                double firstIntersect = Math.Floor((y1 + y2 + x1 - x2) / (double)2);
+                double secondIntersect = Math.Floor((y1 + y2 + x2 - x1) / (double)2);
+                if (firstIntersect - Math.Floor(firstIntersect) == 0)
+                {
+                   AddMaybeY(Math.Ceiling(firstIntersect));
+                }
+                if (secondIntersect - Math.Floor(secondIntersect) == 0)
+                {
+                    AddMaybeY(Math.Ceiling(secondIntersect));
+                }
+                void AddMaybeY(double potentialY)
+                {
+                    if (y1 <= potentialY && potentialY <= y2)
+                        ys.Add(potentialY);
+                }
             }
         }
+        ys.Where(x => x >= 0 && x <= 4000000).OrderBy(x => x).ToList().Print(" ");
         ys.Where(x => x >= 0 && x <= 4000000).Count().P();
-       foreach (int target in ys.Where(x => x >= 0 && x <= 4000000))
+        foreach (int target in ys.Where(x => x >= 0 && x <= 4000000))
         //for (int target = 0; target < 4000000; target++)
         {
             //target.P();
