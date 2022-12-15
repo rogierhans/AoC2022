@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 class Day
 {
-    public string RootFolder = @"C:\Users\Rogier\Desktop\InputFiles\";
+    public string RootFolder = @"C:\Users\4001184\Desktop\InputFiles\";
     private List<string> testLines = new List<string>();
     public List<string> inputLines = new List<string>();
 
