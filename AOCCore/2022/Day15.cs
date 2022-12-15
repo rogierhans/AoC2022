@@ -23,79 +23,35 @@ class Day15 : Day
     {
         TryParse(Lines);
         int maxSearch = 4000000;
-        List<(int, int, int, int)> Segments = new List<(int, int, int, int)>();
+        List<(int, int)> EndPoints = new List<(int, int)>();
         HashSet<int> ys = new HashSet<int>();
         foreach (var line in NumberedRows)
         {
-            int x = line[0];
-            int y = line[1];
-            int Bx = line[2];
-            int By = line[3];
+            int scannerX = line[0];
+            int scannerY = line[1];
+            int BaconX = line[2];
+            int BaconY = line[3];
 
-            int dx = Math.Abs(Bx - x);
-            int dy = Math.Abs(By - y);
+            int dx = Math.Abs(BaconX - scannerX);
+            int dy = Math.Abs(BaconY - scannerY);
 
             int length = dx + dy;
-            var points = new List<(int, int)>() { (x, y + length), (x - length, y), (x, y - length), (x + length, y) };
-            for (int i = 0; i < points.Count; i++)
-            {
-                var (x1, y1) = points[i];
-                var (x2, y2) = points[(i + 1) % points.Count];
-                Segments.Add((x1, y1, x2, y2));
-                ys.Add(y1 - 1);
-                ys.Add(y1);
-                ys.Add(y1 + 1);
-                ys.Add(y2 - 1);
-                ys.Add(y2);
-                ys.Add(y2 + 1);
-            }
+            EndPoints.Add((scannerX, scannerY + length));
+            EndPoints.Add((scannerX, scannerY - length));
         }
-        for (int i = 0; i < Segments.Count; i++)
+        for (int i = 0; i < EndPoints.Count; i++)
         {
-            for (int j = i + 1; j < Segments.Count; j++)
+            for (int j = i + 1; j < EndPoints.Count; j++)
             {
-                int y = Intersect(Segments[i], Segments[j]);
-                ys.Add(y - 1);
-                ys.Add(y);
-                ys.Add(y + 1);
+                var (x1, y1) = EndPoints[i];
+                var (x2, y2) = EndPoints[j];
+                ys.Add(((y1 + y2) / 2) + ((x1 - x2)/2));
+                ys.Add(((y1 + y2) / 2) + ((x2 - x1) / 2));
             }
         }
-        ys.Where(x => x >= 0 && x <= 4000000).OrderBy(x => x).ToList().Print(" ");
-        int Intersect((int, int, int, int) linesegment1, (int, int, int, int) linesegment2)
-        {
-            var (startX1, startY1, endX1, endY1) = linesegment1;
-            var (startX2, startY2, endX2, endY2) = linesegment2;
-
-            // Calculate the coefficients of the two lines
-            double a1 = startY1 - endY1;
-            double b1 = endX1 - startX1;
-            double c1 = startX1 * endY1 - endX1 * startY1;
-
-            double a2 = startY2 - endY2;
-            double b2 = endX2 - startX2;
-            double c2 = startX2 * endY2 - endX2 * startY2;
-
-            // Calculate the intersection point
-            double determinant = a1 * b2 - a2 * b1;
-
-            if (determinant == 0)
-            {
-                // The lines are parallel
-                return 0;
-            }
-            else
-            {
-                double x = (b2 * c1 - b1 * c2) / determinant;
-                double y = (a1 * c2 - a2 * c1) / determinant;
-                Console.WriteLine(x + y);
-                // Return the coordinates of the intersection point as an integer tuple
-                return  (int)y ;
-            }
-        }
-        //Segments.Print("\n");
-        Console.ReadLine();
-        //foreach (int target in ys.Where(x => x >= 0 && x <= 4000000))
-            for (int target = 0; target < 4000000; target++)
+        ys.Where(x => x >= 0 && x <= 4000000).Count().P();
+       foreach (int target in ys.Where(x => x >= 0 && x <= 4000000))
+        //for (int target = 0; target < 4000000; target++)
         {
             //target.P();
             List<(int, int)> Ranges = new List<(int, int)>();
@@ -154,7 +110,7 @@ class Day15 : Day
                 if (!changed)
                 {
                     long x = Ranges.Where(x => x.Item1 != 0).First().Item1 + 1;
-                    Console.WriteLine(target+" "+(x * maxSearch + target));
+                    Console.WriteLine(target + " " + (x * maxSearch + target));
                     break;
                 }
             }
