@@ -26,8 +26,6 @@ class Day15 : Day
         for (int target = 0; target < maxSearch; target++)
         {
             List<(int, int)> Ranges = new List<(int, int)>();
-            //if (target % 10000 == 0) Console.Write(".");
-            //target.P();
             foreach (var line in NumberedRows)
             {
                 int x = line[0];
@@ -57,8 +55,6 @@ class Day15 : Day
                 }
             }
             Ranges = Ranges.Select(x => (Math.Max(0, x.Item1), Math.Min(maxSearch, x.Item2))).ToList();
-            int sum = 0;
-            var currentRange = Ranges.First();
             while (Ranges.Count > 1)
             {
                 // Ranges.Count.P();
