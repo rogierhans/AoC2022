@@ -22,8 +22,6 @@ class Day14 : Day
 
     public override void Part2(List<string> Lines)
     {
-
-        TryParse(Lines);
         var segments = Lines.Select(x => x.Split("->").Select(y => (int.Parse(y.Split(",")[0]), int.Parse(y.Split(",")[1]))).ToList()).ToList();
         var sandDictionary = new Dictionary<(int, int), int>();
         foreach (var segment in segments)
@@ -33,14 +31,14 @@ class Day14 : Day
             {
                 if (X == fromX)
                 {
-                    for (int i = 0; i <= Math.Max(fromY - Y, Y - fromY); i++)
+                    for (int i = 0; i <= Math.Abs(fromY - Y); i++)
                     {
                         sandDictionary[(X, Math.Min(fromY, Y) + i)] = 0;
                     }
                 }
                 else
                 {
-                    for (int i = 0; i <= Math.Max(fromX - X, X - fromX); i++)
+                    for (int i = 0; i <= Math.Abs(fromX - X); i++)
                     {
                         sandDictionary[((Math.Min(fromX, X) + i), Y)] = 0;
                     }
@@ -48,16 +46,13 @@ class Day14 : Day
                 (fromX, fromY) = (X, Y);
             }
         }
-        int loopCounter = 0;
         Queue<(int, int)> SandQueue = new Queue<(int, int)>();
         SandQueue.Enqueue((500, 0));
+        sandDictionary[(500, 0)] = 1;
         while (SandQueue.Count > 0)
         {
-            var sandGrain = SandQueue.Dequeue();
-            loopCounter++;
-            sandDictionary[sandGrain] = 1;
-            var (X, Y) = sandGrain;
-            Add((X, Y + 1));
+            var (X    , Y) = SandQueue.Dequeue();
+            Add((X    , Y + 1));
             Add((X - 1, Y + 1));
             Add((X + 1, Y + 1));
 
@@ -69,7 +64,6 @@ class Day14 : Day
                 }
             }
         }
-        Console.WriteLine(loopCounter);
         sandDictionary.Values.Sum(x => x).P();
     }
 

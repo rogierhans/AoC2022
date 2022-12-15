@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Priority_Queue;
+namespace AOC2021;
 
 class Day15 : Day
 {

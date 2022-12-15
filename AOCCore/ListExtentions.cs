@@ -213,6 +213,11 @@ public static class SL
         return newList;
     }
 
+    public static (int, int) Sort(this (int, int) tuple) {
+        var (x, y) = tuple;
+        if (x > y) return (y, x);
+        else return (x, y); 
+    }
     public static string F<T>(this List<T> list, string seperator = "")
     {
         var newList = "";

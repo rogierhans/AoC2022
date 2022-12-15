@@ -42,7 +42,7 @@ class Day
     {
         if (withTest) Part1(testLines);
         Part1(inputLines);
-
+        "sadasd".P();
         return;
     }
     public void Part2(bool withTest)
