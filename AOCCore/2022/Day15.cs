@@ -127,7 +127,7 @@ class Day15 : Day
                 }
                 if (!changed)
                 {
-                    long x = Ranges.Where(x => x.Item1 != 0).First().Item1 + 1;
+                    long x = Ranges.Where(x => x.Item1 != 0).First().Item1-1;
                     Console.WriteLine(target + " " + (x * maxSearch + target));
                     break;
                 }
