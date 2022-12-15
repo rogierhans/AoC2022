@@ -21,9 +21,10 @@ class Day15 : Day
     }
     public override void Part2(List<string> Lines)
     {
-        TryParse(Lines);
+        //TryParse(Lines);
+        NumberedRows = Lines.Select(line => GetNumbers(line)).ToList();
         int maxSearch = 4000000;
-        List<(int, int)> EndPoints = new List<(int, int)>();
+        List<(int, int, int, int)> EndPoints = new List<(int, int, int, int)>();
 
         foreach (var line in NumberedRows)
         {
@@ -37,8 +38,8 @@ class Day15 : Day
 
             int length = dx + dy;
 
-            var TopPointDiamond = (scannerX, scannerY + length);
-            var BottomPointDiamond = (scannerX, scannerY - length);
+            var TopPointDiamond = (scannerX, scannerY + length, scannerY + length, scannerY - length);
+            var BottomPointDiamond = (scannerX, scannerY - length, scannerY + length, scannerY - length);
             EndPoints.Add(TopPointDiamond);
             EndPoints.Add(BottomPointDiamond);
         }
@@ -47,8 +48,8 @@ class Day15 : Day
         {
             for (int j = i + 1; j < EndPoints.Count; j++)
             {
-                var (x1, y1) = EndPoints[i];
-                var (x2, y2) = EndPoints[j];
+                var (x1, y1,t1,b1) = EndPoints[i];
+                var (x2, y2,t2,b2) = EndPoints[j];
                 double firstIntersect = Math.Floor((y1 + y2 + x1 - x2) / (double)2);
                 double secondIntersect = Math.Floor((y1 + y2 + x2 - x1) / (double)2);
                 if (firstIntersect - Math.Floor(firstIntersect) == 0)
@@ -61,12 +62,15 @@ class Day15 : Day
                 }
                 void AddMaybeY(double potentialY)
                 {
-                    if (y1 <= potentialY && potentialY <= y2)
+                    if (y1 <= potentialY && potentialY <= y2 &&
+                        b1 <= potentialY && potentialY <= t1 &&
+                        b2 <= potentialY && potentialY <= t2)
                         ys.Add(potentialY);
                 }
             }
         }
         ys.Where(x => x >= 0 && x <= 4000000).OrderBy(x => x).ToList().Print(" ");
+        Console.ReadLine();
         ys.Where(x => x >= 0 && x <= 4000000).Count().P();
         foreach (int target in ys.Where(x => x >= 0 && x <= 4000000))
         //for (int target = 0; target < 4000000; target++)
@@ -101,7 +105,7 @@ class Day15 : Day
                     }
                 }
             }
-            Ranges = Ranges.Select(x => (Math.Max(0, x.Item1), Math.Min(maxSearch, x.Item2))).ToList();
+            //Ranges = Ranges.Select(x => (Math.Max(0, x.Item1), Math.Min(maxSearch, x.Item2))).ToList();
             while (Ranges.Count > 1)
             {
                 // Ranges.Count.P();
@@ -134,7 +138,7 @@ class Day15 : Day
             }
 
         }
-        Console.ReadLine();
+       // Console.ReadLine();
     }
 
 
