@@ -26,8 +26,6 @@ class Day15 : Day
         for (int target = 0; target < maxSearch; target++)
         {
             List<(int, int)> Ranges = new List<(int, int)>();
-            //if (target % 10000 == 0) Console.Write(".");
-            //target.P();
             foreach (var line in NumberedRows)
             {
                 int x = line[0];
