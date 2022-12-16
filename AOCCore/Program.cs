@@ -14,14 +14,12 @@ class Program
     [STAThreadAttribute]
     static void Main()
     {
-        while (true)
+        //while (true)
         {
-            var sw = new Stopwatch();
-            sw.Start();
-            var day = new Day15();
-            day.Part2(false);
-            sw.Stop();
-            Console.WriteLine(sw.Elapsed.TotalMilliseconds);
+
+            var day = new Day16();
+            day.Part1(true);
+
         }
         //if (false) {
         //    await InputFetcher.GetFile("2022", "02");

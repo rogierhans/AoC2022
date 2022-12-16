@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 class Day
 {
-    public string RootFolder = @"C:\Users\4001184\Desktop\InputFiles\";
+    public string RootFolder = @"C:\Users\Rogier\Desktop\InputFiles\";
     private List<string> testLines = new List<string>();
     public List<string> inputLines = new List<string>();
 
@@ -42,7 +42,6 @@ class Day
     {
         if (withTest) Part1(testLines);
         Part1(inputLines);
-        "sadasd".P();
         return;
     }
     public void Part2(bool withTest)
