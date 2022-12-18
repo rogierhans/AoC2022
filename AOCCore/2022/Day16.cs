@@ -2,6 +2,7 @@
 using Microsoft.FSharp.Core;
 using ParsecSharp;
 using ParsecSharp.Data;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,10 +23,9 @@ class Day16 : Day
         GetInput("2022", "16");
 
     }
-    List<(string, int, List<int>)> RealLetters;
-    List<(string, int, List<int>)> OpenLetters;
-    Dictionary<int, int> index2Oindex;
-    Dictionary<int, int> Oindex2Index;
+    List<(string, int, List<int>)> RealLetters = new List<(string, int, List<int>)>();
+    Dictionary<int, int> index2Oindex = new();
+    Dictionary<int, int> Oindex2Index = new();
     public override void Part1(List<string> Lines)
     {
         TryParse(Lines);
@@ -39,7 +39,7 @@ class Day16 : Day
             Console.WriteLine("{0} {1} {2}", valve, flowRate, string.Join(",", toValves));
             fakeLetters.Add((valve, flowRate, toValves));
         }
-        fakeLetters = fakeLetters.OrderBy(x =>x.Item1).ToList();
+        fakeLetters = fakeLetters.OrderBy(x => x.Item1).ToList();
         var letters = fakeLetters.OrderBy(x => x.Item1).ToList();
         var letterDict = letters.ToDictionary(l => l.Item1, l => letters.IndexOf(l));
         RealLetters = fakeLetters.Select(x => (x.Item1, x.Item2, x.Item3.Select(y => letterDict[y]).ToList())).ToList();
@@ -57,67 +57,88 @@ class Day16 : Day
         }
         for (int index = 0; index < RealLetters.Count; index++)
         {
-       //     Console.WriteLine("{0} {1} {2} {3}", index,index2Oindex.ContainsKey(index)? index2Oindex[index] : "", index, index2Oindex.ContainsKey(index) ? RealLetters[Oindex2Index[ index2Oindex[index]]] : "", RealLetters[index]);
+            //     Console.WriteLine("{0} {1} {2} {3}", index,index2Oindex.ContainsKey(index)? index2Oindex[index] : "", index, index2Oindex.ContainsKey(index) ? RealLetters[Oindex2Index[ index2Oindex[index]]] : "", RealLetters[index]);
         }
-        Mem = new Dictionary<string, int>();
+        Mem = new Dictionary<ulong, int>();
         var currentPosistion = letters[0];
         var Opened = new int[index2Oindex.Count()];
         int minute = 1;
-        Go(Opened, 0, minute).P();
+        Go(Opened, 0, 0, minute, true,-1,-1).P();
         Mem.MaxItem(x => x.Value).P();
         letters.Print(" ");
         Console.ReadLine();
 
     }
     int counter = 0;
-    Dictionary<string, int> Mem;
-    int max = 30;
-    public int Go(int[] Opened, int position, int minute)
+    Dictionary<ulong, int> Mem = new();
+    int max = 26;
+    public int Go(int[] Opened, int position, int elepant, int minute, bool youTurn, int prev1, int preve2)
     {
 
-        if (counter++ % 1000000 == 0) counter.P();
+        if (counter++ % 1000000 == 0)
+        {
+            counter.P();
+            if (Mem.Count > 1)
+                Mem.Values.Max().P();
+        }
         //  Console.WriteLine(position +" " + minute);
-        var key = Convert2Key(Opened, minute, position);
+        var key = Convert2Key(Opened, minute, position, elepant, youTurn);
         if (Mem.ContainsKey(key)) return Mem[key];
-       // key.P();
-        var flow = CalculateFlow(Opened);
+        // key.P();
+        var flow = 0;
 
-        bool allOpen = true;
-        for (int index = 0; index < Opened.Length; index++)
-        {
-
-            if (Opened[index] != 1)
-            {
-                allOpen = false; break;
-            }
-
-        }
-        if (allOpen)
-        {
-            var megaValue = flow * ((max+1) - minute);
-            Mem[key] = megaValue;
-            return Mem[key];
-        }
         if (minute == max)
         {
             Mem[key] = flow;
             return flow;
         }
+        int maxflow = 0;
+        if (youTurn)
+        {
+            //both Move
+            foreach (var nextPosition in RealLetters[position].Item3)
+            {
+                if (RealLetters[position].Item3.Count() == 1 || nextPosition != prev1)
+                {
+                    maxflow = Math.Max(maxflow, (Go(Opened, nextPosition, elepant, minute, !youTurn, position, preve2)));
+                }
 
-        List<int> Paths = new List<int>();
-        foreach (var nextPosition in RealLetters[position].Item3)
-        {
-            Paths.Add(Go(Opened, nextPosition, minute + 1));
+
+            }
+
+            if (index2Oindex.ContainsKey(position) && Opened[index2Oindex[position]] == 0)
+            {
+                var newOPen = Opened.Select(x => x).ToArray();
+                newOPen[index2Oindex[position]] = 1;
+                maxflow = Math.Max(maxflow, ((RealLetters[position].Item2 * (max-minute)) + Go(newOPen, position, elepant, minute, !youTurn, prev1, preve2)));
+            }
         }
-        if ( index2Oindex.ContainsKey(position) && Opened[index2Oindex[position]] == 0 )
+        else
         {
-            var newOPen = Opened.Select(x => x).ToArray();
-            newOPen[index2Oindex[position]] = 1;
-            Paths.Add(Go(newOPen, position, minute + 1));
+            // elemoves
+            foreach (var nextPosition in RealLetters[elepant].Item3)
+            {
+                if (RealLetters[elepant].Item3.Count() == 1 || nextPosition != preve2)
+                {
+                    maxflow = Math.Max(maxflow, (Go(Opened, position, nextPosition, minute + 1, !youTurn, prev1, elepant)));
+                }
+
+
+            }
+
+            // both open 
+
+            if (index2Oindex.ContainsKey(elepant) && Opened[index2Oindex[elepant]] == 0)
+            {
+                var newOPen = Opened.Select(x => x).ToArray();
+                newOPen[index2Oindex[elepant]] = 1;
+                maxflow = Math.Max(maxflow, (RealLetters[elepant].Item2 * (max  - minute)) +Go(newOPen, position, elepant, minute + 1, !youTurn, prev1, preve2));
+            }
+
+
         }
-        var best = Paths.Max();
-        var value = best + flow;
-       // key.P();
+        var value = maxflow + (youTurn ? flow : 0);
+        // key.P();
         Mem[key] = value;
         return Mem[key];
     }
@@ -148,17 +169,33 @@ class Day16 : Day
     //    acc += (ulong)Opened[i] << (i + 5);
     //    return acc;
     //}
-    public static string Convert2Key(int[] Opened, int minute, int currentPosition)
+    //public static string Convert2Key(int[] Opened, int minute, int currentPosition, int elepant, bool youturn)
+    //{
+    //    StringBuilder sb = new StringBuilder();
+    //    sb.Append(currentPosition + "_" + minute + "_" + elepant + "_" + youturn);
+
+    //    for (int i = 0; i < Opened.Length; i++)
+    //    {
+    //        sb.Append(Opened[i]);
+    //    }
+    //    return sb.ToString();
+    //}
+    public ulong Convert2Key(int[] Opened, int minute, int currentPosition, int elepant, bool youturn)
     {
-        StringBuilder sb = new StringBuilder();
-        sb.Append(currentPosition + "_" + minute + "_");
-        
+        int number = 8;
+        ulong value = (ulong)currentPosition;
+        value <<= number;
+        value += (ulong)elepant;
+        value <<= number;
+        value += (ulong)minute;
+        value <<= 32;
         for (int i = 0; i < Opened.Length; i++)
         {
-            sb.Append(Opened[i]);
+            value += (ulong)Opened[i] << (i);
         }
-        return sb.ToString();
+        value <<= 1;
+        value += youturn ? (ulong)1 : (ulong)0;
+        return value;
     }
-
 
 }

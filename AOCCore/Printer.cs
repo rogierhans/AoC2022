@@ -22,11 +22,17 @@ static class Printer
 
     public static void Print<T>(this List<List<T>> list, string seperator = "")
     {
-        foreach (var oldLine in list)
+        //if(reverse)
+        for (int i = list.Count-1; i >=0; i--)
         {
-            string line = string.Join(seperator, oldLine);
+            string line = string.Join(seperator, list[i]);
             Console.WriteLine(line);
         }
+        //for (int i = 0; i < list.Count; i++)
+        //{
+        //    string line = string.Join(seperator, list[i]);
+        //    Console.WriteLine(line);
+        //}
     }
 
     public static void PrintPlusPlus<T>(this List<List<T>> list, string seperator = "")

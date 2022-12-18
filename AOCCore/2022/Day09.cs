@@ -27,7 +27,6 @@ class Day09 : Day
         int length = 10;
         int[] RopeX = new int[length];
         int[] RopeY = new int[length];
-        var pictureGrid = new string[20, 20].ToLists();
         for (int i = 0; i < Lines.Count; i++)
         {
             var input = Lines[i].Split(' ');
@@ -38,32 +37,12 @@ class Day09 : Day
                 for (int r = 0; r < length - 1; r++)
                 {
 
-                    (RopeX[r], RopeY[r], RopeX[r + 1], RopeY[r + 1]) = Update2(direction, RopeX[r], RopeY[r], RopeX[r + 1], RopeY[r + 1]);
+                    (RopeX[r + 1], RopeY[r + 1]) = Update(direction, RopeX[r], RopeY[r], RopeX[r + 1], RopeY[r + 1]);
                 }
 
 
                 dict[(RopeX.Last(), RopeY.Last())] = 1;
-                //Console.WriteLine("###########"); ;
-                //Console.WriteLine("({0},{1}) ({2},{3})  {4} {5}", RopeX[0], RopeY[0], RopeX[1], RopeY[1], Math.Abs(RopeX[0] - RopeX[1]) ,Math.Abs(RopeY[0] - RopeY[1]));
-                ////pictureGrid = pictureGrid.GridSelect(x => ".");
-                //for (int l = 0; l < length; l++)
-                //{
-                //    pictureGrid[RopeY[l] + 10][RopeX[l] + 10] = l.ToString();
-
-                //}
-                //pictureGrid.Print();
-                //Console.ReadLine();
-                //for (int l = 0; l < length; l++)
-                //{
-                //    pictureGrid[RopeY[l] + 10][RopeX[l] + 10] = "x";
-                //    //.Print();
-                //}
             }
-
-
-
-
-
         }
         dict.Values.Sum().P();
         Console.ReadLine();
@@ -92,48 +71,11 @@ class Day09 : Day
         }
         return (HX, HY);
     }
-    public (int, int, int, int) Update1(string direction, int HX, int HY, int TailX, int TailY)
-    {
-        if (direction == "R")
-        {
-            if (Math.Abs(HX - TailX) > 1 || Math.Abs(HY - TailY) > 1)
-            {
-                TailX = HX - 1;
-                TailY = HY;
-            }
-        }
-        if (direction == "L")
-        {
-            if (Math.Abs(HX - TailX) > 1 || Math.Abs(HY - TailY) > 1)
-            {
-                TailX = HX + 1;
-                TailY = HY;
-            }
-        }
-        if (direction == "D")
-        {
-            if (Math.Abs(HX - TailX) > 1 || Math.Abs(HY - TailY) > 1)
-            {
-                TailY = HY - 1;
-                TailX = HX;
-            }
-        }
-        if (direction == "U")
-        {
-            if (Math.Abs(HX - TailX) > 1 || Math.Abs(HY - TailY) > 1)
-            {
-                TailY = HY + 1;
-                TailX = HX;
-            }
-        }
-        return (HX, HY, TailX, TailY);
-    }
-    public (int, int, int, int) Update2(string direction, int HX, int HY, int TailX, int TailY)
+
+    public ( int, int) Update(string direction, int HX, int HY, int TailX, int TailY)
     {
         int dx = HX - TailX;
         int dy = HY - TailY;
-        //if (direction == "R")
-
         if (Math.Abs(dx) > 1 || Math.Abs(dy) > 1)
         {
             TailX += Math.Min(1, Math.Max(dx, -1));
@@ -141,7 +83,7 @@ class Day09 : Day
         }
 
 
-        return (HX, HY, TailX, TailY);
+        return (TailX, TailY);
     }
 
 }
