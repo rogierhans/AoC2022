@@ -61,6 +61,8 @@ class Day19 : Day
             var sets = new HashSet<(int, int, int, int, int, int, int, int)>();
             sets.Add((0, 0, 0, 0, 1, 0, 0, 0));
             var maxMaxine = (BluePrint.Max(x => x.Item2), BluePrint.Max(x => x.Item3), BluePrint.Max(x => x.Item4), 200);
+            maxMaxine.P();
+            Console.ReadLine();
             var number = Calc(1, sets, BluePrint, (6, 22, 22, 200), maxMaxine);
             number.P();
             sum *= number;
@@ -72,6 +74,7 @@ class Day19 : Day
 
     public int Calc(int min, HashSet<(int, int, int, int, int, int, int, int)> set, List<(int, int, int, int, int)> BluePrint, (int, int, int, int) TrimValues, (int, int, int, int) TrimMachine)
     {
+      //  set.ToList().Print("\n");
         if (min == 33)
         {
             set.Count.P();

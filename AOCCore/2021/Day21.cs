@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 //using ParsecSharp;
 //using FishLibrary;
 
-
+namespace AOC2021;
 class Day21 : Day
 {
 

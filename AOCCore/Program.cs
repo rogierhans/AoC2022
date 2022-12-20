@@ -18,7 +18,7 @@ class Program
         {
             var sw = new Stopwatch();
             sw.Start();
-            var day = new Day19();
+            var day = new Day20();
             day.Part1(true);
             Console.WriteLine("Time: "+sw.Elapsed.TotalMilliseconds);
         }

@@ -6,42 +6,50 @@ using System.Threading.Tasks;
 
 class StreetMagic
 {
-    public StreetMagic(List<string> lines)
-    {
-        FindPattern(lines);
-    }
+    public static List<string> FindPattern(List<string> linesInput, params string[] replaces)
 
-    public List<List<(string, string)>> FindPattern(List<string> lines, string after = "")
     {
-        List<List<(string, string)>> patterns = new();
-        int maxStringSize = lines.Max(x => x.Length);
-        for (int i = 0; i < lines.Count; i++)
+
+        List<string> lines = linesInput.ToList();
+        if (lines.Count == 0) return lines;
+
+        bool p = true;
+        while (p)
         {
-            var line = lines[i];
-            for (int length = line.Length; length >= 2; length--)
+            var line = lines.First();
+            p = false;
+            bool breaker = false;
+            for (int startIndex = 0; startIndex < line.Length; startIndex++)
             {
-                for (int j = 0; j < line.Length - length; j++)
+                if (breaker) break;
+                for (int endIndex = line.Length - 1; endIndex >= startIndex + 2; endIndex--)
                 {
-
-                    var substring = line.Substring(j, length);
-
-                    for (int k = i; k < lines.Count; k++)
+                    string substring = line.Substring(startIndex, endIndex - startIndex);
+                    if (lines.All(x => x.Contains(substring)))
                     {
-                        if (lines[k].Contains(substring)) {
-                            Console.WriteLine("{0}", substring);
-                            Console.ReadLine();
-                        }
+                        p = true;
+                        breaker = true;
+                        lines = lines.Select(x => x.Replace(substring, ";")).ToList();
+                        break;
                     }
+
+
                 }
             }
+        }
+        foreach (var replace in replaces)
+        {
+            lines = lines.Select(x => x.Replace(replace, "")).ToList();
+        }
+        for (int i = 0; i < lines.Count; i++)
+        {
+            var input = lines[i].Split(";");
 
-            //for (int length = 1; length < maxStringSize; length++)
-            //{
-
-            //}
+            lines[i] = string.Join(';', input.Where(x => x.Replace(" ", "") != "").ToList());
         }
 
-        return patterns;
+        lines.Print("\n");
+        return lines;
     }
 }
 

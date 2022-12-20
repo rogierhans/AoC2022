@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+namespace AOC2021;
 class Day22 : Day
 {
     public Day22()

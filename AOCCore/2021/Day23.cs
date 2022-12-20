@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Priority_Queue;
+namespace AOC2021;
 class Day23 : Day
 {
     public Day23()
