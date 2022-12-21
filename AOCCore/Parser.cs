@@ -287,4 +287,43 @@ public static class CustomParser
         }
         return p;
     }
+
+    public static List<int> GetNumbers(this string line)
+    {
+        // Console.WriteLine(line);
+        List<int> list = new List<int>();
+        string number = "";
+        for (int i = 0; i < line.Length; i++)
+        {
+            //Console.WriteLine(number);
+            if ((number == "") && (line[i] == '-'))
+            {
+                number = "-";
+            }
+            else if (line[i] >= '0' && line[i] <= '9')
+            {
+                number += line[i];
+            }
+            else if (number.Length > 0 && number != "-")
+            {
+                _ = int.TryParse(number, out int parsedNumber);
+                list.Add(parsedNumber);
+                number = "";
+            }
+            else
+            {
+                number = "";
+            }
+        }
+        if (number.Length > 0 && number != "-")
+        {
+
+            _ = int.TryParse(number, out int parsedNumber);
+            list.Add(parsedNumber);
+
+        }
+        //Console.ReadLine();
+        return list;
+        //return ..Where(x => !string.IsNullOrEmpty(x)).Where(x => x.Length < 9).Select(int.Parse).ToList();
+    }
 }
