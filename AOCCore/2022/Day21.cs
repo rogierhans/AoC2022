@@ -81,54 +81,61 @@ class Day21 : Day
         }
     }
 
-    private static void Test(Dictionary<string, ulong> FAKNKSFN, Dictionary<string, (string, string, Func<ulong, ulong, ulong>)> functions, string rootNumber1, string rootNumber2)
+    private void Test(Dictionary<string, ulong> FAKNKSFN, Dictionary<string, (string, string, Func<ulong, ulong, ulong>)> functions, string rootNumber1, string rootNumber2)
     {
         ulong i = 0;
         ulong change = 100000000000;
+
+        int init = Test(FAKNKSFN, functions, rootNumber1, rootNumber2, i);
+        init.P();
         while (true)
         {
+            i.P();
+            i += change;
 
-
-            while (true)
+            int test = Test(FAKNKSFN, functions, rootNumber1, rootNumber2, i);
+            if (test == 0)
             {
-                i += change;
-                var newDict = FAKNKSFN.ToDictionary(entry => entry.Key,
-                                               entry => entry.Value);
-                newDict["humn"] = i;
-                var newFunction = functions.ToDictionary(entry => entry.Key,
-                               entry => entry.Value);
-                bool changed = true;
-                while (changed)
-                {
-                    changed = false;
-                    foreach (var element in newFunction)
-                    {
-                        //  element.P();
-                        var (key, (name1, name2, f)) = element;
-                        if (!newDict.ContainsKey(key) && newDict.ContainsKey(name1) && newDict.ContainsKey(name2))
-                        {
-                            newDict[key] = f(newDict[name1], newDict[name2]);
-                            changed = true;
-                        }
-                    }
-                    foreach (var key in FAKNKSFN.Keys)
-                    {
-                        newFunction.Remove(key);
-                    }
-                }
-                if ((newDict[rootNumber1] == newDict[rootNumber2])) {
-                    i.P();
-                    newDict[rootNumber1].P();
-                    newDict[rootNumber2].P();
+                i.P();
+                Console.ReadLine();
+            }
+            if (test == - init)
+            {
+                init = test;
+                i = (i - change);
+                change = change / 10;
+            }
 
-                    Console.ReadLine();
-                }
-                if ((newDict[rootNumber1] < newDict[rootNumber2]))
+        }
+
+    }
+
+    private int Test(Dictionary<string, ulong> FAKNKSFN, Dictionary<string, (string, string, Func<ulong, ulong, ulong>)> functions, string rootNumber1, string rootNumber2, ulong i)
+    {
+        Dictionary<string, ulong>  newDict = FAKNKSFN.ToDictionary(entry => entry.Key,
+                                       entry => entry.Value);
+        newDict["humn"] = i;
+        var newFunction = functions.ToDictionary(entry => entry.Key,
+                       entry => entry.Value);
+        bool changed = true;
+        while (changed)
+        {
+            changed = false;
+            foreach (var element in newFunction)
+            {
+                //  element.P();
+                var (key, (name1, name2, f)) = element;
+                if (!newDict.ContainsKey(key) && newDict.ContainsKey(name1) && newDict.ContainsKey(name2))
                 {
-                    i = (i - change);
-                    change = change / 10;
+                    newDict[key] = f(newDict[name1], newDict[name2]);
+                    changed = true;
                 }
             }
+            foreach (var key in FAKNKSFN.Keys)
+            {
+                newFunction.Remove(key);
+            }
         }
+         return newDict[rootNumber1].CompareTo(newDict[rootNumber2]);
     }
 }
