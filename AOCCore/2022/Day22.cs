@@ -15,18 +15,18 @@ class Day22 : Day
         GetInput("2022", "22");
 
     }
-    public class Squire
+    public class Cell
     {
-        public (Squire, string) Left;
-        public (Squire, string) Up;
-        public (Squire, string) Down;
-        public (Squire, string) Right;
+        public (Cell, string) Left;
+        public (Cell, string) Up;
+        public (Cell, string) Down;
+        public (Cell, string) Right;
         public string Content = "";
         public int x;
         public int y;
 
         public string Zone = "?";
-        public Squire(string content, int x, int y)
+        public Cell(string content, int x, int y)
         {
             Content = content;
             this.x = x;
@@ -46,13 +46,13 @@ class Day22 : Day
         var pgrid = Blocks[0].Select(x => x.List()).ToList();
         int maxX = pgrid.Max(x => x.Count);
         int maxY = pgrid.Count();
-        var grid = new Squire[maxX, maxY];
+        var grid = new Cell[maxX, maxY];
 
         for (int y = 0; y < maxY; y++)
         {
             for (int x = 0; x < maxX; x++)
             {
-                var s = new Squire(" ", x, y);
+                var s = new Cell(" ", x, y);
                 grid[x, y] = s;
             }
         }
@@ -61,7 +61,7 @@ class Day22 : Day
         {
             for (int x = 0; x < pgrid[y].Count(); x++)
             {
-                grid[x, y] = new Squire(pgrid[y][x], x, y);
+                grid[x, y] = new Cell(pgrid[y][x], x, y);
                 if (50 <= x && x < 100 && 0 <= y && y < 50)
                 {
                     grid[x, y].Zone = "A";
@@ -282,7 +282,7 @@ class Day22 : Day
                             // Print(maxX, maxY, grid, currentLocation);
                             //  (currentLocation.Item1.x %50, currentLocation.Item1.y % 50).P();
                             var (position, currentDirection) = currentLocation;
-                            var next = (new Squire("????", -1, -1), "faskdlsksa");
+                            var next = (new Cell("????", -1, -1), "faskdlsksa");
                             if (currentDirection == "Left")
                             {
                                 next = position.Left;
@@ -333,7 +333,7 @@ class Day22 : Day
             {
 
                 var (position, currentDirection) = currentLocation;
-                var next = (new Squire("????", -1, -1), "faskdlsksa");
+                var next = (new Cell("????", -1, -1), "faskdlsksa");
                 if (currentDirection == "Left")
                 {
                     next = position.Left;
@@ -381,7 +381,7 @@ class Day22 : Day
         Console.ReadLine();
     }
 
-    private static void Print(int maxX, int maxY, Squire[,] grid, (Squire, string) location)
+    private static void Print(int maxX, int maxY, Cell[,] grid, (Cell, string) location)
     {
         location.P();
         var printGrind = new string[maxX, maxY];
