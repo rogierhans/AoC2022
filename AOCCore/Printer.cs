@@ -33,10 +33,10 @@ static class Printer
         //    string line = string.Join(seperator, list[i]);
         //    Console.WriteLine(line);
         //}
-        for (int y = 0; y < list[0].Count; y++)
+        for (int x = 0; x < list.Count; x++)
         {
             string line = "";
-            for (int x = 0; x < list.Count; x++)
+            for (int y = 0; y < list[0].Count; y++)
             {
                 line += list[x][y] + seperator;
             }

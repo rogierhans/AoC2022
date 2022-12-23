@@ -26,15 +26,6 @@ public static class GridHelper
         return list;
     }
 
-    public static List<(int, int)> Neighbor8()
-    {
-        return new List<(int, int)> { (1, 1), (-1, 1), (1, -1), (-1, -1), (1, 0), (-1, 0), (0, 1), (0, -1) };
-    }
-    public static List<(int, int)> Neighbor4()
-    {
-        return new List<(int, int)> { (1, 0), (-1, 0), (0, 1), (0, -1) };
-    }
-
     public static List<List<T>> GOL<T>(this List<List<T>> list, List<(int, int)> neighbors, Func<List<T>, T> f, int iterations, bool loop = false)
     {
         var newList = list.DeepCopy();
@@ -91,22 +82,73 @@ public static class GridHelper
 
         return neighborList;
     }
-    public static List<(int, int)> Neighbor4<T>(this List<List<T>> list, int i, int j)
+
+
+    public static List<(int, int)> Neighbor8()
+    {
+        return new List<(int, int)> { (1, 1), (-1, 1), (1, -1),
+                                        (-1, -1), (1, 0), (-1, 0),
+                                        (0, 1), (0, -1) };
+    }
+    public static List<(int, int)> Neighbor4()
+    {
+        return new List<(int, int)> { (1, 0), (-1, 0), (0, 1), (0, -1) };
+    }
+    public static List<(int, int)> Neighbor4<T>(this List<List<T>> list, int r, int c)
     {
         List<(int, int)> neighborList = new List<(int, int)>();
-        foreach (var offset in new List<(int, int)>() { (-1, 0), (1, 0), (0, -1), (0, 1) })
+        int maxHeight = list.Count;
+        int Width = list[0].Count;
+        foreach (var (dx, dy) in Neighbor4())
         {
-            int newI = i + offset.Item1;
-            int newJ = j + offset.Item2;
 
-            bool outOfRow = newI < 0 || newI >= list.Count;
-            bool outOfColumn = newJ < 0 || newJ >= list[0].Count;
-            if (!outOfColumn && !outOfRow && !(i == newI && j == newJ))
+            // Console.WriteLine(offsetI +" "+ offsetJ);
+            int nr = r + dx;
+            int nc = c + dy;
+
+            bool inRow = 0 <= nr && nr <= maxHeight - 1;
+            bool inColouwm = 0 <= nc && nc <= Width - 1;
+
+
+
+            if (inRow && inColouwm)
             {
-                neighborList.Add((newI, newJ));
+                neighborList.Add((nr, nc));
             }
 
         }
+
+
+
+        return neighborList;
+    }
+
+    public static List<(int, int)> Neighbor8<T>(this List<List<T>> list, int i, int j)
+    {
+        List<(int,int)> neighborList = new List<(int, int)>();
+        int maxHeight = list.Count;
+        int Width = list[0].Count;
+        foreach (var (dx, dy) in Neighbor8())
+        {
+
+            // Console.WriteLine(offsetI +" "+ offsetJ);
+            int r = i + dx;
+            int c = j + dy;
+
+            bool inRow = 0 <= r && r <= maxHeight - 1;
+            bool inColouwm = 0 <= c && c <= Width - 1;
+
+
+
+            if (inRow && inColouwm)
+            {
+                neighborList.Add((r,c));
+            }
+
+        }
+
+
+
         return neighborList;
     }
 

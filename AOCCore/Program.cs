@@ -18,8 +18,8 @@ class Program
         {
             var sw = new Stopwatch();
             sw.Start();
-            var day = new Day22();
-            day.Part1(false) ;
+            var day = new Day23();
+            day.Part1(true) ;
             Console.WriteLine("Time: "+sw.Elapsed.TotalMilliseconds);
         }
         //if (false) {
