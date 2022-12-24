@@ -14,11 +14,11 @@ class Program
     [STAThreadAttribute]
     static void Main()
     {
-       // while (true)
+        //while (true)
         {
             var sw = new Stopwatch();
             sw.Start();
-            var day = new Day23();
+            var day = new Day24();
             day.Part1(true) ;
             Console.WriteLine("Time: "+sw.Elapsed.TotalMilliseconds);
         }

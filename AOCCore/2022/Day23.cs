@@ -24,6 +24,7 @@ class Day23 : Day
     }
     public override void Part1(List<string> Lines)
     {
+        Stopwatch sw = Stopwatch.StartNew();
         List<List<(int, int)>> PList = new List<List<(int, int)>> {
             new List<(int, int)>() { (-1, 0),(-1, 1), (-1, -1), },
             new List<(int, int)>() { (1, 0) ,(1,1), (1,-1) } ,
@@ -91,12 +92,14 @@ class Day23 : Day
             elfs = newElfs;
 
         }
+       // Console.WriteLine(sw.Elapsed.Milliseconds);
         Print(elfs);
-        Console.ReadLine();
+        //Console.ReadLine();
     }
 
     private static void Print(Dictionary<(int, int), Elf> elfs)
     {
+       // return;
         int maxX = elfs.Keys.Max(x => x.Item1);
         int minX = elfs.Keys.Min(x => x.Item1);
         int maxY = elfs.Keys.Max(x => x.Item2);
@@ -109,12 +112,13 @@ class Day23 : Day
                 printGrind[x, y] = ".";
             }
         }
-        elfs.Count().P();
+      //  elfs.Count().P();
         foreach (var ((r, c), elf) in elfs)
         {
             printGrind[r - minX, c - minY] = "#";
         }
-        ((maxX - minX + 1) * (maxY - minY + 1) - elfs.Count()).P();
+        // ((maxX - minX + 1) * (maxY - minY + 1) - elfs.Count()).P();
+        (minX, maxX,maxX,maxY).P();
         printGrind.ToLists().Print();
     }
 
